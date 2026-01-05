@@ -3,9 +3,316 @@
   <head>
     <meta charset="UTF-8" />
     <title>구구런 - 구구단 타임어택 연습</title>
+    <!-- 반응형 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: linear-gradient(135deg, #f8e9ff, #e3f2ff);
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+
+      .app {
+        width: 100%;
+        max-width: 480px;
+        margin: 16px;
+        padding: 24px 20px;
+        border-radius: 24px;
+        background: #ffffffcc;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        backdrop-filter: blur(6px);
+      }
+
+      .title {
+        text-align: center;
+        font-size: 1.7rem;
+        font-weight: 800;
+        margin-bottom: 4px;
+        background: linear-gradient(90deg, #7f5dff, #ff6fb1);
+        -webkit-background-clip: text;
+        color: transparent;
+      }
+
+      .subtitle {
+        text-align: center;
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 16px;
+      }
+
+      .question-box {
+        margin: 16px 0;
+        padding: 18px 12px;
+        border-radius: 18px;
+        background: #f4f0ff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .question-label {
+        font-size: 0.9rem;
+        color: #777;
+      }
+
+      .question {
+        font-size: 2.4rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+      }
+
+      .timer {
+        font-size: 0.9rem;
+        color: #8c68ff;
+      }
+
+      .answer-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .answer-input {
+        flex: 1;
+        padding: 10px 12px;
+        font-size: 1.2rem;
+        border-radius: 12px;
+        border: 2px solid #d6c7ff;
+        outline: none;
+        text-align: center;
+      }
+
+      .answer-input:focus {
+        border-color: #8c68ff;
+        box-shadow: 0 0 0 3px #e2d8ff;
+      }
+
+      .primary-button {
+        padding: 10px 16px;
+        border-radius: 12px;
+        border: none;
+        background: linear-gradient(135deg, #8c68ff, #ff6fb1);
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .primary-button:active {
+        transform: translateY(1px);
+      }
+
+      .stats {
+        margin-top: 12px;
+        padding: 12px 10px;
+        border-radius: 16px;
+        background: #f9fbff;
+        font-size: 0.9rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        row-gap: 4px;
+      }
+
+      .stats span.label {
+        color: #777;
+      }
+
+      .stats span.value {
+        font-weight: 600;
+      }
+
+      .result {
+        margin-top: 12px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        font-size: 0.95rem;
+      }
+
+      .result.ok {
+        background: #e8f9f1;
+        color: #1c7c4e;
+      }
+
+      .result.bad {
+        background: #ffeff0;
+        color: #c62828;
+      }
+
+      .small-tip {
+        margin-top: 8px;
+        font-size: 0.8rem;
+        color: #888;
+        text-align: center;
+      }
+
+      @media (max-width: 480px) {
+        .question {
+          font-size: 2rem;
+        }
+      }
+    </style>
   </head>
   <body>
-    <h1>구구런 GUGU RUN</h1>
-    <p>여기에 곧 구구단 타임어택 게임이 들어옵니다!</p>
+    <div id="root"></div>
+
+    <!-- React & ReactDOM & Babel (개발용) -->
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- React 코드 -->
+    <script type="text/babel">
+      const { useState, useEffect, useRef } = React;
+
+      function getRandomQuestion() {
+        const a = Math.floor(Math.random() * 8) + 2; // 2~9
+        const b = Math.floor(Math.random() * 9) + 1; // 1~9
+        return { a, b };
+      }
+
+      function App() {
+        const [question, setQuestion] = useState(getRandomQuestion);
+        const [answer, setAnswer] = useState("");
+        const [questionStart, setQuestionStart] = useState(Date.now());
+        const [lastTime, setLastTime] = useState(null);
+        const [lastCorrect, setLastCorrect] = useState(null);
+        const [lastMessage, setLastMessage] = useState("");
+        const [total, setTotal] = useState(0);
+        const [correct, setCorrect] = useState(0);
+        const [sumTime, setSumTime] = useState(0);
+        const inputRef = useRef(null);
+
+        // 새 문제로 바뀔 때마다 시작 시간 리셋
+        useEffect(() => {
+          setQuestionStart(Date.now());
+          setAnswer("");
+          if (inputRef.current) {
+            inputRef.current.focus();
+          }
+        }, [question]);
+
+        const handleSubmit = () => {
+          if (!answer.trim()) return;
+          const now = Date.now();
+          const elapsed = (now - questionStart) / 1000;
+          const correctAnswer = question.a * question.b;
+          const user = Number(answer.trim());
+
+          setTotal((t) => t + 1);
+          setSumTime((s) => s + elapsed);
+          setLastTime(elapsed.toFixed(2));
+
+          if (user === correctAnswer) {
+            setCorrect((c) => c + 1);
+            setLastCorrect(true);
+            setLastMessage(
+              `정답! ${correctAnswer} ✨ (${elapsed.toFixed(2)}초)`
+            );
+          } else {
+            setLastCorrect(false);
+            setLastMessage(
+              `아쉬워요! 정답은 ${correctAnswer} 입니다. (${elapsed.toFixed(
+                2
+              )}초)`
+            );
+          }
+
+          setQuestion(getRandomQuestion());
+        };
+
+        const handleKeyDown = (e) => {
+          if (e.key === "Enter") {
+            handleSubmit();
+          }
+        };
+
+        const avgTime = total > 0 ? (sumTime / total).toFixed(2) : "-";
+        const accuracy =
+          total > 0 ? Math.round((correct / total) * 100) + "%" : "-";
+
+        return (
+          <div className="app">
+            <div className="title">구구런 GUGU RUN</div>
+            <div className="subtitle">구구단 스피드 연습용 React 버전</div>
+
+            <div className="question-box">
+              <div className="question-label">지금 문제</div>
+              <div className="question">
+                {question.a} × {question.b} = ?
+              </div>
+              <div className="timer">
+                문제 보인 지{" "}
+                {((Date.now() - questionStart) / 1000).toFixed(1)}초 경과
+              </div>
+
+              <div className="answer-row">
+                <input
+                  ref={inputRef}
+                  className="answer-input"
+                  type="tel"
+                  inputMode="numeric"
+                  value={answer}
+                  onChange={(e) =>
+                    setAnswer(e.target.value.replace(/[^0-9]/g, ""))
+                  }
+                  onKeyDown={handleKeyDown}
+                  placeholder="정답 입력"
+                />
+                <button className="primary-button" onClick={handleSubmit}>
+                  확인
+                </button>
+              </div>
+            </div>
+
+            <div className="stats">
+              <span className="label">총 문제 수</span>
+              <span className="value">{total}</span>
+              <span className="label">정답 개수</span>
+              <span className="value">{correct}</span>
+              <span className="label">정답률</span>
+              <span className="value">{accuracy}</span>
+              <span className="label">평균 반응속도</span>
+              <span className="value">
+                {avgTime === "-" ? "-" : `${avgTime}초`}
+              </span>
+            </div>
+
+            {lastMessage && (
+              <div className={`result ${lastCorrect ? "ok" : "bad"}`}>
+                {lastMessage}
+              </div>
+            )}
+
+            <div className="small-tip">
+              엔터 키로도 답을 제출할 수 있어요. <br />
+              이 버전은 <b>기본 연습 모드</b>이고,
+              <br />
+              다음 단계에서 <b>타임어택 모드</b>를 추가할 수 있습니다.
+            </div>
+          </div>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
   </body>
 </html>
