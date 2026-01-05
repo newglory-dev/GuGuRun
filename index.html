@@ -48,7 +48,62 @@
         text-align: center;
         font-size: 0.85rem;
         color: #28708a;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
+      }
+
+      .profile-row {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-bottom: 6px;
+        padding: 8px 10px;
+        border-radius: 14px;
+        background: #ecfcff;
+        border: 1px solid #c0f0ff;
+        font-size: 0.78rem;
+        color: #345;
+      }
+
+      .profile-main {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .profile-title {
+        font-weight: 700;
+      }
+
+      .profile-level {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #008b8b;
+      }
+
+      .xp-bar {
+        position: relative;
+        width: 100%;
+        height: 6px;
+        border-radius: 999px;
+        background: #d6f7ff;
+        overflow: hidden;
+        margin-top: 2px;
+      }
+
+      .xp-bar-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #00c9a7, #00a8ff);
+      }
+
+      .xp-text {
+        font-size: 0.7rem;
+        text-align: right;
+        color: #567;
+        margin-top: 2px;
       }
 
       .question-box {
@@ -61,6 +116,19 @@
         align-items: center;
         gap: 6px;
         border: 1px dashed #7ee0ff;
+        transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+      }
+
+      .question-box.fever {
+        background: linear-gradient(135deg, #d9fff3, #e5fffb);
+        box-shadow: 0 0 0 2px #00c9a777, 0 6px 14px rgba(0, 0, 0, 0.12);
+        transform: translateY(-1px);
+      }
+
+      .fever-label {
+        font-size: 0.75rem;
+        color: #00a86b;
+        font-weight: 700;
       }
 
       .question-label {
@@ -77,6 +145,24 @@
       .timer {
         font-size: 0.85rem;
         color: #00a8ff;
+      }
+
+      .combo-row {
+        margin-top: 2px;
+        font-size: 0.8rem;
+        color: #345;
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+      }
+
+      .combo-current {
+        font-weight: 700;
+        color: #007f7f;
+      }
+
+      .combo-best {
+        color: #567;
       }
 
       .stats {
@@ -207,6 +293,48 @@
         color: #fff;
       }
 
+      .daily-card {
+        margin-top: 4px;
+        padding: 8px 10px;
+        border-radius: 14px;
+        background: #ecfcff;
+        border: 1px solid #ccefff;
+        font-size: 0.78rem;
+        color: #345;
+      }
+
+      .daily-card-title {
+        font-weight: 700;
+        margin-bottom: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .mission-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2px;
+      }
+
+      .mission-name {
+        max-width: 70%;
+      }
+
+      .mission-status {
+        font-weight: 700;
+        font-size: 0.75rem;
+      }
+
+      .mission-status.done {
+        color: #008b5c;
+      }
+
+      .mission-status.todo {
+        color: #888;
+      }
+
       .share-row {
         margin-top: 6px;
         text-align: center;
@@ -229,7 +357,7 @@
 
       .records-box {
         margin-top: 6px;
-        padding: 10px 8px;
+        padding: 8px 8px;
         border-radius: 14px;
         background: #f0fcff;
         font-size: 0.8rem;
@@ -237,13 +365,64 @@
         border: 1px solid #ccefff;
       }
 
-      .records-box ul {
-        margin: 4px 0 0;
-        padding-left: 16px;
+      .records-box h3 {
+        margin: 0 0 4px;
+        font-size: 0.85rem;
+        color: #256d85;
       }
 
-      .records-box li {
-        margin-bottom: 2px;
+      .records-table-wrapper {
+        margin-top: 4px;
+        max-height: 260px;
+        overflow-y: auto;
+      }
+
+      table.records-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.78rem;
+      }
+
+      table.records-table thead {
+        background: #d9f5ff;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+
+      table.records-table th,
+      table.records-table td {
+        padding: 3px 4px;
+        text-align: center;
+        border-bottom: 1px solid #e3f2ff;
+        white-space: nowrap;
+      }
+
+      table.records-table tbody tr:nth-child(even) {
+        background: #f6fcff;
+      }
+
+      .badge-row {
+        margin-top: 4px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+
+      .badge {
+        padding: 3px 6px;
+        border-radius: 999px;
+        border: 1px solid #a0e7ff;
+        background: #e6fbff;
+        font-size: 0.72rem;
+        color: #256d85;
+      }
+
+      .badge.earned {
+        border-color: #00c9a7;
+        background: #d9fff5;
+        color: #007f66;
+        font-weight: 600;
       }
 
       @media (max-width: 400px) {
@@ -316,7 +495,7 @@
       }
 
       // ===== 로컬스토리지 유틸 =====
-      const STORAGE_KEY = "gugurun_timeattack_records";
+      const STORAGE_KEY = "gugurun_timeattack_records_v1";
 
       function loadRecords() {
         try {
@@ -363,7 +542,44 @@
         return sorted.slice(0, limit);
       }
 
-      // ========= 연습 모드 =========
+      // ===== 프로필/레벨 계산 (기록 기반) =====
+      function calcProfileFromRecords(records) {
+        let xp = 0;
+        if (records && records.length > 0) {
+          for (const r of records) {
+            const correct = r.correct || 0;
+            const total = r.total || 0;
+            const grade = r.grade || "-";
+            xp += correct * 10 + total * 2;
+            if (grade === "S") xp += 100;
+            else if (grade === "A") xp += 50;
+          }
+        }
+        // 레벨: 1레벨 0~299, 2레벨 300~599, ...
+        const level = Math.floor(xp / 300) + 1;
+        const levelBaseXp = (level - 1) * 300;
+        const xpForNextLevel = 300;
+        const xpInLevel = xp - levelBaseXp;
+        const title = getTitleForLevel(level);
+        return {
+          xp,
+          level,
+          title,
+          xpInLevel,
+          xpForNextLevel,
+        };
+      }
+
+      function getTitleForLevel(level) {
+        if (level <= 1) return "구구단 새싹 유라";
+        if (level <= 3) return "구구단 성장 유라";
+        if (level <= 5) return "구구단 반장 유라";
+        if (level <= 7) return "구구단 천재(?) 유라";
+        if (level <= 9) return "구구런 불꽃 유라";
+        return "구구런 마스터 유라";
+      }
+
+      // ===== 연습 모드 =====
       function PracticeMode() {
         const [question, setQuestion] = useState(() =>
           getQuestionWithChoices(null)
@@ -374,6 +590,8 @@
         const [total, setTotal] = useState(0);
         const [correct, setCorrect] = useState(0);
         const [sumTime, setSumTime] = useState(0);
+        const [combo, setCombo] = useState(0);
+        const [bestCombo, setBestCombo] = useState(0);
 
         useEffect(() => {
           setQuestionStart(Date.now());
@@ -393,6 +611,11 @@
             setLastMessage(
               `정답! ${correctAnswer} ✨ (${elapsed.toFixed(2)}초)`
             );
+            setCombo((prev) => {
+              const next = prev + 1;
+              setBestCombo((b) => Math.max(b, next));
+              return next;
+            });
           } else {
             setLastCorrect(false);
             setLastMessage(
@@ -400,6 +623,7 @@
                 2
               )}초)`
             );
+            setCombo(0);
           }
 
           setQuestion((prev) => getQuestionWithChoices(prev));
@@ -409,9 +633,14 @@
         const accuracy =
           total > 0 ? Math.round((correct / total) * 100) + "%" : "-";
 
+        const isFever = combo >= 5;
+
         return (
           <>
-            <div className="question-box">
+            <div className={"question-box" + (isFever ? " fever" : "")}>
+              {isFever && (
+                <div className="fever-label">FEVER 모드! 연속 정답 유지 중 🔥</div>
+              )}
               <div className="question-label">
                 연습 모드 - 객관식 스피드 연습
               </div>
@@ -421,6 +650,11 @@
               <div className="timer">
                 문제 보인 지{" "}
                 {((Date.now() - questionStart) / 1000).toFixed(1)}초 경과
+              </div>
+
+              <div className="combo-row">
+                <span className="combo-current">콤보: {combo} 🔁</span>
+                <span className="combo-best">최고 콤보: {bestCombo}</span>
               </div>
 
               <div className="choices">
@@ -457,14 +691,14 @@
 
             <div className="small-tip">
               답을 <b>톡톡 누르기만</b> 하면 되는 연습 모드예요. <br />
-              눈으로 바로 계산해서 “머릿속 계산기”를 키워보자!
+              콤보를 길게 이어 볼수록, 머릿속 계산기가 점점 빨라질 거예요.
             </div>
           </>
         );
       }
 
       // ========= 타임어택 모드 =========
-      function TimeAttackMode({ timeLimitMs, onFinished }) {
+      function TimeAttackMode({ timeLimitMs, onRecordsUpdated }) {
         const [question, setQuestion] = useState(() =>
           getQuestionWithChoices(null)
         );
@@ -477,6 +711,8 @@
         const [lastMessage, setLastMessage] = useState("");
         const [finished, setFinished] = useState(false);
         const [justSetNewBest, setJustSetNewBest] = useState(false);
+        const [combo, setCombo] = useState(0);
+        const [bestCombo, setBestCombo] = useState(0);
         const timerRef = useRef(null);
 
         const timeLimitSec = Math.round(timeLimitMs / 1000);
@@ -491,6 +727,8 @@
           setSumTime(0);
           setLastMessage("");
           setJustSetNewBest(false);
+          setCombo(0);
+          setBestCombo(0);
         }, [timeLimitMs]);
 
         const startGame = () => {
@@ -502,6 +740,8 @@
           setSumTime(0);
           setLastMessage("");
           setJustSetNewBest(false);
+          setCombo(0);
+          setBestCombo(0);
           setQuestion((prev) => getQuestionWithChoices(prev));
           setQuestionStart(Date.now());
         };
@@ -556,10 +796,16 @@
             setLastMessage(
               `굿! 정답 ${correctAnswer} (${elapsed.toFixed(2)}초)`
             );
+            setCombo((prev) => {
+              const next = prev + 1;
+              setBestCombo((b) => Math.max(b, next));
+              return next;
+            });
           } else {
             setLastMessage(
               `앗! 정답은 ${correctAnswer} (${elapsed.toFixed(2)}초)`
             );
+            setCombo(0);
           }
 
           setQuestion((prev) => getQuestionWithChoices(prev));
@@ -579,7 +825,7 @@
           else grade = "C";
         }
 
-        // 타임어택 끝났을 때 상위 컴포넌트에 결과 전달 + 저장
+        // 타임어택 끝났을 때 기록 저장 + 상위 컴포넌트 알림
         useEffect(() => {
           if (!finished || total === 0) return;
 
@@ -603,8 +849,8 @@
           }
           setJustSetNewBest(isNewBest);
 
-          if (onFinished) {
-            onFinished(record);
+          if (onRecordsUpdated) {
+            onRecordsUpdated();
           }
         }, [finished]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -615,7 +861,8 @@
             `⏱ 타임어택: ${timeLimitSec}초\n` +
             `✅ 정답: ${correct}/${total} (${accuracy})\n` +
             `⚡ 평균 반응속도: ${avgTime}초\n` +
-            `🏅 등급: ${grade} 등급\n\n` +
+            `🏅 등급: ${grade} 등급\n` +
+            `🔁 최고 콤보: ${bestCombo}콤보\n\n` +
             `\"아빠, 나 완전 천재 아냐?\" 느낌의 기록입니다 😄\n` +
             `- from 유라의 구구런 GUGU RUN`;
 
@@ -646,9 +893,16 @@
           );
         };
 
+        const isFever = combo >= 5;
+
         return (
           <>
-            <div className="question-box">
+            <div className={"question-box" + (isFever ? " fever" : "")}>
+              {isFever && (
+                <div className="fever-label">
+                  FEVER 모드! 연속 정답 {combo}콤보 🔥
+                </div>
+              )}
               <div className="question-label">
                 타임어택 모드 - {timeLimitSec}초 안에 최대한 많이!
               </div>
@@ -662,6 +916,11 @@
 
               <div className="question" style={{ marginTop: 4 }}>
                 {question.a} × {question.b} = ?
+              </div>
+
+              <div className="combo-row">
+                <span className="combo-current">콤보: {combo} 🔁</span>
+                <span className="combo-best">최고 콤보: {bestCombo}</span>
               </div>
 
               <div className="choices">
@@ -710,6 +969,8 @@
                   {accuracy},{" "}
                   <br />
                   평균 {avgTime === "-" ? "-" : `${avgTime}초`} / 등급 {grade} 등급!
+                  <br />
+                  최고 콤보 {bestCombo}콤보
                   {justSetNewBest && (
                     <>
                       <br />
@@ -731,42 +992,265 @@
 
             <div className="small-tip">
               버튼만 톡톡 눌러도 되는 스피드 모드! <br />
-              “몇 초에 한 문제씩” 풀고 있는지 기록을 노려보자.
+              “몇 초에 한 문제씩” 푸는지, 그리고 콤보를 얼마나 길게
+              이어가는지 노려보자.
             </div>
           </>
         );
       }
 
+      // ========= 미션/업적 계산 =========
+      function calcDailyWeeklyMissions(records) {
+        const now = new Date();
+        const todayStr = now.toISOString().slice(0, 10);
+
+        const startOfToday = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate()
+        ).getTime();
+        const sevenDaysAgo = startOfToday - 6 * 24 * 60 * 60 * 1000;
+
+        let todayRuns = 0;
+        let todayTotalSolved = 0;
+        let todayHasHighGrade = false;
+
+        let weekRuns = 0;
+        let weekTotalSolved = 0;
+        const activeDaysSet = new Set();
+
+        for (const r of records) {
+          if (!r.timestamp) continue;
+          const ts = r.timestamp;
+          const d = new Date(ts);
+          const dateStr = d.toISOString().slice(0, 10);
+
+          if (dateStr === todayStr) {
+            todayRuns += 1;
+            todayTotalSolved += r.total || 0;
+            if (r.grade === "S" || r.grade === "A") {
+              todayHasHighGrade = true;
+            }
+          }
+
+          if (ts >= sevenDaysAgo && ts <= startOfToday + 24 * 60 * 60 * 1000) {
+            weekRuns += 1;
+            weekTotalSolved += r.total || 0;
+            activeDaysSet.add(dateStr);
+          }
+        }
+
+        const weekActiveDays = activeDaysSet.size;
+
+        // 미션 조건 (간단 버전)
+        const dailyMission1 = {
+          name: "오늘 문제 30개 풀기",
+          progress: todayTotalSolved,
+          target: 30,
+          done: todayTotalSolved >= 30,
+        };
+        const dailyMission2 = {
+          name: "타임어택 2번 도전하기",
+          progress: todayRuns,
+          target: 2,
+          done: todayRuns >= 2,
+        };
+        const dailyMission3 = {
+          name: "S 또는 A 등급 한 번 받기",
+          progress: todayHasHighGrade ? 1 : 0,
+          target: 1,
+          done: todayHasHighGrade,
+        };
+
+        const weeklyMission1 = {
+          name: "지난 7일 동안 5일 이상 도전하기",
+          progress: weekActiveDays,
+          target: 5,
+          done: weekActiveDays >= 5,
+        };
+        const weeklyMission2 = {
+          name: "지난 7일 동안 문제 200개 풀기",
+          progress: weekTotalSolved,
+          target: 200,
+          done: weekTotalSolved >= 200,
+        };
+
+        return {
+          daily: [dailyMission1, dailyMission2, dailyMission3],
+          weekly: [weeklyMission1, weeklyMission2],
+        };
+      }
+
+      function calcBadges(records) {
+        const badges = [
+          {
+            id: "first_attack",
+            label: "첫 타임어택 완료",
+            earned: false,
+          },
+          {
+            id: "grade_s",
+            label: "S 등급 달성",
+            earned: false,
+          },
+          {
+            id: "grade_a_or_b",
+            label: "A/B 등급 여러 번",
+            earned: false,
+          },
+          {
+            id: "thirty_15correct",
+            label: "30초 모드에서 15개 이상 정답",
+            earned: false,
+          },
+          {
+            id: "sixty_25correct",
+            label: "60초 모드에서 25개 이상 정답",
+            earned: false,
+          },
+          {
+            id: "combo_master",
+            label: "정답률 100% 기록 얻기",
+            earned: false,
+          },
+        ];
+
+        if (!records || records.length === 0) return badges;
+
+        let hasFirst = records.length > 0;
+        let hasS = false;
+        let highGradeCount = 0;
+        let has30_15 = false;
+        let has60_25 = false;
+        let hasPerfect = false;
+
+        for (const r of records) {
+          if (r.grade === "S") hasS = true;
+          if (r.grade === "S" || r.grade === "A" || r.grade === "B") {
+            highGradeCount += 1;
+          }
+          if (r.timeLimitSec === 30 && (r.correct || 0) >= 15) {
+            has30_15 = true;
+          }
+          if (r.timeLimitSec === 60 && (r.correct || 0) >= 25) {
+            has60_25 = true;
+          }
+          const total = r.total || 0;
+          const correct = r.correct || 0;
+          if (total > 0 && correct === total) {
+            hasPerfect = true;
+          }
+        }
+
+        return badges.map((b) => {
+          if (b.id === "first_attack") return { ...b, earned: hasFirst };
+          if (b.id === "grade_s") return { ...b, earned: hasS };
+          if (b.id === "grade_a_or_b")
+            return { ...b, earned: highGradeCount >= 3 };
+          if (b.id === "thirty_15correct") return { ...b, earned: has30_15 };
+          if (b.id === "sixty_25correct") return { ...b, earned: has60_25 };
+          if (b.id === "combo_master") return { ...b, earned: hasPerfect };
+          return b;
+        });
+      }
+
+      // ========= 미션 표시 컴포넌트 =========
+      function MissionsPanel({ recordsVersion }) {
+        const [missions, setMissions] = useState(null);
+
+        useEffect(() => {
+          const recs = loadRecords();
+          setMissions(calcDailyWeeklyMissions(recs));
+        }, [recordsVersion]);
+
+        if (!missions) return null;
+
+        return (
+          <div className="daily-card">
+            <div className="daily-card-title">
+              <span>오늘의 미션</span>
+            </div>
+            {missions.daily.map((m, idx) => (
+              <div className="mission-row" key={idx}>
+                <span className="mission-name">
+                  · {m.name}
+                  <br />
+                  <span style={{ fontSize: "0.7rem", color: "#678" }}>
+                    ({m.progress}/{m.target})
+                  </span>
+                </span>
+                <span
+                  className={
+                    "mission-status " + (m.done ? "done" : "todo")
+                  }
+                >
+                  {m.done ? "완료 🎉" : "진행중"}
+                </span>
+              </div>
+            ))}
+
+            <div
+              className="daily-card-title"
+              style={{ marginTop: 4, marginBottom: 2 }}
+            >
+              <span>주간 미션 (최근 7일)</span>
+            </div>
+            {missions.weekly.map((m, idx) => (
+              <div className="mission-row" key={idx}>
+                <span className="mission-name">
+                  · {m.name}
+                  <br />
+                  <span style={{ fontSize: "0.7rem", color: "#678" }}>
+                    ({m.progress}/{m.target})
+                  </span>
+                </span>
+                <span
+                  className={
+                    "mission-status " + (m.done ? "done" : "todo")
+                  }
+                >
+                  {m.done ? "완료 🎉" : "진행중"}
+                </span>
+              </div>
+            ))}
+          </div>
+        );
+      }
+
       // ========= 기록 보기 탭 =========
-      function RecordsView({ lastRecord }) {
+      function RecordsView({ recordsVersion }) {
         const [bestRecord, setBestRecord] = useState(null);
         const [topRecords, setTopRecords] = useState([]);
+        const [badges, setBadges] = useState([]);
 
         const reload = () => {
           const records = loadRecords();
           setBestRecord(pickBestRecord(records));
           setTopRecords(getTopRecords(records, 10));
+          setBadges(calcBadges(records));
         };
 
         useEffect(() => {
           reload();
         }, []);
 
-        // 타임어택 막 끝나고 돌아왔을 때 새 기록 반영
         useEffect(() => {
-          if (lastRecord) reload();
-        }, [lastRecord]);
+          reload();
+        }, [recordsVersion]);
 
         return (
           <div>
             {bestRecord ? (
               <div className="records-box">
-                <b>이 기기의 최고 기록</b>
-                <br />
-                {bestRecord.timeLimitSec || 60}초 /{" "}
-                {bestRecord.correct}/{bestRecord.total} 정답, 정답률{" "}
-                {bestRecord.accuracy}, 평균 {bestRecord.avgTime}초, 등급{" "}
-                {bestRecord.grade}
+                <h3>이 기기의 최고 기록</h3>
+                <div>
+                  ⏱ {bestRecord.timeLimitSec || 60}초 ·{" "}
+                  <b>
+                    {bestRecord.correct}/{bestRecord.total}
+                  </b>{" "}
+                  정답, 정답률 {bestRecord.accuracy}, 평균{" "}
+                  {bestRecord.avgTime}초, 등급 {bestRecord.grade}
+                </div>
               </div>
             ) : (
               <div className="records-box">
@@ -777,33 +1261,71 @@
 
             {topRecords && topRecords.length > 0 && (
               <div className="records-box">
-                <b>역대 최고 기록 TOP 10 (이 기기 기준)</b>
-                <ul>
-                  {topRecords.map((r, idx) => {
-                    const d = r.timestamp ? new Date(r.timestamp) : null;
-                    const dateStr = d
-                      ? d.toLocaleDateString("ko-KR", {
-                          month: "short",
-                          day: "numeric",
-                        })
-                      : "";
-                    const sec = r.timeLimitSec || 60;
-                    return (
-                      <li key={idx}>
-                        #{idx + 1} | {sec}초 | {r.correct}/{r.total} 정답,
-                        정답률 {r.accuracy}, 평균 {r.avgTime}초, 등급{" "}
-                        {r.grade}
-                        {dateStr && ` · ${dateStr}`}
-                      </li>
-                    );
-                  })}
-                </ul>
+                <h3>역대 최고 기록 TOP 10</h3>
+                <div className="records-table-wrapper">
+                  <table className="records-table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>날짜</th>
+                        <th>시간</th>
+                        <th>정답/문제</th>
+                        <th>정답률</th>
+                        <th>평균속도</th>
+                        <th>등급</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {topRecords.map((r, idx) => {
+                        const d = r.timestamp
+                          ? new Date(r.timestamp)
+                          : null;
+                        const dateStr = d
+                          ? d.toLocaleDateString("ko-KR", {
+                              month: "short",
+                              day: "numeric",
+                            })
+                          : "";
+                        const sec = r.timeLimitSec || 60;
+                        return (
+                          <tr key={idx}>
+                            <td>{idx + 1}</td>
+                            <td>{dateStr}</td>
+                            <td>{sec}초</td>
+                            <td>
+                              {r.correct}/{r.total}
+                            </td>
+                            <td>{r.accuracy}</td>
+                            <td>{r.avgTime}초</td>
+                            <td>{r.grade}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
 
-            <div className="small-tip">
-              기록은 이 폰에만 저장돼요. <br />
-              유라가 “나 예전에 얼마나 잘했지?” 할 때, 여기서 구경하면 딱!
+            <div className="records-box">
+              <h3>유라의 업적 배지</h3>
+              <div className="badge-row">
+                {badges.map((b) => (
+                  <span
+                    key={b.id}
+                    className={"badge " + (b.earned ? "earned" : "")}
+                  >
+                    {b.earned ? "⭐ " : "⬜ "}
+                    {b.label}
+                  </span>
+                ))}
+              </div>
+              <div className="small-tip" style={{ marginTop: 4 }}>
+                회색 배지는 아직 잠겨 있는 도전 과제예요.
+                <br />
+                노란 별이 붙은 배지가 많아질수록, “구구런 마스터 유라”에
+                가까워집니다.
+              </div>
             </div>
           </div>
         );
@@ -813,9 +1335,35 @@
       function App() {
         const [mode, setMode] = useState("practice"); // 'practice' | 'timeAttack' | 'records'
         const [timeLimitMs, setTimeLimitMs] = useState(30000); // 기본 30초
-        const [lastRecord, setLastRecord] = useState(null);
+        const [recordsVersion, setRecordsVersion] = useState(0);
+        const [profile, setProfile] = useState(() =>
+          calcProfileFromRecords(loadRecords())
+        );
 
         const timeLimitSec = Math.round(timeLimitMs / 1000);
+
+        const refreshProfile = () => {
+          const recs = loadRecords();
+          setProfile(calcProfileFromRecords(recs));
+        };
+
+        const handleRecordsUpdated = () => {
+          setRecordsVersion((v) => v + 1);
+          refreshProfile();
+        };
+
+        const xpPercent =
+          profile.xpForNextLevel > 0
+            ? Math.max(
+                0,
+                Math.min(
+                  100,
+                  Math.round(
+                    (profile.xpInLevel / profile.xpForNextLevel) * 100
+                  )
+                )
+              )
+            : 0;
 
         return (
           <div className="app">
@@ -824,7 +1372,26 @@
               민트 하늘색 구구단 연습장 · 속도 + 정확도 둘 다 잡기
             </div>
 
-            {/* 타임어택 시간 선택 (기록 탭에서는 비활성 의미가 크지 않지만 그대로 표시) */}
+            <div className="profile-row">
+              <div className="profile-main">
+                <span className="profile-title">{profile.title}</span>
+                <span className="profile-level">
+                  Lv.{profile.level} · 총 경험치 {profile.xp}
+                </span>
+              </div>
+              <div className="xp-bar">
+                <div
+                  className="xp-bar-fill"
+                  style={{ width: `${xpPercent}%` }}
+                />
+              </div>
+              <div className="xp-text">
+                다음 레벨까지{" "}
+                {profile.xpForNextLevel - profile.xpInLevel}점 남음
+              </div>
+            </div>
+
+            {/* 타임어택 시간 선택 */}
             <div
               style={{
                 display: "flex",
@@ -877,14 +1444,19 @@
               </button>
             </div>
 
+            {/* 오늘/주간 미션 (어떤 탭이든 공통 표시) */}
+            <MissionsPanel recordsVersion={recordsVersion} />
+
             {mode === "practice" && <PracticeMode />}
             {mode === "timeAttack" && (
               <TimeAttackMode
                 timeLimitMs={timeLimitMs}
-                onFinished={(r) => setLastRecord(r)}
+                onRecordsUpdated={handleRecordsUpdated}
               />
             )}
-            {mode === "records" && <RecordsView lastRecord={lastRecord} />}
+            {mode === "records" && (
+              <RecordsView recordsVersion={recordsVersion} />
+            )}
           </div>
         );
       }
