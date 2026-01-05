@@ -400,6 +400,35 @@
         color: #007f66;
       }
 
+      /* 타이머 프로그레스 바 */
+      .time-bar {
+        position: relative;
+        width: 100%;
+        height: 10px;
+        border-radius: 999px;
+        background: #d6f7ff;
+        overflow: hidden;
+        margin-top: 4px;
+      }
+
+      .time-bar-inner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #00c9a7, #00a8ff);
+        transition: width 0.1s linear;
+      }
+
+      .time-bar-text {
+        position: absolute;
+        top: -16px;
+        right: 0;
+        font-size: 0.8rem;
+        color: #00a8ff;
+      }
+
       @media (max-width: 400px) {
         .app {
           padding: 14px 12px;
@@ -530,7 +559,6 @@
             else if (grade === "A") xp += 50;
           }
         }
-        // 레벨: 1레벨 0~299, 2레벨 300~599, ...
         const level = Math.floor(xp / 300) + 1;
         const levelBaseXp = (level - 1) * 300;
         const xpForNextLevel = 300;
@@ -563,40 +591,127 @@
         return -1;
       }
 
-      // ===== 오늘 미션/용돈 계산 (60초 타임어택 기준) =====
+      // ===== 오늘/주간 미션 + 용돈 계산 (모두 타임어택 기준) =====
       function calcTodayMissionAndAllowance(records) {
         const now = new Date();
         const todayStr = now.toISOString().slice(0, 10);
 
-        let count60 = 0;
-        let bestGrade = "-";
-
-        for (const r of records) {
-          if (!r.timestamp) continue;
+        // 오늘 날짜 기준 필터
+        const todayRecords = (records || []).filter((r) => {
+          if (!r.timestamp) return false;
           const d = new Date(r.timestamp);
           const dateStr = d.toISOString().slice(0, 10);
-          if (dateStr !== todayStr) continue;
-          if (r.timeLimitSec !== 60) continue;
+          return dateStr === todayStr;
+        });
 
-          count60 += 1;
+        // 이번 주(月~日) 범위 계산
+        const weekStart = new Date(now);
+        weekStart.setHours(0, 0, 0, 0);
+        const day = weekStart.getDay(); // 0(일) ~ 6(토)
+        const diffFromMonday = (day + 6) % 7; // 월(1)을 기준으로 0
+        weekStart.setDate(weekStart.getDate() - diffFromMonday);
+
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekEnd.getDate() + 6);
+        weekEnd.setHours(23, 59, 59, 999);
+
+        const weekRecords = (records || []).filter((r) => {
+          if (!r.timestamp) return false;
+          const d = new Date(r.timestamp);
+          return d >= weekStart && d <= weekEnd;
+        });
+
+        const pad2 = (n) => n.toString().padStart(2, "0");
+        const weekRangeStr =
+          `${weekStart.getFullYear()}.${pad2(weekStart.getMonth() + 1)}.${pad2(
+            weekStart.getDate()
+          )}` +
+          ` ~ ` +
+          `${pad2(weekEnd.getMonth() + 1)}.${pad2(weekEnd.getDate())}`;
+
+        // === 오늘 통계 ===
+        let todayCountAll = todayRecords.length;
+        let todayCount60 = 0;
+        let todayCorrectSum = 0;
+        let bestGrade = "-";
+
+        for (const r of todayRecords) {
+          if (r.timeLimitSec === 60) todayCount60 += 1;
+          todayCorrectSum += r.correct || 0;
           const g = r.grade || "-";
           if (gradePriority(g) > gradePriority(bestGrade)) {
             bestGrade = g;
           }
         }
 
+        // === 이번 주(월~일) 통계 ===
+        let weekCountAll = weekRecords.length;
+        let weekCorrectSum = 0;
+        for (const r of weekRecords) {
+          weekCorrectSum += r.correct || 0;
+        }
+
+        // === 일일 미션 ===
+        const dailyMissions = [
+          {
+            id: "daily_60s_2times",
+            title: "60초 타임어택 2회 도전",
+            desc: "오늘 60초 타임어택 모드로 2번 도전해 보아요.",
+            done: todayCount60 >= 2,
+            progress: `${todayCount60} / 2회`,
+          },
+          {
+            id: "daily_correct_30",
+            title: "오늘 정답 30개 맞히기",
+            desc: "30초/60초 상관없이 타임어택에서 맞힌 정답 수의 합입니다.",
+            done: todayCorrectSum >= 30,
+            progress: `${todayCorrectSum} / 30개`,
+          },
+          {
+            id: "daily_grade_A_or_S",
+            title: "오늘 A 또는 S 등급 한 번 달성",
+            desc: "오늘 타임어택 중 한 번이라도 A 또는 S 등급 받기.",
+            done: gradePriority(bestGrade) >= gradePriority("A"),
+            progress:
+              bestGrade === "-"
+                ? "아직 등급 없음"
+                : `현재 최고 등급: ${bestGrade}`,
+          },
+        ];
+
+        // === 주간 미션 (이번 주 월~일 기준) ===
+        const weeklyMissions = [
+          {
+            id: "weekly_20_times",
+            title: "이번 주 타임어택 20회 도전",
+            desc: "월요일부터 일요일까지, 일주일 동안 타임어택 모드에 꾸준히 도전해 보아요.",
+            done: weekCountAll >= 20,
+            progress: `${weekCountAll} / 20회`,
+          },
+          {
+            id: "weekly_200_correct",
+            title: "이번 주 정답 200개 이상",
+            desc: "이번 주에 타임어택에서 맞힌 정답 수의 합.",
+            done: weekCorrectSum >= 200,
+            progress: `${weekCorrectSum} / 200개`,
+          },
+        ];
+
+        // === 용돈 계산 (하루 1번, 최고 등급 기준) ===
         let allowance = 0;
         if (bestGrade === "S") allowance = 1000;
         else if (bestGrade === "A") allowance = 500;
 
-        const missionDone = count60 >= 2;
-
         return {
           todayStr,
-          count60,
+          todayCountAll,
+          todayCount60,
+          todayCorrectSum,
           bestGrade,
           allowance,
-          missionDone,
+          dailyMissions,
+          weeklyMissions,
+          weekRangeStr,
         };
       }
 
@@ -812,7 +927,6 @@
 
         const timeLimitSec = Math.round(timeLimitMs / 1000);
 
-        // 타임 제한 변경 시 상태 초기화
         useEffect(() => {
           setRunning(false);
           setFinished(false);
@@ -911,6 +1025,11 @@
         const accuracy =
           total > 0 ? Math.round((correct / total) * 100) + "%" : "-";
 
+        const progressPercent = Math.max(
+          0,
+          Math.min(100, (timeLeftMs / timeLimitMs) * 100)
+        );
+
         let grade = "-";
         if (avgTime !== "-" && total > 0) {
           const t = parseFloat(avgTime);
@@ -920,7 +1039,6 @@
           else grade = "C";
         }
 
-        // 타임어택 끝났을 때 기록 저장 + 상위 컴포넌트 알림
         useEffect(() => {
           if (!finished || total === 0) return;
 
@@ -1001,11 +1119,22 @@
                 타임어택 모드 - {timeLimitSec}초 안에 최대한 많이!
               </div>
 
-              <div className="timer">
-                남은 시간:{" "}
-                <b style={{ color: timeLeftMs < 10000 ? "#c62828" : "#00a8ff" }}>
-                  {secondsLeft}초
-                </b>
+              <div className="timer" style={{ width: "100%" }}>
+                <div className="time-bar">
+                  <div
+                    className="time-bar-inner"
+                    style={{
+                      width: `${progressPercent}%`,
+                      background:
+                        timeLeftMs < 10000
+                          ? "linear-gradient(90deg, #ff6b6b, #ff9f43)"
+                          : "linear-gradient(90deg, #00c9a7, #00a8ff)",
+                    }}
+                  />
+                  <span className="time-bar-text">
+                    남은 시간: {secondsLeft}초
+                  </span>
+                </div>
               </div>
 
               <div className="question" style={{ marginTop: 4 }}>
@@ -1060,7 +1189,7 @@
                   타임어택 종료! 🎉
                   <br />
                   <b>{total}</b>문제 중 <b>{correct}</b>개 정답, 정답률{" "}
-                  {accuracy},{" "}
+                  {accuracy},
                   <br />
                   평균 {avgTime === "-" ? "-" : `${avgTime}초`} / 등급 {grade} 등급!
                   <br />
@@ -1209,29 +1338,59 @@
 
       // ========= 미션/용돈 탭 =========
       function MissionsView({ recordsVersion }) {
-        const [todayInfo, setTodayInfo] = useState(() =>
+        const [info, setInfo] = useState(() =>
           calcTodayMissionAndAllowance(loadRecords())
         );
 
         useEffect(() => {
           const recs = loadRecords();
-          setTodayInfo(calcTodayMissionAndAllowance(recs));
+          setInfo(calcTodayMissionAndAllowance(recs));
         }, [recordsVersion]);
 
-        const { todayStr, count60, bestGrade, allowance, missionDone } =
-          todayInfo;
+        const {
+          todayStr,
+          todayCountAll,
+          todayCount60,
+          todayCorrectSum,
+          bestGrade,
+          allowance,
+          dailyMissions,
+          weeklyMissions,
+          weekRangeStr,
+        } = info;
 
         const shareToday = async () => {
+          const dailyLines = dailyMissions
+            .map(
+              (m) =>
+                `- ${m.title}: ${m.done ? "완료" : "진행중"} (${m.progress})`
+            )
+            .join("\n");
+          const weeklyLines = weeklyMissions
+            .map(
+              (m) =>
+                `- ${m.title}: ${m.done ? "완료" : "진행중"} (${m.progress})`
+            )
+            .join("\n");
+
           const summary =
             `【유라의 구구런 오늘 미션 · 용돈 결과】\n` +
             `날짜: ${todayStr}\n\n` +
-            `오늘 60초 타임어택 도전: ${count60}회\n` +
-            `오늘 최고 등급: ${bestGrade === "-" ? "없음" : bestGrade}\n` +
-            `오늘 미션(60초 2회) 달성: ${
-              missionDone ? "예 ✅" : "아직 ❗"
+            `▶ 오늘 타임어택 요약\n` +
+            `- 전체 타임어택 횟수: ${todayCountAll}회\n` +
+            `- 60초 타임어택 횟수: ${todayCount60}회\n` +
+            `- 오늘 맞힌 정답 수 합계: ${todayCorrectSum}개\n\n` +
+            `▶ 일일 미션 (타임어택 기록 기준)\n` +
+            `${dailyLines || "- 아직 기록 없음"}\n\n` +
+            `▶ 주간 미션 (이번 주: ${weekRangeStr})\n` +
+            `${weeklyLines || "- 아직 기록 없음"}\n\n` +
+            `▶ 오늘 용돈\n` +
+            `- 오늘 최고 등급: ${
+              bestGrade === "-" ? "없음" : bestGrade
             }\n` +
-            `오늘 용돈: ${allowance.toLocaleString()}원\n\n` +
-            `※ 유라의 구구런 GUGU RUN 앱에서 자동 계산된 결과입니다.`;
+            `- 용돈 규칙: S 등급 1,000원 / A 등급 500원\n` +
+            `- 오늘 계산된 용돈: ${allowance.toLocaleString()}원\n\n` +
+            `※ 모든 미션과 용돈은 '유라의 구구런 GUGU RUN' 앱의 타임어택 기록을 기준으로 자동 계산되었습니다.`;
 
           if (navigator.share) {
             try {
@@ -1262,26 +1421,52 @@
 
         return (
           <div>
+            {/* 오늘의 일일 미션 */}
             <div className="records-box">
-              <h3>오늘의 미션 (고정)</h3>
-              <div className="mission-info-row">
-                <span className="mission-label">· 미션 내용</span>
-                <span className="mission-value">
-                  60초 타임어택 2회 도전
-                </span>
-              </div>
-              <div className="mission-info-row">
-                <span className="mission-label">· 오늘 60초 도전 횟수</span>
-                <span className="mission-value">{count60}회</span>
-              </div>
-              <div className="mission-info-row">
-                <span className="mission-label">· 미션 달성 여부</span>
-                <span className="mission-value">
-                  {missionDone ? "완료 🎉" : "아직 진행중"}
-                </span>
-              </div>
+              <h3>오늘의 미션 (모두 타임어택으로 달성)</h3>
+              {dailyMissions.map((m) => (
+                <div key={m.id} style={{ marginBottom: 4 }}>
+                  <div className="mission-info-row">
+                    <span className="mission-label">· {m.title}</span>
+                    <span className="mission-value">
+                      {m.done ? "완료 🎉" : "진행중"}
+                    </span>
+                  </div>
+                  <div className="small-tip" style={{ textAlign: "left" }}>
+                    {m.desc}
+                    <br />
+                    <b>{m.progress}</b>
+                  </div>
+                </div>
+              ))}
+              {dailyMissions.length === 0 && (
+                <div className="small-tip">
+                  아직 타임어택 기록이 없어요. 오늘 첫 미션을 시작해 보세요!
+                </div>
+              )}
             </div>
 
+            {/* 주간 미션 */}
+            <div className="records-box">
+              <h3>주간 미션 (이번 주: {weekRangeStr})</h3>
+              {weeklyMissions.map((m) => (
+                <div key={m.id} style={{ marginBottom: 4 }}>
+                  <div className="mission-info-row">
+                    <span className="mission-label">· {m.title}</span>
+                    <span className="mission-value">
+                      {m.done ? "완료 ✅" : "진행중"}
+                    </span>
+                  </div>
+                  <div className="small-tip" style={{ textAlign: "left" }}>
+                    {m.desc}
+                    <br />
+                    <b>{m.progress}</b>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* 오늘 용돈 정보 */}
             <div className="records-box">
               <h3>오늘의 용돈 등급</h3>
               <div className="mission-info-row">
@@ -1305,9 +1490,9 @@
                 </span>
               </div>
               <div className="small-tip" style={{ marginTop: 4 }}>
-                매일 자정이 지나면 기록이 새로 계산돼요. <br />
-                오늘 60초 타임어택에서 S 또는 A 등급을 한 번이라도 받으면
-                그날의 용돈이 결정됩니다.
+                매일 자정이 지나면 새로운 하루로 다시 계산돼요. <br />
+                이번 주 주간 미션은 월요일부터 일요일까지의 타임어택 기록만
+                사용해서 계산합니다.
               </div>
               <div className="share-row">
                 <button className="share-button" onClick={shareToday}>
@@ -1379,7 +1564,7 @@
               </div>
             </div>
 
-            {/* 타임어택 시간 선택 (미션은 항상 60초지만, 연습용으로 30/60 선택 가능) */}
+            {/* 타임어택 시간 선택 (연습용) */}
             <div
               style={{
                 display: "flex",
