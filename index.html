@@ -429,6 +429,52 @@
         color: #00a8ff;
       }
 
+      /* 미션 카드 레이아웃 */
+      .mission-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 4px;
+      }
+
+      .mission-item {
+        padding: 6px 8px;
+        border-radius: 10px;
+        background: #e8f8ff;
+        border: 1px solid #c3ecff;
+      }
+
+      .mission-main {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8rem;
+      }
+
+      .mission-title {
+        color: #234;
+        font-weight: 600;
+      }
+
+      .mission-status {
+        font-size: 0.78rem;
+        font-weight: 600;
+      }
+
+      .mission-status.done {
+        color: #008b39;
+      }
+
+      .mission-status.pending {
+        color: #007bff;
+      }
+
+      .mission-progress {
+        margin-top: 2px;
+        font-size: 0.78rem;
+        color: #456;
+      }
+
       @media (max-width: 400px) {
         .app {
           padding: 14px 12px;
@@ -546,7 +592,7 @@
         return sorted.slice(0, limit);
       }
 
-      // ===== 프로필/레벨 계산 (기록 기반) =====
+      // ===== 프로필/레벨 계산 =====
       function calcProfileFromRecords(records) {
         let xp = 0;
         if (records && records.length > 0) {
@@ -591,12 +637,12 @@
         return -1;
       }
 
-      // ===== 오늘/주간 미션 + 용돈 계산 (모두 타임어택 기준) =====
+      // ===== 오늘/주간 미션 + 용돈 계산 =====
       function calcTodayMissionAndAllowance(records) {
         const now = new Date();
         const todayStr = now.toISOString().slice(0, 10);
 
-        // 오늘 날짜 기준 필터
+        // 오늘 필터
         const todayRecords = (records || []).filter((r) => {
           if (!r.timestamp) return false;
           const d = new Date(r.timestamp);
@@ -604,11 +650,11 @@
           return dateStr === todayStr;
         });
 
-        // 이번 주(月~日) 범위 계산
+        // 이번 주 (월~일)
         const weekStart = new Date(now);
         weekStart.setHours(0, 0, 0, 0);
-        const day = weekStart.getDay(); // 0(일) ~ 6(토)
-        const diffFromMonday = (day + 6) % 7; // 월(1)을 기준으로 0
+        const day = weekStart.getDay(); // 0~6
+        const diffFromMonday = (day + 6) % 7;
         weekStart.setDate(weekStart.getDate() - diffFromMonday);
 
         const weekEnd = new Date(weekStart);
@@ -629,7 +675,7 @@
           ` ~ ` +
           `${pad2(weekEnd.getMonth() + 1)}.${pad2(weekEnd.getDate())}`;
 
-        // === 오늘 통계 ===
+        // 오늘 통계
         let todayCountAll = todayRecords.length;
         let todayCount60 = 0;
         let todayCorrectSum = 0;
@@ -644,14 +690,14 @@
           }
         }
 
-        // === 이번 주(월~일) 통계 ===
+        // 주간 통계
         let weekCountAll = weekRecords.length;
         let weekCorrectSum = 0;
         for (const r of weekRecords) {
           weekCorrectSum += r.correct || 0;
         }
 
-        // === 일일 미션 ===
+        // 일일 미션
         const dailyMissions = [
           {
             id: "daily_60s_2times",
@@ -676,7 +722,7 @@
           },
         ];
 
-        // === 주간 미션 (이번 주 월~일 기준) ===
+        // 주간 미션
         const weeklyMissions = [
           {
             id: "weekly_20_times",
@@ -692,7 +738,7 @@
           },
         ];
 
-        // === 용돈 계산 (하루 1번, 최고 등급 기준) ===
+        // 용돈 계산 (하루 1번)
         let allowance = 0;
         if (bestGrade === "S") allowance = 1000;
         else if (bestGrade === "A") allowance = 500;
@@ -710,7 +756,7 @@
         };
       }
 
-      // ===== 업적 배지 계산 =====
+      // ===== 업적 배지 =====
       function calcBadges(records) {
         const badges = [
           {
@@ -784,7 +830,7 @@
         });
       }
 
-      // ===== 연습 모드 =====
+      // ========= 연습 모드 =========
       function PracticeMode() {
         const [question, setQuestion] = useState(() =>
           getQuestionWithChoices(null)
@@ -922,7 +968,6 @@
 
         const timeLimitSec = Math.round(timeLimitMs / 1000);
 
-        // 시간 변경 시 상태 리셋
         useEffect(() => {
           setRunning(false);
           setFinished(false);
@@ -951,7 +996,7 @@
           setQuestionStart(Date.now());
         };
 
-        // 타이머 틱
+        // 타이머
         useEffect(() => {
           if (!running) {
             if (timerRef.current) {
@@ -983,7 +1028,6 @@
           };
         }, [running]);
 
-        // 문제 바뀔 때마다 시작 시간 리셋
         useEffect(() => {
           setQuestionStart(Date.now());
         }, [question]);
@@ -1028,7 +1072,7 @@
           Math.min(100, (timeLeftMs / timeLimitMs) * 100)
         );
 
-        // ★ 완화된 등급 기준
+        // ★ 등급 기준 (최신)
         let grade = "-";
         if (avgTime !== "-" && total > 0) {
           const t = parseFloat(avgTime);
@@ -1038,29 +1082,28 @@
           else grade = "C";
         }
 
-        // 👉 타임어택 결과 공유 (짧은 버전)
+        // 공유 (짧은 버전)
         const shareResult = async () => {
-          const summaryLines = [];
-
-          summaryLines.push("유라의 구구런 타임어택 결과 보고!");
-          summaryLines.push(`- 모드: ${timeLimitSec}초`);
-          summaryLines.push(`- 정답: ${correct}/${total} (${accuracy})`);
-          summaryLines.push(`- 평균속도: ${avgTime}초`);
-          summaryLines.push(`- 등급: ${grade} 등급`);
-          summaryLines.push(`- 최고 콤보: ${bestCombo}콤보`);
-          summaryLines.push("");
+          const lines = [];
+          lines.push("유라의 구구런 타임어택 결과 보고!");
+          lines.push(`- 모드: ${timeLimitSec}초`);
+          lines.push(`- 정답: ${correct}/${total} (${accuracy})`);
+          lines.push(`- 평균속도: ${avgTime}초`);
+          lines.push(`- 등급: ${grade} 등급`);
+          lines.push(`- 최고 콤보: ${bestCombo}콤보`);
+          lines.push("");
           if (grade === "S" || grade === "A") {
             const money = grade === "S" ? 1000 : 500;
-            summaryLines.push(
-              `오늘은 ${grade} 등급이니까, 약속한 용돈 ${money}원 주세요 😆`
+            lines.push(
+              `오늘은 ${grade} 등급이니까, 약속한 용돈 ${money.toLocaleString()}원 주세요 😆`
             );
           } else {
-            summaryLines.push(
+            lines.push(
               `오늘은 S/A는 아니지만, 열심히 했어요! 칭찬도 주세요 😊`
             );
           }
 
-          const summary = summaryLines.join("\n");
+          const summary = lines.join("\n");
 
           if (navigator.share) {
             try {
@@ -1089,7 +1132,7 @@
           );
         };
 
-        // 종료 시 기록 저장 + 오늘 미션 완료면 공유 팝업
+        // 종료 시 기록 저장 + 오늘 일일 미션 완료 시 공유 팝업
         useEffect(() => {
           if (!finished || total === 0) return;
 
@@ -1117,7 +1160,7 @@
             onRecordsUpdated();
           }
 
-          // 🔔 오늘 일일 미션이 모두 완료되었으면 공유 팝업
+          // 오늘 미션 체크
           try {
             const allRecords = loadRecords();
             const info = calcTodayMissionAndAllowance(allRecords);
@@ -1137,7 +1180,7 @@
               }, 0);
             }
           } catch (e) {
-            // 미션 계산 에러는 무시
+            // 무시
           }
         }, [finished]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -1401,7 +1444,8 @@
           if (allowance > 0 && bestGrade !== "-") {
             allowanceLine = `오늘은 ${bestGrade} 등급이라서, 약속한 용돈 ${allowance.toLocaleString()}원 주세요 😆`;
           } else {
-            allowanceLine = `오늘은 아직 S/A 등급은 아니지만, 연습 열심히 했어요! 칭찬도 부탁해요 😊`;
+            allowanceLine =
+              "오늘은 아직 S/A 등급은 아니지만, 구구단 연습 열심히 했어요! 칭찬도 부탁해요 😊";
           }
 
           const summary =
@@ -1428,7 +1472,7 @@
           if (navigator.clipboard && navigator.clipboard.writeText) {
             try {
               await navigator.clipboard.writeText(summary);
-              alert(
+            alert(
                 "오늘 미션/용돈 결과를 클립보드에 복사했어요.\n카카오톡을 열고 채팅창에 붙여넣기 해서 공유해 주세요!"
               );
               return;
@@ -1441,28 +1485,31 @@
           );
         };
 
-
         return (
           <div>
             {/* 오늘의 일일 미션 */}
             <div className="records-box">
               <h3>오늘의 미션 (모두 타임어택으로 달성)</h3>
-              {dailyMissions.map((m) => (
-                <div key={m.id} style={{ marginBottom: 4 }}>
-                  <div className="mission-info-row">
-                    <span className="mission-label">· {m.title}</span>
-                    <span className="mission-value">
-                      {m.done ? "완료 🎉" : "진행중"}
-                    </span>
-                  </div>
-                  <div className="small-tip" style={{ textAlign: "left" }}>
-                    {m.desc}
-                    <br />
-                    <b>{m.progress}</b>
-                  </div>
+
+              {dailyMissions.length > 0 ? (
+                <div className="mission-list">
+                  {dailyMissions.map((m) => (
+                    <div className="mission-item" key={m.id}>
+                      <div className="mission-main">
+                        <span className="mission-title">{m.title}</span>
+                        <span
+                          className={
+                            "mission-status " + (m.done ? "done" : "pending")
+                          }
+                        >
+                          {m.done ? "완료 🎉" : "진행중"}
+                        </span>
+                      </div>
+                      <div className="mission-progress">{m.progress}</div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-              {dailyMissions.length === 0 && (
+              ) : (
                 <div className="small-tip">
                   아직 타임어택 기록이 없어요. 오늘 첫 미션을 시작해 보세요!
                 </div>
@@ -1472,21 +1519,30 @@
             {/* 주간 미션 */}
             <div className="records-box">
               <h3>주간 미션 (이번 주: {weekRangeStr})</h3>
-              {weeklyMissions.map((m) => (
-                <div key={m.id} style={{ marginBottom: 4 }}>
-                  <div className="mission-info-row">
-                    <span className="mission-label">· {m.title}</span>
-                    <span className="mission-value">
-                      {m.done ? "완료 ✅" : "진행중"}
-                    </span>
-                  </div>
-                  <div className="small-tip" style={{ textAlign: "left" }}>
-                    {m.desc}
-                    <br />
-                    <b>{m.progress}</b>
-                  </div>
+
+              {weeklyMissions.length > 0 ? (
+                <div className="mission-list">
+                  {weeklyMissions.map((m) => (
+                    <div className="mission-item" key={m.id}>
+                      <div className="mission-main">
+                        <span className="mission-title">{m.title}</span>
+                        <span
+                          className={
+                            "mission-status " + (m.done ? "done" : "pending")
+                          }
+                        >
+                          {m.done ? "완료 ✅" : "진행중"}
+                        </span>
+                      </div>
+                      <div className="mission-progress">{m.progress}</div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              ) : (
+                <div className="small-tip">
+                  이번 주에는 아직 타임어택 기록이 없어요.
+                </div>
+              )}
             </div>
 
             {/* 오늘 용돈 정보 */}
@@ -1587,7 +1643,7 @@
               </div>
             </div>
 
-            {/* 타임어택 시간 선택 (연습용) */}
+            {/* 타임어택 시간 선택 */}
             <div
               style={{
                 display: "flex",
@@ -1618,7 +1674,7 @@
               </div>
             </div>
 
-            {/* 모드 선택 탭 */}
+            {/* 탭 */}
             <div className="tab-row">
               <button
                 className={"tab-btn" + (mode === "practice" ? " active" : "")}
