@@ -656,21 +656,18 @@
           {
             id: "daily_60s_2times",
             title: "60초 타임어택 2회 도전",
-            desc: "오늘 60초 타임어택 모드로 2번 도전해 보아요.",
             done: todayCount60 >= 2,
             progress: `${todayCount60} / 2회`,
           },
           {
             id: "daily_correct_30",
-            title: "오늘 정답 30개 맞히기",
-            desc: "30초/60초 상관없이 타임어택에서 맞힌 정답 수의 합입니다.",
+            title: "정답 30개 맞히기",
             done: todayCorrectSum >= 30,
             progress: `${todayCorrectSum} / 30개`,
           },
           {
             id: "daily_grade_A_or_S",
             title: "오늘 A 또는 S 등급 한 번 달성",
-            desc: "오늘 타임어택 중 한 번이라도 A 또는 S 등급 받기.",
             done: gradePriority(bestGrade) >= gradePriority("A"),
             progress:
               bestGrade === "-"
@@ -684,14 +681,12 @@
           {
             id: "weekly_20_times",
             title: "이번 주 타임어택 20회 도전",
-            desc: "월요일부터 일요일까지, 일주일 동안 타임어택 모드에 꾸준히 도전해 보아요.",
             done: weekCountAll >= 20,
             progress: `${weekCountAll} / 20회`,
           },
           {
             id: "weekly_200_correct",
             title: "이번 주 정답 200개 이상",
-            desc: "이번 주에 타임어택에서 맞힌 정답 수의 합.",
             done: weekCorrectSum >= 200,
             progress: `${weekCorrectSum} / 200개`,
           },
@@ -927,6 +922,7 @@
 
         const timeLimitSec = Math.round(timeLimitMs / 1000);
 
+        // 시간 변경 시 상태 리셋
         useEffect(() => {
           setRunning(false);
           setFinished(false);
@@ -955,6 +951,7 @@
           setQuestionStart(Date.now());
         };
 
+        // 타이머 틱
         useEffect(() => {
           if (!running) {
             if (timerRef.current) {
@@ -986,6 +983,7 @@
           };
         }, [running]);
 
+        // 문제 바뀔 때마다 시작 시간 리셋
         useEffect(() => {
           setQuestionStart(Date.now());
         }, [question]);
@@ -1030,53 +1028,39 @@
           Math.min(100, (timeLeftMs / timeLimitMs) * 100)
         );
 
+        // ★ 완화된 등급 기준
         let grade = "-";
         if (avgTime !== "-" && total > 0) {
           const t = parseFloat(avgTime);
-          if (t < 1.5) grade = "S";
-          else if (t < 2.5) grade = "A";
-          else if (t < 3.5) grade = "B";
+          if (t < 2.0) grade = "S";
+          else if (t < 3.0) grade = "A";
+          else if (t < 4.0) grade = "B";
           else grade = "C";
         }
 
-        useEffect(() => {
-          if (!finished || total === 0) return;
-
-          const record = {
-            timestamp: Date.now(),
-            total,
-            correct,
-            accuracy,
-            avgTime,
-            grade,
-            timeLimitSec,
-          };
-
-          const records = saveRecord(record);
-          let isNewBest = false;
-          if (records) {
-            const best = pickBestRecord(records);
-            if (best && compareRecord(record, best) === 0) {
-              isNewBest = true;
-            }
-          }
-          setJustSetNewBest(isNewBest);
-
-          if (onRecordsUpdated) {
-            onRecordsUpdated();
-          }
-        }, [finished]); // eslint-disable-line react-hooks/exhaustive-deps
-
+        // 👉 타임어택 결과 공유 (짧은 버전)
         const shareResult = async () => {
-          const summary =
-            `【유라의 구구런 타임어택 결과】\n` +
-            `짱구도 놀랄 구구단 실력!\n\n` +
-            `⏱ 타임어택: ${timeLimitSec}초\n` +
-            `✅ 정답: ${correct}/${total} (${accuracy})\n` +
-            `⚡ 평균 반응속도: ${avgTime}초\n` +
-            `🏅 등급: ${grade} 등급\n` +
-            `🔁 최고 콤보: ${bestCombo}콤보\n\n` +
-            `- from 유라의 구구런 GUGU RUN (앱 자동 계산 결과)`;
+          const summaryLines = [];
+
+          summaryLines.push("유라의 구구런 타임어택 결과 보고!");
+          summaryLines.push(`- 모드: ${timeLimitSec}초`);
+          summaryLines.push(`- 정답: ${correct}/${total} (${accuracy})`);
+          summaryLines.push(`- 평균속도: ${avgTime}초`);
+          summaryLines.push(`- 등급: ${grade} 등급`);
+          summaryLines.push(`- 최고 콤보: ${bestCombo}콤보`);
+          summaryLines.push("");
+          if (grade === "S" || grade === "A") {
+            const money = grade === "S" ? 1000 : 500;
+            summaryLines.push(
+              `오늘은 ${grade} 등급이니까, 약속한 용돈 ${money}원 주세요 😆`
+            );
+          } else {
+            summaryLines.push(
+              `오늘은 S/A는 아니지만, 열심히 했어요! 칭찬도 주세요 😊`
+            );
+          }
+
+          const summary = summaryLines.join("\n");
 
           if (navigator.share) {
             try {
@@ -1104,6 +1088,58 @@
             summary
           );
         };
+
+        // 종료 시 기록 저장 + 오늘 미션 완료면 공유 팝업
+        useEffect(() => {
+          if (!finished || total === 0) return;
+
+          const record = {
+            timestamp: Date.now(),
+            total,
+            correct,
+            accuracy,
+            avgTime,
+            grade,
+            timeLimitSec,
+          };
+
+          const records = saveRecord(record);
+          let isNewBest = false;
+          if (records) {
+            const best = pickBestRecord(records);
+            if (best && compareRecord(record, best) === 0) {
+              isNewBest = true;
+            }
+          }
+          setJustSetNewBest(isNewBest);
+
+          if (onRecordsUpdated) {
+            onRecordsUpdated();
+          }
+
+          // 🔔 오늘 일일 미션이 모두 완료되었으면 공유 팝업
+          try {
+            const allRecords = loadRecords();
+            const info = calcTodayMissionAndAllowance(allRecords);
+            const allDailyDone =
+              info.dailyMissions &&
+              info.dailyMissions.length > 0 &&
+              info.dailyMissions.every((m) => m.done);
+
+            if (allDailyDone) {
+              setTimeout(() => {
+                const ok = window.confirm(
+                  "오늘 일일 미션을 모두 완료했어요!\n결과를 공유하고 용돈을 부탁해 볼까요?"
+                );
+                if (ok) {
+                  shareResult();
+                }
+              }, 0);
+            }
+          } catch (e) {
+            // 미션 계산 에러는 무시
+          }
+        }, [finished]); // eslint-disable-line react-hooks/exhaustive-deps
 
         const isFever = combo >= 5;
 
@@ -1214,9 +1250,8 @@
             )}
 
             <div className="small-tip">
-              버튼만 톡톡 눌러도 되는 스피드 모드! <br />
-              “몇 초에 한 문제씩” 푸는지, 그리고 콤보를 얼마나 길게
-              이어가는지 노려보자.
+              버튼만 톡톡 누르기만 해도 되는 스피드 모드! <br />
+              오늘 S/A 등급을 노려서 용돈도 챙겨 보자 ✨
             </div>
           </>
         );
@@ -1360,37 +1395,24 @@
         } = info;
 
         const shareToday = async () => {
-          const dailyLines = dailyMissions
-            .map(
-              (m) =>
-                `- ${m.title}: ${m.done ? "완료" : "진행중"} (${m.progress})`
-            )
-            .join("\n");
-          const weeklyLines = weeklyMissions
-            .map(
-              (m) =>
-                `- ${m.title}: ${m.done ? "완료" : "진행중"} (${m.progress})`
-            )
-            .join("\n");
+          const doneCount = dailyMissions.filter((m) => m.done).length;
+
+          let allowanceLine = "";
+          if (allowance > 0 && bestGrade !== "-") {
+            allowanceLine = `오늘은 ${bestGrade} 등급이라서, 약속한 용돈 ${allowance.toLocaleString()}원 주세요 😆`;
+          } else {
+            allowanceLine = `오늘은 아직 S/A 등급은 아니지만, 연습 열심히 했어요! 칭찬도 부탁해요 😊`;
+          }
 
           const summary =
-            `【유라의 구구런 오늘 미션 · 용돈 결과】\n` +
-            `날짜: ${todayStr}\n\n` +
-            `▶ 오늘 타임어택 요약\n` +
-            `- 전체 타임어택 횟수: ${todayCountAll}회\n` +
-            `- 60초 타임어택 횟수: ${todayCount60}회\n` +
-            `- 오늘 맞힌 정답 수 합계: ${todayCorrectSum}개\n\n` +
-            `▶ 일일 미션 (타임어택 기록 기준)\n` +
-            `${dailyLines || "- 아직 기록 없음"}\n\n` +
-            `▶ 주간 미션 (이번 주: ${weekRangeStr})\n` +
-            `${weeklyLines || "- 아직 기록 없음"}\n\n` +
-            `▶ 오늘 용돈\n` +
+            `유라의 구구런 오늘 미션 보고!\n` +
+            `- 오늘 날짜: ${todayStr}\n` +
+            `- 일일 미션 완료: ${doneCount} / ${dailyMissions.length}개\n` +
             `- 오늘 최고 등급: ${
               bestGrade === "-" ? "없음" : bestGrade
             }\n` +
-            `- 용돈 규칙: S 등급 1,000원 / A 등급 500원\n` +
-            `- 오늘 계산된 용돈: ${allowance.toLocaleString()}원\n\n` +
-            `※ 모든 미션과 용돈은 '유라의 구구런 GUGU RUN' 앱의 타임어택 기록을 기준으로 자동 계산되었습니다.`;
+            `- 오늘 용돈: ${allowance.toLocaleString()}원\n\n` +
+            allowanceLine;
 
           if (navigator.share) {
             try {
@@ -1418,6 +1440,7 @@
             summary
           );
         };
+
 
         return (
           <div>
