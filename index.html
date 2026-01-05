@@ -1,494 +1,546 @@
 <!DOCTYPE html>
 <html lang="ko">
-	< head>
-		< meta charset="UTF-8">
-			< title> 구구런 - 구구단 타임어택 연습 < title>
-					< !--반응형-->
-						< meta name="viewport" content="width=device-width, initial-scale=1.0">
-							< style>
-	     * {
-	    box - sizing: border - box;
-	}
-
-	body {
-	    margin: 0;
-	    font - family: system - ui,
-	    -apple - system,
-	    BlinkMacSystemFont,
-	    "Segoe UI",
-	    sans - serif;
-	    background: linear - gradient(135deg, #f8e9ff, #e3f2ff);
-	    color: #333;
-	    display: flex;
-	    align - items: center;
-	    justify - content: center;
-	    min - height: 100vh;
-	}
-
-	.app {
-	    width: 100 % ;
-	    max - width: 480px;
-	    margin: 16px;
-	    padding: 24px 20px;
-	    border - radius: 24px;
-	    background: #ffffffcc;
-	    box - shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-	    backdrop - filter: blur(6px);
-	}
-
-	.title {
-	    text - align: center;
-	    font - size: 1.7rem;
-	    font - weight: 800;
-	    margin - bottom: 4px;
-	    background: linear - gradient(90deg, #7f5dff, #ff6fb1);
-	    -webkit - background - clip: text;
-	    color: transparent;
-	}
-
-	.subtitle {
-	    text - align: center;
-	    font - size: 0.9rem;
-	    color: #666;
-	    margin - bottom: 16px;
-	}
-
-	.question - box {
-	    margin: 16px 0;
-	    padding: 18px 12px;
-	    border - radius: 18px;
-	    background: #f4f0ff;
-	    display: flex;
-	    flex - direction: column;
-	    align - items: center;
-	    gap: 8px;
-	}
-
-	.question - label {
-	    font - size: 0.9rem;
-	    color: #777;
-	}
-
-	.question {
-	    font - size: 2.4rem;
-	    font - weight: 700;
-	    letter - spacing: 0.08em;
-	}
-
-	.timer {
-	    font - size: 0.9rem;
-	    color: #8c68ff;
-	}
-
-	.answer - row {
-	    display: flex;
-	    gap: 8px;
-	    margin - top: 12px;
-	}
-
-	.answer - input {
-	    flex: 1;
-	    padding: 10px 12px;
-	    font - size: 1.2rem;
-	    border - radius: 12px;
-	    border: 2px solid #d6c7ff;
-	    outline: none;
-	    text - align: center;
-	}
-
-	.answer - input: focus {
-	    border - color: #8c68ff;
-	    box - shadow: 0 0 0 3px #e2d8ff;
-	}
-
-	.primary - button {
-	    padding: 10px 16px;
-	    border - radius: 12px;
-	    border: none;
-	    background: linear - gradient(135deg, #8c68ff, #ff6fb1);
-	    color: white;
-	    font - size: 1rem;
-	    font - weight: 600;
-	    cursor: pointer;
-	    white - space: nowrap;
-	}
-
-	.primary - button: active {
-	    transform: translateY(1px);
-	}
-
-	.stats {
-	    margin - top: 12px;
-	    padding: 12px 10px;
-	    border - radius: 16px;
-	    background: #f9fbff;
-	    font - size: 0.9rem;
-	    display: grid;
-	    grid - template - columns: 1fr 1fr;
-	    row - gap: 4px;
-	}
-
-	.stats span.label {
-	    color: #777;
-	}
-
-	.stats span.value {
-	    font - weight: 600;
-	}
-
-	.result {
-	    margin - top: 12px;
-	    padding: 10px 12px;
-	    border - radius: 12px;
-	    font - size: 0.95rem;
-	}
-
-	.result.ok {
-	    background: #e8f9f1;
-	    color: #1c7c4e;
-	}
-
-	.result.bad {
-	    background: #ffeff0;
-	    color: #c62828;
-	}
-
-	.small - tip {
-	    margin - top: 8px;
-	    font - size: 0.8rem;
-	    color: #888;
-	    text - align: center;
-	}
-
-	 @ media(max - width: 480px) {
-	    .question {
-	        font - size: 2rem;
-	    }
-	}
-	.choices {
-	    display: grid;
-	    grid - template - columns: repeat(3, 1fr);
-	    gap: 8px;
-	    margin - top: 12px;
-	    width: 100 % ;
-	}
-
-	.choice - btn {
-	    padding: 10px 0;
-	    border - radius: 12px;
-	    border: none;
-	    background: #ffffff;
-	    box - shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-	    font - size: 1.1rem;
-	    font - weight: 600;
-	    cursor: pointer;
-	}
-
-	.choice - btn: active {
-	    transform: translateY(1px);
-	}
-
-	.choice - btn.correct - hint {
-	    /* 나중에라도 정답 힌트 쓸 때 쓸 수 있는 클래스 (지금은 사용 안 함) */
-	    background: #e8f9f1;
-	}
-	 < style>
-									< head>
-										<body>
-											<div id="root"/>
-											<!-- React & ReactDOM & Babel (개발용) -->
-											<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"/>
-											<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"/>
-											<script src="https://unpkg.com/@babel/standalone/babel.min.js"/>
-											<!-- React 코드 -->
-											<script type="text/babel">
-  const { useState, useEffect, useRef } = React;
-
-  function getRandomQuestion() {
-    const a = Math.floor(Math.random() * 8) + 2; // 2~9
-    const b = Math.floor(Math.random() * 9) + 1; // 1~9
-    return { a, b };
-  }
-
-  // 정답 + 오답 4개 = 총 5개 보기 만들기
-  function getChoices(correct) {
-    const set = new Set();
-    set.add(correct);
-
-    while (set.size < 5) { 정답 주변 숫자를 랜덤으로 생성 (너무 엉뚱하지 않게) const delta=Math.floor(Math.random() * 9) - 4; -4 ~ +4 if (delta===0) continue; const candidate=correct + delta; if (candidate
-												<= 0) continue; set.add(candidate); } return Array.from(set).sort(()=> Math.random() - 0.5); // 섞기
-  }
-
-  function getQuestionWithChoices() {
-    const base = getRandomQuestion();
-    const correct = base.a * base.b;
-    return {
-      ...base,
-      choices: getChoices(correct),
-    };
-  }
-
-  // ========= 연습 모드 =========
-  function PracticeMode() {
-    const [question, setQuestion] = useState(getQuestionWithChoices);
-    const [questionStart, setQuestionStart] = useState(Date.now());
-    const [lastCorrect, setLastCorrect] = useState(null);
-    const [lastMessage, setLastMessage] = useState("");
-    const [total, setTotal] = useState(0);
-    const [correct, setCorrect] = useState(0);
-    const [sumTime, setSumTime] = useState(0);
-
-    useEffect(() => {
-      setQuestionStart(Date.now());
-    }, [question]);
-
-    const handleChoice = (choice) => {
-      const now = Date.now();
-      const elapsed = (now - questionStart) / 1000;
-      const correctAnswer = question.a * question.b;
-
-      setTotal((t) => t + 1);
-      setSumTime((s) => s + elapsed);
-
-      if (choice === correctAnswer) {
-        setCorrect((c) => c + 1);
-        setLastCorrect(true);
-        setLastMessage(
-          `정답! ${correctAnswer} ✨ (${elapsed.toFixed(2)}초)`
-        );
-      } else {
-        setLastCorrect(false);
-        setLastMessage(
-          `아쉬워요! 정답은 ${correctAnswer} 입니다. (${elapsed.toFixed(
-            2
-          )}초)`
-        );
+  <head>
+    <meta charset="UTF-8" />
+    <title>구구런 - 구구단 타임어택 연습</title>
+    <!-- 반응형 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * {
+        box-sizing: border-box;
       }
 
-      setQuestion(getQuestionWithChoices());
-    };
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: linear-gradient(135deg, #f8e9ff, #e3f2ff);
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
 
-    const avgTime = total > 0 ? (sumTime / total).toFixed(2) : "-";
-    const accuracy =
-      total > 0 ? Math.round((correct / total) * 100) + "%" : "-";
+      .app {
+        width: 100%;
+        max-width: 480px;
+        margin: 16px;
+        padding: 24px 20px;
+        border-radius: 24px;
+        background: #ffffffcc;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        backdrop-filter: blur(6px);
+      }
 
-    return (
-      <>
-														<div className="question-box">
-															<div className="question-label">연습 모드 - 객관식 스피드 연습</div>
-															<div className="question">
-            {question.a} × {question.b} = ?
-          </div>
-															<div className="timer">
-            문제 보인 지{" "}
-            {((Date.now() - questionStart) / 1000).toFixed(1)}초 경과
-          </div>
-															<div className="choices">
-            {question.choices.map((c) => (
-              <button key={c} className="choice-btn" onClick={()=> handleChoice(c)}
-              >
-                {c}
-              </button>
-            ))}
-          </div>
-														</div>
-														<div className="stats">
-															<span className="label">총 문제 수</span>
-															<span className="value">{total}</span>
-															<span className="label">정답 개수</span>
-															<span className="value">{correct}</span>
-															<span className="label">정답률</span>
-															<span className="value">{accuracy}</span>
-															<span className="label">평균 반응속도</span>
-															<span className="value">
-            {avgTime === "-" ? "-" : `${avgTime}초`}
-          </span>
-														</div>
+      .title {
+        text-align: center;
+        font-size: 1.7rem;
+        font-weight: 800;
+        margin-bottom: 4px;
+        background: linear-gradient(90deg, #7f5dff, #ff6fb1);
+        -webkit-background-clip: text;
+        color: transparent;
+      }
 
-        {lastMessage && (
-          <div className={`result ${lastCorrect ?"ok" :"bad" }`}> {lastMessage}
-													</div>
-        )}
+      .subtitle {
+        text-align: center;
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 16px;
+      }
 
-        <div className="small-tip">
-          답을 <b>직접 누르기만</b> 하면 되도록 바꾼 연습 모드입니다. <br/>
-          손가락만으로도 빠르게 스피드런 연습을 할 수 있어요.
-        </div>
-												</>
-    );
-  }
+      .question-box {
+        margin: 16px 0;
+        padding: 18px 12px;
+        border-radius: 18px;
+        background: #f4f0ff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
 
-  // ========= 타임어택 모드 =========
-  function TimeAttackMode() {
-    const [question, setQuestion] = useState(getQuestionWithChoices);
-    const [questionStart, setQuestionStart] = useState(Date.now());
-    const [running, setRunning] = useState(false);
-    const [timeLeftMs, setTimeLeftMs] = useState(60000); // 60초
-    const [total, setTotal] = useState(0);
-    const [correct, setCorrect] = useState(0);
-    const [sumTime, setSumTime] = useState(0);
-    const [lastMessage, setLastMessage] = useState("");
-    const [finished, setFinished] = useState(false);
-    const timerRef = useRef(null);
+      .question-label {
+        font-size: 0.9rem;
+        color: #777;
+      }
 
-    const startGame = () => {
-      setRunning(true);
-      setFinished(false);
-      setTimeLeftMs(60000);
-      setTotal(0);
-      setCorrect(0);
-      setSumTime(0);
-      setLastMessage("");
-      setQuestion(getQuestionWithChoices());
-      setQuestionStart(Date.now());
-    };
+      .question {
+        font-size: 2.4rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+      }
 
-    useEffect(() => {
-      if (!running) {
-        if (timerRef.current) {
-          clearInterval(timerRef.current);
-          timerRef.current = null;
+      .timer {
+        font-size: 0.9rem;
+        color: #8c68ff;
+      }
+
+      .stats {
+        margin-top: 12px;
+        padding: 12px 10px;
+        border-radius: 16px;
+        background: #f9fbff;
+        font-size: 0.9rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        row-gap: 4px;
+      }
+
+      .stats span.label {
+        color: #777;
+      }
+
+      .stats span.value {
+        font-weight: 600;
+      }
+
+      .result {
+        margin-top: 12px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        font-size: 0.95rem;
+      }
+
+      .result.ok {
+        background: #e8f9f1;
+        color: #1c7c4e;
+      }
+
+      .result.bad {
+        background: #ffeff0;
+        color: #c62828;
+      }
+
+      .small-tip {
+        margin-top: 8px;
+        font-size: 0.8rem;
+        color: #888;
+        text-align: center;
+      }
+
+      .primary-button {
+        padding: 10px 16px;
+        border-radius: 12px;
+        border: none;
+        background: linear-gradient(135deg, #8c68ff, #ff6fb1);
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .primary-button:active {
+        transform: translateY(1px);
+      }
+
+      /* 객관식 선택지 스타일 */
+      .choices {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-top: 12px;
+        width: 100%;
+      }
+
+      .choice-btn {
+        padding: 10px 0;
+        border-radius: 12px;
+        border: none;
+        background: #ffffff;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .choice-btn:active {
+        transform: translateY(1px);
+      }
+
+      .choice-btn.correct-hint {
+        /* 나중에 정답 힌트 쓰고 싶을 때 사용할 수 있는 클래스 */
+        background: #e8f9f1;
+      }
+
+      @media (max-width: 480px) {
+        .question {
+          font-size: 2rem;
         }
-        return;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!-- React & ReactDOM & Babel (개발용) -->
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- React 코드 -->
+    <script type="text/babel">
+      const { useState, useEffect, useRef } = React;
+
+      function getRandomQuestion() {
+        const a = Math.floor(Math.random() * 8) + 2; // 2~9
+        const b = Math.floor(Math.random() * 9) + 1; // 1~9
+        return { a, b };
       }
 
-      timerRef.current = setInterval(() => {
-        setTimeLeftMs((prev) => {
-          const next = prev - 100;
-          if (next <= 0) { clearInterval(timerRef.current); timerRef.current=null; setRunning(false); setFinished(true); return 0; } return next; }); }, 100); return ()=> {
-        if (timerRef.current) {
-          clearInterval(timerRef.current);
-          timerRef.current = null;
+      // 정답 + 오답 4개 = 총 5개 보기 만들기
+      function getChoices(correct) {
+        const set = new Set();
+        set.add(correct);
+
+        while (set.size < 5) {
+          // 정답 주변 숫자를 랜덤으로 생성 (너무 엉뚱하지 않게)
+          const delta = Math.floor(Math.random() * 9) - 4; // -4 ~ +4
+          if (delta === 0) continue;
+          const candidate = correct + delta;
+          if (candidate <= 0) continue;
+          set.add(candidate);
         }
-      };
-    }, [running]);
 
-    useEffect(() => {
-      setQuestionStart(Date.now());
-    }, [question]);
+        return Array.from(set).sort(() => Math.random() - 0.5); // 섞기
+      }
 
-    const handleChoice = (choice) => {
-      if (!running) return;
+      function getQuestionWithChoices() {
+        const base = getRandomQuestion();
+        const correct = base.a * base.b;
+        return {
+          ...base,
+          choices: getChoices(correct),
+        };
+      }
 
-      const now = Date.now();
-      const elapsed = (now - questionStart) / 1000;
-      const correctAnswer = question.a * question.b;
+      // ========= 연습 모드 =========
+      function PracticeMode() {
+        const [question, setQuestion] = useState(getQuestionWithChoices);
+        const [questionStart, setQuestionStart] = useState(Date.now());
+        const [lastCorrect, setLastCorrect] = useState(null);
+        const [lastMessage, setLastMessage] = useState("");
+        const [total, setTotal] = useState(0);
+        const [correct, setCorrect] = useState(0);
+        const [sumTime, setSumTime] = useState(0);
 
-      setTotal((t) => t + 1);
-      setSumTime((s) => s + elapsed);
+        useEffect(() => {
+          setQuestionStart(Date.now());
+        }, [question]);
 
-      if (choice === correctAnswer) {
-        setCorrect((c) => c + 1);
-        setLastMessage(
-          `굿! 정답 {${correctAnswer}} (${elapsed.toFixed(2)}초)`
-        );
-      } else {
-        setLastMessage(
-          `앗! 정답은 ${correctAnswer} (${elapsed.toFixed(2)}초)`
+        const handleChoice = (choice) => {
+          const now = Date.now();
+          const elapsed = (now - questionStart) / 1000;
+          const correctAnswer = question.a * question.b;
+
+          setTotal((t) => t + 1);
+          setSumTime((s) => s + elapsed);
+
+          if (choice === correctAnswer) {
+            setCorrect((c) => c + 1);
+            setLastCorrect(true);
+            setLastMessage(
+              `정답! ${correctAnswer} ✨ (${elapsed.toFixed(2)}초)`
+            );
+          } else {
+            setLastCorrect(false);
+            setLastMessage(
+              `아쉬워요! 정답은 ${correctAnswer} 입니다. (${elapsed.toFixed(
+                2
+              )}초)`
+            );
+          }
+
+          setQuestion(getQuestionWithChoices());
+        };
+
+        const avgTime = total > 0 ? (sumTime / total).toFixed(2) : "-";
+        const accuracy =
+          total > 0 ? Math.round((correct / total) * 100) + "%" : "-";
+
+        return (
+          <>
+            <div className="question-box">
+              <div className="question-label">
+                연습 모드 - 객관식 스피드 연습
+              </div>
+              <div className="question">
+                {question.a} × {question.b} = ?
+              </div>
+              <div className="timer">
+                문제 보인 지{" "}
+                {((Date.now() - questionStart) / 1000).toFixed(1)}초 경과
+              </div>
+
+              <div className="choices">
+                {question.choices.map((c) => (
+                  <button
+                    key={c}
+                    className="choice-btn"
+                    onClick={() => handleChoice(c)}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="stats">
+              <span className="label">총 문제 수</span>
+              <span className="value">{total}</span>
+              <span className="label">정답 개수</span>
+              <span className="value">{correct}</span>
+              <span className="label">정답률</span>
+              <span className="value">{accuracy}</span>
+              <span className="label">평균 반응속도</span>
+              <span className="value">
+                {avgTime === "-" ? "-" : `${avgTime}초`}
+              </span>
+            </div>
+
+            {lastMessage && (
+              <div className={`result ${lastCorrect ? "ok" : "bad"}`}>
+                {lastMessage}
+              </div>
+            )}
+
+            <div className="small-tip">
+              답을 <b>직접 누르기만</b> 하면 되도록 바꾼 연습 모드입니다. <br />
+              손가락만으로도 빠르게 스피드런 연습을 할 수 있어요.
+            </div>
+          </>
         );
       }
 
-      setQuestion(getQuestionWithChoices());
-    };
+      // ========= 타임어택 모드 =========
+      function TimeAttackMode() {
+        const [question, setQuestion] = useState(getQuestionWithChoices);
+        const [questionStart, setQuestionStart] = useState(Date.now());
+        const [running, setRunning] = useState(false);
+        const [timeLeftMs, setTimeLeftMs] = useState(60000); // 60초
+        const [total, setTotal] = useState(0);
+        const [correct, setCorrect] = useState(0);
+        const [sumTime, setSumTime] = useState(0);
+        const [lastMessage, setLastMessage] = useState("");
+        const [finished, setFinished] = useState(false);
+        const timerRef = useRef(null);
 
-    const secondsLeft = (timeLeftMs / 1000).toFixed(1);
-    const avgTime = total > 0 ? (sumTime / total).toFixed(2) : "-";
-    const accuracy =
-      total > 0 ? Math.round((correct / total) * 100) + "%" : "-";
+        const startGame = () => {
+          setRunning(true);
+          setFinished(false);
+          setTimeLeftMs(60000);
+          setTotal(0);
+          setCorrect(0);
+          setSumTime(0);
+          setLastMessage("");
+          setQuestion(getQuestionWithChoices());
+          setQuestionStart(Date.now());
+        };
 
-    let grade = "-";
-    if (avgTime !== "-" && total > 0) {
-      const t = parseFloat(avgTime);
-      if (t < 1.5)grade= "S";else if (t
-													< 2.5) grade="A" ; else if (t
-													< 3.5) grade="B" ; else grade="C" ; } return (
-													<>
-														<div className="question-box">
-															<div className="question-label">
-            타임어택 모드 - 60초 안에 최대한 많이!
-          </div>
-															<div className="timer">
-            남은 시간:{" "}
-            <b style={{ color: timeLeftMs
-																< 10000 ?"#c62828" :"#8c68ff" }}> {secondsLeft}초
-															</b>
-														</div>
-														<div className="question" style={{ marginTop: 8 }}> {question.a} × {question.b}=?
-													</div>
-													<div className="choices">
-            {question.choices.map((c) => (
-              <button key={c} className="choice-btn" onClick={()=> handleChoice(c)}
-                disabled={!running}
+        useEffect(() => {
+          if (!running) {
+            if (timerRef.current) {
+              clearInterval(timerRef.current);
+              timerRef.current = null;
+            }
+            return;
+          }
+
+          timerRef.current = setInterval(() => {
+            setTimeLeftMs((prev) => {
+              const next = prev - 100;
+              if (next <= 0) {
+                clearInterval(timerRef.current);
+                timerRef.current = null;
+                setRunning(false);
+                setFinished(true);
+                return 0;
+              }
+              return next;
+            });
+          }, 100);
+
+          return () => {
+            if (timerRef.current) {
+              clearInterval(timerRef.current);
+              timerRef.current = null;
+            }
+          };
+        }, [running]);
+
+        useEffect(() => {
+          setQuestionStart(Date.now());
+        }, [question]);
+
+        const handleChoice = (choice) => {
+          if (!running) return;
+
+          const now = Date.now();
+          const elapsed = (now - questionStart) / 1000;
+          const correctAnswer = question.a * question.b;
+
+          setTotal((t) => t + 1);
+          setSumTime((s) => s + elapsed);
+
+          if (choice === correctAnswer) {
+            setCorrect((c) => c + 1);
+            setLastMessage(
+              `굿! 정답 ${correctAnswer} (${elapsed.toFixed(2)}초)`
+            );
+          } else {
+            setLastMessage(
+              `앗! 정답은 ${correctAnswer} (${elapsed.toFixed(2)}초)`
+            );
+          }
+
+          setQuestion(getQuestionWithChoices());
+        };
+
+        const secondsLeft = (timeLeftMs / 1000).toFixed(1);
+        const avgTime = total > 0 ? (sumTime / total).toFixed(2) : "-";
+        const accuracy =
+          total > 0 ? Math.round((correct / total) * 100) + "%" : "-";
+
+        let grade = "-";
+        if (avgTime !== "-" && total > 0) {
+          const t = parseFloat(avgTime);
+          if (t < 1.5) grade = "S";
+          else if (t < 2.5) grade = "A";
+          else if (t < 3.5) grade = "B";
+          else grade = "C";
+        }
+
+        return (
+          <>
+            <div className="question-box">
+              <div className="question-label">
+                타임어택 모드 - 60초 안에 최대한 많이!
+              </div>
+
+              <div className="timer">
+                남은 시간:{" "}
+                <b style={{ color: timeLeftMs < 10000 ? "#c62828" : "#8c68ff" }}>
+                  {secondsLeft}초
+                </b>
+              </div>
+
+              <div className="question" style={{ marginTop: 8 }}>
+                {question.a} × {question.b} = ?
+              </div>
+
+              <div className="choices">
+                {question.choices.map((c) => (
+                  <button
+                    key={c}
+                    className="choice-btn"
+                    onClick={() => handleChoice(c)}
+                    disabled={!running}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+
+              <div style={{ marginTop: 12, textAlign: "center" }}>
+                <button
+                  className="primary-button"
+                  onClick={startGame}
+                  style={{ padding: "8px 18px" }}
+                >
+                  {running ? "다시 시작" : "시작하기"}
+                </button>
+              </div>
+            </div>
+
+            <div className="stats">
+              <span className="label">푼 문제 수</span>
+              <span className="value">{total}</span>
+              <span className="label">정답 개수</span>
+              <span className="value">{correct}</span>
+              <span className="label">정답률</span>
+              <span className="value">{accuracy}</span>
+              <span className="label">평균 반응속도</span>
+              <span className="value">
+                {avgTime === "-" ? "-" : `${avgTime}초`}
+              </span>
+            </div>
+
+            {finished && (
+              <div className="result ok">
+                타임어택 종료! 🎉
+                <br />
+                <b>{total}</b>문제 중 <b>{correct}</b>개 정답, 정답률 {accuracy},{" "}
+                <br />
+                평균 {avgTime === "-" ? "-" : `${avgTime}초`} / 등급 {grade} 등급!
+              </div>
+            )}
+
+            {lastMessage && !finished && (
+              <div className="result ok">{lastMessage}</div>
+            )}
+
+            <div className="small-tip">
+              객관식 버튼만 탭해서 <b>초스피드로</b> 푸는 모드입니다. <br />
+              아이가 손가락만으로 “게임처럼” 빠르게 풀 수 있게 설계한 형태예요.
+            </div>
+          </>
+        );
+      }
+
+      // ========= 전체 App =========
+      function App() {
+        const [mode, setMode] = useState("practice"); // 'practice' | 'timeAttack'
+
+        return (
+          <div className="app">
+            <div className="title">구구런 GUGU RUN</div>
+            <div className="subtitle">구구단 스피드 & 타임어택 연습</div>
+
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                marginTop: 8,
+                marginBottom: 8,
+              }}
+            >
+              <button
+                className="primary-button"
+                style={{
+                  flex: 1,
+                  opacity: mode === "practice" ? 1 : 0.5,
+                }}
+                onClick={() => setMode("practice")}
               >
-                {c}
+                연습 모드
               </button>
-            ))}
+              <button
+                className="primary-button"
+                style={{
+                  flex: 1,
+                  opacity: mode === "timeAttack" ? 1 : 0.5,
+                }}
+                onClick={() => setMode("timeAttack")}
+              >
+                타임어택 모드
+              </button>
+            </div>
+
+            {mode === "practice" ? <PracticeMode /> : <TimeAttackMode />}
           </div>
-													<div style={{ marginTop: 12, textAlign:"center" }}>
-													<button className="primary-button" onClick={startGame} style={{ padding:"8px 18px" }}>
-              {running ? "다시 시작" : "시작하기"}
-            </button>
-												</div>
-											</div>
-											<div className="stats">
-												<span className="label">푼 문제 수</span>
-												<span className="value">{total}</span>
-												<span className="label">정답 개수</span>
-												<span className="value">{correct}</span>
-												<span className="label">정답률</span>
-												<span className="value">{accuracy}</span>
-												<span className="label">평균 반응속도</span>
-												<span className="value">
-            {avgTime === "-" ? "-" : `${avgTime}초`}
-          </span>
-											</div>
+        );
+      }
 
-        {finished && (
-          <div className="result ok">
-            타임어택 종료! 🎉<br/>
-												<b>{total}</b>문제 중 <b>{correct}</b>개 정답, 정답률 {accuracy}, <br/>
-            평균 {avgTime === "-" ? "-" : `${avgTime}초`} / 등급 {grade} 등급!
-          </div>
-        )}
-
-        {lastMessage && !finished && (
-          <div className="result ok">{lastMessage}</div>
-        )}
-
-        <div className="small-tip">
-          객관식 버튼만 탭해서 <b>초스피드로</b> 푸는 모드입니다. <br/>
-          아이가 손가락만으로 “게임처럼” 빠르게 풀 수 있게 설계한 형태예요.
-        </div>
-										</>
-    );
-  }
-
-  // ========= 전체 App =========
-  function App() {
-    const [mode, setMode] = useState("practice"); // 'practice' | 'timeAttack'
-
-    return (
-      <div className="app">
-											<div className="title">구구런 GUGU RUN</div>
-											<div className="subtitle">구구단 스피드 & 타임어택 연습</div>
-											<div style={{ display:"flex" , gap: 8, marginTop: 8, marginBottom: 8, }}>
-												<button className="primary-button" style={{ flex: 1, opacity: mode==="practice" ? 1 : 0.5, }} onClick={()=> setMode("practice")}
-          >
-            연습 모드
-          </button>
-												<button className="primary-button" style={{ flex: 1, opacity: mode==="timeAttack" ? 1 : 0.5, }} onClick={()=> setMode("timeAttack")}
-          >
-            타임어택 모드
-          </button>
-											</div>
-
-        {mode === "practice" ? <PracticeMode/> : <TimeAttackMode/>}
-      </div>
-    );
-  }
-
-  const root = ReactDOM.createRoot(document.getElementById("root"));
-  root.render(<App/>);
-</script>
-								</body>
-							</html>
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
