@@ -483,3 +483,75 @@
                 {avgTime === "-" ? "-" : `${avgTime}초`}
               </span>
             </div>
+
+            {finished && (
+              <div className="result ok">
+                타임어택 종료! 🎉
+                <br />
+                <b>{total}</b>문제 중 <b>{correct}</b>개 정답, 정답률 {accuracy},{" "}
+                <br />
+                평균 {avgTime === "-" ? "-" : `${avgTime}초`} / 등급 {grade} 등급!
+              </div>
+            )}
+
+            {lastMessage && !finished && (
+              <div className="result ok">{lastMessage}</div>
+            )}
+
+            <div className="small-tip">
+              객관식 버튼만 탭해서 <b>초스피드로</b> 푸는 모드입니다. <br />
+              유라가 “게임처럼” 기록 깨기에 도전할 수 있게 설계한 모드예요.
+            </div>
+          </>
+        );
+      }
+
+      // ========= 전체 App =========
+      function App() {
+        const [mode, setMode] = useState("practice"); // 'practice' | 'timeAttack'
+
+        return (
+          <div className="app">
+            <div className="title">유라의 구구런 GUGU RUN</div>
+            <div className="subtitle">구구단 스피드 & 타임어택 연습</div>
+
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                marginTop: 8,
+                marginBottom: 8,
+              }}
+            >
+              <button
+                className="primary-button"
+                style={{
+                  flex: 1,
+                  opacity: mode === "practice" ? 1 : 0.5,
+                }}
+                onClick={() => setMode("practice")}
+              >
+                연습 모드
+              </button>
+              <button
+                className="primary-button"
+                style={{
+                  flex: 1,
+                  opacity: mode === "timeAttack" ? 1 : 0.5,
+                }}
+                onClick={() => setMode("timeAttack")}
+              >
+                타임어택 모드
+              </button>
+            </div>
+
+            {mode === "practice" ? <PracticeMode /> : <TimeAttackMode />}
+          </div>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
