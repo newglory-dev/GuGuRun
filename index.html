@@ -14,7 +14,7 @@
         margin: 0;
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
           sans-serif;
-        background: linear-gradient(135deg, #f8e9ff, #e3f2ff);
+        background: linear-gradient(135deg, #fff3b0, #ffd6a5);
         color: #333;
         display: flex;
         align-items: center;
@@ -28,17 +28,17 @@
         margin: 16px;
         padding: 24px 20px;
         border-radius: 24px;
-        background: #ffffffcc;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-        backdrop-filter: blur(6px);
+        background: #fffaf0;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        border: 2px solid #ffd6a5;
       }
 
       .title {
         text-align: center;
-        font-size: 1.7rem;
+        font-size: 1.8rem;
         font-weight: 800;
         margin-bottom: 4px;
-        background: linear-gradient(90deg, #7f5dff, #ff6fb1);
+        background: linear-gradient(90deg, #ff9f1c, #ff6b6b);
         -webkit-background-clip: text;
         color: transparent;
       }
@@ -46,7 +46,7 @@
       .subtitle {
         text-align: center;
         font-size: 0.9rem;
-        color: #666;
+        color: #75551a;
         margin-bottom: 10px;
       }
 
@@ -54,38 +54,40 @@
         margin: 16px 0;
         padding: 18px 12px;
         border-radius: 18px;
-        background: #f4f0ff;
+        background: #fff4c2;
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 8px;
+        border: 1px dashed #ffb347;
       }
 
       .question-label {
         font-size: 0.9rem;
-        color: #777;
+        color: #9b6b1c;
       }
 
       .question {
         font-size: 2.4rem;
-        font-weight: 700;
+        font-weight: 800;
         letter-spacing: 0.08em;
       }
 
       .timer {
         font-size: 0.9rem;
-        color: #8c68ff;
+        color: #e76f51;
       }
 
       .stats {
         margin-top: 12px;
         padding: 12px 10px;
         border-radius: 16px;
-        background: #f9fbff;
+        background: #fffdf7;
         font-size: 0.9rem;
         display: grid;
         grid-template-columns: 1fr 1fr;
         row-gap: 4px;
+        border: 1px solid #ffe0b2;
       }
 
       .stats span.label {
@@ -116,18 +118,18 @@
       .small-tip {
         margin-top: 8px;
         font-size: 0.8rem;
-        color: #888;
+        color: #8b6b3c;
         text-align: center;
       }
 
       .primary-button {
         padding: 10px 16px;
-        border-radius: 12px;
+        border-radius: 16px;
         border: none;
-        background: linear-gradient(135deg, #8c68ff, #ff6fb1);
+        background: linear-gradient(135deg, #ff9f1c, #ff6b6b);
         color: white;
         font-size: 1rem;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
         white-space: nowrap;
       }
@@ -147,12 +149,12 @@
 
       .choice-btn {
         padding: 10px 0;
-        border-radius: 12px;
+        border-radius: 14px;
         border: none;
         background: #ffffff;
         box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
         font-size: 1.1rem;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
       }
 
@@ -169,18 +171,18 @@
         color: #666;
       }
 
-      .difficulty-chip {
-        padding: 4px 8px;
+      .pill-chip {
+        padding: 4px 10px;
         border-radius: 999px;
         border: none;
         font-size: 0.8rem;
         cursor: pointer;
-        background: #eee;
-        color: #555;
+        background: #ffe5b4;
+        color: #77502a;
       }
 
-      .difficulty-chip.active {
-        background: #8c68ff;
+      .pill-chip.active {
+        background: #ff9f1c;
         color: #fff;
       }
 
@@ -191,6 +193,26 @@
         background: #fff7e6;
         font-size: 0.8rem;
         color: #8a5a00;
+        border: 1px dashed #ffc46b;
+      }
+
+      .top-records {
+        margin-top: 8px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        background: #fffdf0;
+        font-size: 0.8rem;
+        color: #5c3d0c;
+        border: 1px solid #ffe0b2;
+      }
+
+      .top-records ul {
+        margin: 4px 0 0;
+        padding-left: 16px;
+      }
+
+      .top-records li {
+        margin-bottom: 3px;
       }
 
       .share-row {
@@ -200,12 +222,12 @@
 
       .share-button {
         padding: 8px 12px;
-        border-radius: 12px;
+        border-radius: 14px;
         border: none;
-        background: #00c73c; /* 카카오톡 느낌은 아니지만, 초록 톤 */
-        color: white;
+        background: #ffd93d;
+        color: #5a3c00;
         font-size: 0.9rem;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
       }
 
@@ -244,29 +266,16 @@
         return { a, b };
       }
 
-      // 전체 구구단 결과 중 랜덤 하나
-      function getRandomProduct() {
-        const a = Math.floor(Math.random() * 8) + 2;
-        const b = Math.floor(Math.random() * 9) + 1;
-        return a * b;
-      }
-
-      // 정답 + 오답 여러 개 = 총 6개 보기
-      function getChoices(correct, difficulty) {
+      // 정답 근처 숫자 위주의 6지선다
+      function getChoices(correct) {
         const set = new Set();
         set.add(correct);
 
-        // 난이도 'near': 정답 근처 숫자, 'random': 전체 곱셈 결과 중 랜덤
         while (set.size < 6) {
-          let candidate;
-          if (difficulty === "random") {
-            candidate = getRandomProduct();
-          } else {
-            const delta = Math.floor(Math.random() * 9) - 4; // -4 ~ +4
-            if (delta === 0) continue;
-            candidate = correct + delta;
-            if (candidate <= 0) continue;
-          }
+          const delta = Math.floor(Math.random() * 9) - 4; // -4 ~ +4
+          if (delta === 0) continue;
+          const candidate = correct + delta;
+          if (candidate <= 0) continue;
           set.add(candidate);
         }
 
@@ -274,7 +283,7 @@
       }
 
       // 바로 직전 문제와 같지 않도록 보장
-      function getQuestionWithChoices(prevQuestion, difficulty) {
+      function getQuestionWithChoices(prevQuestion) {
         let base;
         do {
           base = getRandomQuestion();
@@ -287,7 +296,7 @@
         const correct = base.a * base.b;
         return {
           ...base,
-          choices: getChoices(correct, difficulty),
+          choices: getChoices(correct),
         };
       }
 
@@ -310,7 +319,6 @@
         try {
           const records = loadRecords();
           records.push(record);
-          // 너무 길어지는 것 방지: 최근 200개까지만 저장
           const trimmed = records.slice(-200);
           localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
           return trimmed;
@@ -319,26 +327,39 @@
         }
       }
 
+      // 두 기록 비교용 (더 좋은 기록이 앞으로 오도록)
+      function compareRecord(a, b) {
+        if (a.correct !== b.correct) {
+          return b.correct - a.correct; // 정답 많이 맞춘 게 먼저
+        }
+        if (a.total !== b.total) {
+          return b.total - a.total; // 더 많이 푼 게 먼저
+        }
+        const at = parseFloat(a.avgTime || "999");
+        const bt = parseFloat(b.avgTime || "999");
+        if (!isNaN(at) && !isNaN(bt) && at !== bt) {
+          return at - bt; // 평균 반응속도 빠른 게 먼저
+        }
+        // 마지막으로 최근 기록이 위로
+        return (b.timestamp || 0) - (a.timestamp || 0);
+      }
+
       function pickBestRecord(records) {
         if (!records || records.length === 0) return null;
-        // 기준: correct ↓, total ↓, avgTime ↑ 작은 순
-        return records.reduce((best, cur) => {
-          if (!best) return cur;
-          if (cur.correct > best.correct) return cur;
-          if (cur.correct < best.correct) return best;
-          if (cur.total > best.total) return cur;
-          if (cur.total < best.total) return best;
-          const a = parseFloat(cur.avgTime || "999");
-          const b = parseFloat(best.avgTime || "999");
-          if (!isNaN(a) && !isNaN(b) && a < b) return cur;
-          return best;
-        }, null);
+        const sorted = [...records].sort(compareRecord);
+        return sorted[0];
+      }
+
+      function getTopRecords(records, limit = 10) {
+        if (!records || records.length === 0) return [];
+        const sorted = [...records].sort(compareRecord);
+        return sorted.slice(0, limit);
       }
 
       // ========= 연습 모드 =========
-      function PracticeMode({ difficulty }) {
+      function PracticeMode() {
         const [question, setQuestion] = useState(() =>
-          getQuestionWithChoices(null, difficulty)
+          getQuestionWithChoices(null)
         );
         const [questionStart, setQuestionStart] = useState(Date.now());
         const [lastCorrect, setLastCorrect] = useState(null);
@@ -346,11 +367,6 @@
         const [total, setTotal] = useState(0);
         const [correct, setCorrect] = useState(0);
         const [sumTime, setSumTime] = useState(0);
-
-        // 난이도 바뀌면 새 문제로 리셋
-        useEffect(() => {
-          setQuestion((prev) => getQuestionWithChoices(prev, difficulty));
-        }, [difficulty]);
 
         useEffect(() => {
           setQuestionStart(Date.now());
@@ -379,7 +395,7 @@
             );
           }
 
-          setQuestion((prev) => getQuestionWithChoices(prev, difficulty));
+          setQuestion((prev) => getQuestionWithChoices(prev));
         };
 
         const avgTime = total > 0 ? (sumTime / total).toFixed(2) : "-";
@@ -433,42 +449,52 @@
             )}
 
             <div className="small-tip">
-              답을 <b>직접 누르기만</b> 하면 되도록 바꾼 연습 모드입니다. <br />
-              난이도 버튼으로 보기 패턴을 바꾸면서 감각을 올려보세요.
+              답을 <b>톡톡 누르기만</b> 하면 되는 연습 모드예요. <br />
+              짱구처럼 장난치지 말고(?) 눈으로 바로바로 계산해 보는 연습!
             </div>
           </>
         );
       }
 
       // ========= 타임어택 모드 =========
-      function TimeAttackMode({ difficulty }) {
+      function TimeAttackMode({ timeLimitMs }) {
         const [question, setQuestion] = useState(() =>
-          getQuestionWithChoices(null, difficulty)
+          getQuestionWithChoices(null)
         );
         const [questionStart, setQuestionStart] = useState(Date.now());
         const [running, setRunning] = useState(false);
-        const [timeLeftMs, setTimeLeftMs] = useState(60000); // 60초
+        const [timeLeftMs, setTimeLeftMs] = useState(timeLimitMs);
         const [total, setTotal] = useState(0);
         const [correct, setCorrect] = useState(0);
         const [sumTime, setSumTime] = useState(0);
         const [lastMessage, setLastMessage] = useState("");
         const [finished, setFinished] = useState(false);
         const [bestRecord, setBestRecord] = useState(null);
+        const [topRecords, setTopRecords] = useState([]);
         const [justSetNewBest, setJustSetNewBest] = useState(false);
         const timerRef = useRef(null);
 
-        // 난이도 변경 시 문제 리셋 (진행 중이면 그냥 새 문제로)
-        useEffect(() => {
-          setQuestion((prev) => getQuestionWithChoices(prev, difficulty));
-          setQuestionStart(Date.now());
-        }, [difficulty]);
+        const timeLimitSec = Math.round(timeLimitMs / 1000);
 
-        // 최초 로드 시 기존 기록 불러오기
+        // 타임 제한 변경 시 상태 초기화
+        useEffect(() => {
+          setRunning(false);
+          setFinished(false);
+          setTimeLeftMs(timeLimitMs);
+          setTotal(0);
+          setCorrect(0);
+          setSumTime(0);
+          setLastMessage("");
+        }, [timeLimitMs]);
+
+        // 최초 로드 시 기록 불러오기
         useEffect(() => {
           try {
             const records = loadRecords();
             const best = pickBestRecord(records);
+            const top10 = getTopRecords(records, 10);
             setBestRecord(best);
+            setTopRecords(top10);
           } catch (e) {
             // 무시
           }
@@ -477,13 +503,13 @@
         const startGame = () => {
           setRunning(true);
           setFinished(false);
-          setTimeLeftMs(60000);
+          setTimeLeftMs(timeLimitMs);
           setTotal(0);
           setCorrect(0);
           setSumTime(0);
           setLastMessage("");
           setJustSetNewBest(false);
-          setQuestion((prev) => getQuestionWithChoices(prev, difficulty));
+          setQuestion((prev) => getQuestionWithChoices(prev));
           setQuestionStart(Date.now());
         };
 
@@ -543,7 +569,7 @@
             );
           }
 
-          setQuestion((prev) => getQuestionWithChoices(prev, difficulty));
+          setQuestion((prev) => getQuestionWithChoices(prev));
         };
 
         const secondsLeft = (timeLeftMs / 1000).toFixed(1);
@@ -571,51 +597,36 @@
             accuracy,
             avgTime,
             grade,
+            timeLimitSec,
           };
 
           const records = saveRecord(record);
           if (!records) return;
           const best = pickBestRecord(records);
-          if (best) {
-            // 직전 best와 비교해서 새 기록인지 체크
-            const before = bestRecord;
-            setBestRecord(best);
+          const top10 = getTopRecords(records, 10);
+          setBestRecord(best);
+          setTopRecords(top10);
 
-            if (!before || best === record) {
-              setJustSetNewBest(true);
-            } else {
-              // 비교 로직을 다시 한번 (보수적으로)
-              const prevBest = before;
-              let isNew = false;
-              if (record.correct > prevBest.correct) isNew = true;
-              else if (
-                record.correct === prevBest.correct &&
-                record.total > prevBest.total
-              )
-                isNew = true;
-              else if (
-                record.correct === prevBest.correct &&
-                record.total === prevBest.total
-              ) {
-                const a = parseFloat(record.avgTime || "999");
-                const b = parseFloat(prevBest.avgTime || "999");
-                if (!isNaN(a) && !isNaN(b) && a < b) isNew = true;
-              }
-
-              if (isNew) setJustSetNewBest(true);
-            }
+          if (!bestRecord) {
+            setJustSetNewBest(true);
+          } else {
+            // 새 기록이 이전 best보다 좋은지 보수적으로 한 번 더 확인
+            const isBetter = compareRecord(record, bestRecord) < 0;
+            if (isBetter) setJustSetNewBest(true);
           }
         }, [finished]); // eslint-disable-line react-hooks/exhaustive-deps
 
         const shareResult = async () => {
           const summary =
-            `유라의 구구런 타임어택 결과\n` +
-            `정답: ${correct}/${total} (${accuracy})\n` +
-            `평균 반응속도: ${avgTime}초\n` +
-            `등급: ${grade}\n` +
+            `【유라의 구구런 타임어택 결과】\n` +
+            `짱구도 놀랄 구구단 실력 등장!\n\n` +
+            `⏱ 타임어택: ${timeLimitSec}초\n` +
+            `✅ 정답: ${correct}/${total} (${accuracy})\n` +
+            `⚡ 평균 반응속도: ${avgTime}초\n` +
+            `🏅 등급: ${grade} 등급\n\n` +
+            `\"아빠, 나 완전 천재 아냐?\" 느낌의 기록입니다 😄\n` +
             `- from 유라의 구구런 GUGU RUN`;
 
-          // Web Share API가 있는 경우 (iOS/안드 안드로이드 최신 브라우저)
           if (navigator.share) {
             try {
               await navigator.share({
@@ -625,11 +636,10 @@
               });
               return;
             } catch (e) {
-              // 사용자가 취소한 경우 등은 무시
+              // 취소 등은 무시
             }
           }
 
-          // 공유가 안 되면 클립보드 복사
           if (navigator.clipboard && navigator.clipboard.writeText) {
             try {
               await navigator.clipboard.writeText(summary);
@@ -642,7 +652,6 @@
             }
           }
 
-          // 최후 fallback: prompt로 보여주기
           window.prompt(
             "이 텍스트를 전체 선택(Ctrl+A) 후 복사해서 카카오톡에 붙여넣기 해 주세요:",
             summary
@@ -653,12 +662,12 @@
           <>
             <div className="question-box">
               <div className="question-label">
-                타임어택 모드 - 60초 안에 최대한 많이!
+                타임어택 모드 - {timeLimitSec}초 안에 최대한 많이!
               </div>
 
               <div className="timer">
                 남은 시간:{" "}
-                <b style={{ color: timeLeftMs < 10000 ? "#c62828" : "#8c68ff" }}>
+                <b style={{ color: timeLeftMs < 10000 ? "#c62828" : "#e76f51" }}>
                   {secondsLeft}초
                 </b>
               </div>
@@ -716,7 +725,7 @@
                   {justSetNewBest && (
                     <>
                       <br />
-                      ✨ 최고 기록 갱신! 대단해요!
+                      ✨ 짱구도 박수칠 최고 기록 갱신!
                     </>
                   )}
                 </div>
@@ -736,6 +745,7 @@
               <div className="best-record">
                 이 기기의 최고 기록:{" "}
                 <b>
+                  {bestRecord.timeLimitSec || 60}초 /
                   {bestRecord.correct}/{bestRecord.total}
                 </b>{" "}
                 정답, 정답률 {bestRecord.accuracy}, 평균{" "}
@@ -743,9 +753,38 @@
               </div>
             )}
 
+            {topRecords && topRecords.length > 0 && (
+              <div className="top-records">
+                <div>역대 최고 기록 TOP 10 (이 기기 기준)</div>
+                <ul>
+                  {topRecords.map((r, idx) => {
+                    const d = r.timestamp
+                      ? new Date(r.timestamp)
+                      : null;
+                    const dateStr = d
+                      ? d.toLocaleDateString("ko-KR", {
+                          month: "short",
+                          day: "numeric",
+                        })
+                      : "";
+                    const sec = r.timeLimitSec || 60;
+                    return (
+                      <li key={idx}>
+                        #{idx + 1} | {sec}초 | {r.correct}/{r.total} 정답,
+                        정답률 {r.accuracy}, 평균 {r.avgTime}초, 등급{" "}
+                        {r.grade}
+                        {dateStr && ` · ${dateStr}`}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+
             <div className="small-tip">
-              객관식 버튼만 탭해서 <b>초스피드로</b> 푸는 모드입니다. <br />
-              타임어택 결과는 이 기기에 저장돼서 최고 기록을 계속 갱신할 수 있어요.
+              타임어택 결과는 이 기기에 저장돼요. <br />
+              유라가 “내가 예전에 얼마나 잘했지?” 하면서
+              역대 기록 구경하기 좋게 만들어놨어요.
             </div>
           </>
         );
@@ -754,14 +793,18 @@
       // ========= 전체 App =========
       function App() {
         const [mode, setMode] = useState("practice"); // 'practice' | 'timeAttack'
-        const [difficulty, setDifficulty] = useState("near"); // 'near' | 'random'
+        const [timeLimitMs, setTimeLimitMs] = useState(60000); // 30초/60초 선택
+
+        const timeLimitSec = Math.round(timeLimitMs / 1000);
 
         return (
           <div className="app">
             <div className="title">유라의 구구런 GUGU RUN</div>
-            <div className="subtitle">구구단 스피드 & 타임어택 연습</div>
+            <div className="subtitle">
+              구구단 스피드 업! 짱구도 부러워할 타임어택 연습
+            </div>
 
-            {/* 난이도 선택 */}
+            {/* 타임어택 시간 선택 */}
             <div
               style={{
                 display: "flex",
@@ -771,25 +814,23 @@
                 gap: 8,
               }}
             >
-              <span className="section-title">보기 난이도</span>
+              <span className="section-title">타임어택 시간</span>
               <div style={{ display: "flex", gap: 6 }}>
                 <button
                   className={
-                    "difficulty-chip" +
-                    (difficulty === "near" ? " active" : "")
+                    "pill-chip" + (timeLimitSec === 30 ? " active" : "")
                   }
-                  onClick={() => setDifficulty("near")}
+                  onClick={() => setTimeLimitMs(30000)}
                 >
-                  비슷한 숫자
+                  30초
                 </button>
                 <button
                   className={
-                    "difficulty-chip" +
-                    (difficulty === "random" ? " active" : "")
+                    "pill-chip" + (timeLimitSec === 60 ? " active" : "")
                   }
-                  onClick={() => setDifficulty("random")}
+                  onClick={() => setTimeLimitMs(60000)}
                 >
-                  완전 랜덤
+                  60초
                 </button>
               </div>
             </div>
@@ -826,9 +867,9 @@
             </div>
 
             {mode === "practice" ? (
-              <PracticeMode difficulty={difficulty} />
+              <PracticeMode />
             ) : (
-              <TimeAttackMode difficulty={difficulty} />
+              <TimeAttackMode timeLimitMs={timeLimitMs} />
             )}
           </div>
         );
