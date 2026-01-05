@@ -2,7 +2,7 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <title>구구런 - 구구단 타임어택 연습</title>
+    <title>유라의 구구런 GUGU RUN - 구구단 타임어택 연습</title>
     <!-- 반응형 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
@@ -161,7 +161,6 @@
       }
 
       .choice-btn.correct-hint {
-        /* 나중에 정답 힌트 쓰고 싶을 때 사용할 수 있는 클래스 */
         background: #e8f9f1;
       }
 
@@ -196,13 +195,12 @@
         return { a, b };
       }
 
-      // 정답 + 오답 4개 = 총 5개 보기 만들기
+      // 정답 + 오답 여러 개 = 총 6개 보기
       function getChoices(correct) {
         const set = new Set();
         set.add(correct);
 
-        while (set.size < 5) {
-          // 정답 주변 숫자를 랜덤으로 생성 (너무 엉뚱하지 않게)
+        while (set.size < 6) {
           const delta = Math.floor(Math.random() * 9) - 4; // -4 ~ +4
           if (delta === 0) continue;
           const candidate = correct + delta;
@@ -213,8 +211,17 @@
         return Array.from(set).sort(() => Math.random() - 0.5); // 섞기
       }
 
-      function getQuestionWithChoices() {
-        const base = getRandomQuestion();
+      // 바로 직전 문제와 같지 않도록 보장
+      function getQuestionWithChoices(prevQuestion) {
+        let base;
+        do {
+          base = getRandomQuestion();
+        } while (
+          prevQuestion &&
+          base.a === prevQuestion.a &&
+          base.b === prevQuestion.b
+        );
+
         const correct = base.a * base.b;
         return {
           ...base,
@@ -224,7 +231,9 @@
 
       // ========= 연습 모드 =========
       function PracticeMode() {
-        const [question, setQuestion] = useState(getQuestionWithChoices);
+        const [question, setQuestion] = useState(() =>
+          getQuestionWithChoices(null)
+        );
         const [questionStart, setQuestionStart] = useState(Date.now());
         const [lastCorrect, setLastCorrect] = useState(null);
         const [lastMessage, setLastMessage] = useState("");
@@ -259,7 +268,7 @@
             );
           }
 
-          setQuestion(getQuestionWithChoices());
+          setQuestion((prev) => getQuestionWithChoices(prev));
         };
 
         const avgTime = total > 0 ? (sumTime / total).toFixed(2) : "-";
@@ -322,7 +331,9 @@
 
       // ========= 타임어택 모드 =========
       function TimeAttackMode() {
-        const [question, setQuestion] = useState(getQuestionWithChoices);
+        const [question, setQuestion] = useState(() =>
+          getQuestionWithChoices(null)
+        );
         const [questionStart, setQuestionStart] = useState(Date.now());
         const [running, setRunning] = useState(false);
         const [timeLeftMs, setTimeLeftMs] = useState(60000); // 60초
@@ -341,7 +352,7 @@
           setCorrect(0);
           setSumTime(0);
           setLastMessage("");
-          setQuestion(getQuestionWithChoices());
+          setQuestion((prev) => getQuestionWithChoices(prev));
           setQuestionStart(Date.now());
         };
 
@@ -401,7 +412,7 @@
             );
           }
 
-          setQuestion(getQuestionWithChoices());
+          setQuestion((prev) => getQuestionWithChoices(prev));
         };
 
         const secondsLeft = (timeLeftMs / 1000).toFixed(1);
@@ -472,75 +483,3 @@
                 {avgTime === "-" ? "-" : `${avgTime}초`}
               </span>
             </div>
-
-            {finished && (
-              <div className="result ok">
-                타임어택 종료! 🎉
-                <br />
-                <b>{total}</b>문제 중 <b>{correct}</b>개 정답, 정답률 {accuracy},{" "}
-                <br />
-                평균 {avgTime === "-" ? "-" : `${avgTime}초`} / 등급 {grade} 등급!
-              </div>
-            )}
-
-            {lastMessage && !finished && (
-              <div className="result ok">{lastMessage}</div>
-            )}
-
-            <div className="small-tip">
-              객관식 버튼만 탭해서 <b>초스피드로</b> 푸는 모드입니다. <br />
-              아이가 손가락만으로 “게임처럼” 빠르게 풀 수 있게 설계한 형태예요.
-            </div>
-          </>
-        );
-      }
-
-      // ========= 전체 App =========
-      function App() {
-        const [mode, setMode] = useState("practice"); // 'practice' | 'timeAttack'
-
-        return (
-          <div className="app">
-            <div className="title">구구런 GUGU RUN</div>
-            <div className="subtitle">구구단 스피드 & 타임어택 연습</div>
-
-            <div
-              style={{
-                display: "flex",
-                gap: 8,
-                marginTop: 8,
-                marginBottom: 8,
-              }}
-            >
-              <button
-                className="primary-button"
-                style={{
-                  flex: 1,
-                  opacity: mode === "practice" ? 1 : 0.5,
-                }}
-                onClick={() => setMode("practice")}
-              >
-                연습 모드
-              </button>
-              <button
-                className="primary-button"
-                style={{
-                  flex: 1,
-                  opacity: mode === "timeAttack" ? 1 : 0.5,
-                }}
-                onClick={() => setMode("timeAttack")}
-              >
-                타임어택 모드
-              </button>
-            </div>
-
-            {mode === "practice" ? <PracticeMode /> : <TimeAttackMode />}
-          </div>
-        );
-      }
-
-      const root = ReactDOM.createRoot(document.getElementById("root"));
-      root.render(<App />);
-    </script>
-  </body>
-</html>
