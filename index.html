@@ -14,84 +14,85 @@
         margin: 0;
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
           sans-serif;
-        background: linear-gradient(135deg, #fff3b0, #ffd6a5);
+        background: linear-gradient(135deg, #ccf6ff, #e0fffb);
         color: #333;
         display: flex;
-        align-items: center;
         justify-content: center;
+        align-items: flex-start;
         min-height: 100vh;
+        padding-top: 8px;
       }
 
       .app {
         width: 100%;
-        max-width: 480px;
-        margin: 16px;
-        padding: 24px 20px;
+        max-width: 420px;
+        margin: 0 auto;
+        padding: 18px 16px;
         border-radius: 24px;
-        background: #fffaf0;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-        border: 2px solid #ffd6a5;
+        background: #f7feff;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        border: 1px solid #b3ecff;
       }
 
       .title {
         text-align: center;
-        font-size: 1.8rem;
+        font-size: 1.6rem;
         font-weight: 800;
         margin-bottom: 4px;
-        background: linear-gradient(90deg, #ff9f1c, #ff6b6b);
+        background: linear-gradient(90deg, #00c9a7, #00a8ff);
         -webkit-background-clip: text;
         color: transparent;
       }
 
       .subtitle {
         text-align: center;
-        font-size: 0.9rem;
-        color: #75551a;
-        margin-bottom: 10px;
+        font-size: 0.85rem;
+        color: #28708a;
+        margin-bottom: 8px;
       }
 
       .question-box {
-        margin: 16px 0;
-        padding: 18px 12px;
+        margin: 10px 0;
+        padding: 14px 10px;
         border-radius: 18px;
-        background: #fff4c2;
+        background: #e7fbff;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 8px;
-        border: 1px dashed #ffb347;
+        gap: 6px;
+        border: 1px dashed #7ee0ff;
       }
 
       .question-label {
-        font-size: 0.9rem;
-        color: #9b6b1c;
+        font-size: 0.85rem;
+        color: #28708a;
       }
 
       .question {
-        font-size: 2.4rem;
+        font-size: 2.1rem;
         font-weight: 800;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.06em;
       }
 
       .timer {
-        font-size: 0.9rem;
-        color: #e76f51;
+        font-size: 0.85rem;
+        color: #00a8ff;
       }
 
       .stats {
-        margin-top: 12px;
-        padding: 12px 10px;
-        border-radius: 16px;
-        background: #fffdf7;
-        font-size: 0.9rem;
+        margin-top: 10px;
+        padding: 10px 8px;
+        border-radius: 14px;
+        background: #f0fcff;
+        font-size: 0.85rem;
         display: grid;
         grid-template-columns: 1fr 1fr;
-        row-gap: 4px;
-        border: 1px solid #ffe0b2;
+        row-gap: 2px;
+        border: 1px solid #ccefff;
       }
 
       .stats span.label {
-        color: #777;
+        color: #567;
       }
 
       .stats span.value {
@@ -99,36 +100,36 @@
       }
 
       .result {
-        margin-top: 12px;
-        padding: 10px 12px;
+        margin-top: 8px;
+        padding: 8px 10px;
         border-radius: 12px;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
       }
 
       .result.ok {
-        background: #e8f9f1;
-        color: #1c7c4e;
+        background: #e3fbf3;
+        color: #0c7a4c;
       }
 
       .result.bad {
-        background: #ffeff0;
+        background: #ffeef0;
         color: #c62828;
       }
 
       .small-tip {
-        margin-top: 8px;
-        font-size: 0.8rem;
-        color: #8b6b3c;
+        margin-top: 6px;
+        font-size: 0.78rem;
+        color: #567;
         text-align: center;
       }
 
       .primary-button {
-        padding: 10px 16px;
+        padding: 8px 14px;
         border-radius: 16px;
         border: none;
-        background: linear-gradient(135deg, #ff9f1c, #ff6b6b);
+        background: linear-gradient(135deg, #00c9a7, #00a8ff);
         color: white;
-        font-size: 1rem;
+        font-size: 0.95rem;
         font-weight: 700;
         cursor: pointer;
         white-space: nowrap;
@@ -142,18 +143,18 @@
       .choices {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-        margin-top: 12px;
+        gap: 6px;
+        margin-top: 10px;
         width: 100%;
       }
 
       .choice-btn {
-        padding: 10px 0;
+        padding: 8px 0;
         border-radius: 14px;
         border: none;
         background: #ffffff;
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-        font-size: 1.1rem;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
+        font-size: 1.05rem;
         font-weight: 700;
         cursor: pointer;
       }
@@ -162,71 +163,62 @@
         transform: translateY(1px);
       }
 
-      .choice-btn.correct-hint {
-        background: #e8f9f1;
-      }
-
       .section-title {
-        font-size: 0.8rem;
-        color: #666;
+        font-size: 0.78rem;
+        color: #456;
       }
 
       .pill-chip {
-        padding: 4px 10px;
+        padding: 4px 8px;
         border-radius: 999px;
         border: none;
-        font-size: 0.8rem;
+        font-size: 0.78rem;
         cursor: pointer;
-        background: #ffe5b4;
-        color: #77502a;
+        background: #d3f8ff;
+        color: #28708a;
       }
 
       .pill-chip.active {
-        background: #ff9f1c;
+        background: #00c9a7;
         color: #fff;
       }
 
-      .best-record {
-        margin-top: 8px;
-        padding: 8px 10px;
-        border-radius: 10px;
-        background: #fff7e6;
-        font-size: 0.8rem;
-        color: #8a5a00;
-        border: 1px dashed #ffc46b;
+      .tab-row {
+        display: flex;
+        gap: 6px;
+        margin-top: 4px;
+        margin-bottom: 4px;
       }
 
-      .top-records {
-        margin-top: 8px;
-        padding: 8px 10px;
-        border-radius: 10px;
-        background: #fffdf0;
-        font-size: 0.8rem;
-        color: #5c3d0c;
-        border: 1px solid #ffe0b2;
+      .tab-btn {
+        flex: 1;
+        padding: 8px 0;
+        border-radius: 16px;
+        border: none;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        background: #d3f8ff;
+        color: #28708a;
       }
 
-      .top-records ul {
-        margin: 4px 0 0;
-        padding-left: 16px;
-      }
-
-      .top-records li {
-        margin-bottom: 3px;
+      .tab-btn.active {
+        background: linear-gradient(135deg, #00c9a7, #00a8ff);
+        color: #fff;
       }
 
       .share-row {
-        margin-top: 8px;
+        margin-top: 6px;
         text-align: center;
       }
 
       .share-button {
-        padding: 8px 12px;
+        padding: 6px 10px;
         border-radius: 14px;
         border: none;
-        background: #ffd93d;
-        color: #5a3c00;
-        font-size: 0.9rem;
+        background: #ffdd57;
+        color: #5a4300;
+        font-size: 0.85rem;
         font-weight: 700;
         cursor: pointer;
       }
@@ -235,9 +227,32 @@
         transform: translateY(1px);
       }
 
-      @media (max-width: 480px) {
+      .records-box {
+        margin-top: 6px;
+        padding: 10px 8px;
+        border-radius: 14px;
+        background: #f0fcff;
+        font-size: 0.8rem;
+        color: #345;
+        border: 1px solid #ccefff;
+      }
+
+      .records-box ul {
+        margin: 4px 0 0;
+        padding-left: 16px;
+      }
+
+      .records-box li {
+        margin-bottom: 2px;
+      }
+
+      @media (max-width: 400px) {
+        .app {
+          padding: 14px 12px;
+          border-radius: 20px;
+        }
         .question {
-          font-size: 2rem;
+          font-size: 1.9rem;
         }
       }
     </style>
@@ -327,20 +342,12 @@
         }
       }
 
-      // 두 기록 비교용 (더 좋은 기록이 앞으로 오도록)
       function compareRecord(a, b) {
-        if (a.correct !== b.correct) {
-          return b.correct - a.correct; // 정답 많이 맞춘 게 먼저
-        }
-        if (a.total !== b.total) {
-          return b.total - a.total; // 더 많이 푼 게 먼저
-        }
+        if (a.correct !== b.correct) return b.correct - a.correct;
+        if (a.total !== b.total) return b.total - a.total;
         const at = parseFloat(a.avgTime || "999");
         const bt = parseFloat(b.avgTime || "999");
-        if (!isNaN(at) && !isNaN(bt) && at !== bt) {
-          return at - bt; // 평균 반응속도 빠른 게 먼저
-        }
-        // 마지막으로 최근 기록이 위로
+        if (!isNaN(at) && !isNaN(bt) && at !== bt) return at - bt;
         return (b.timestamp || 0) - (a.timestamp || 0);
       }
 
@@ -450,14 +457,14 @@
 
             <div className="small-tip">
               답을 <b>톡톡 누르기만</b> 하면 되는 연습 모드예요. <br />
-              짱구처럼 장난치지 말고(?) 눈으로 바로바로 계산해 보는 연습!
+              눈으로 바로 계산해서 “머릿속 계산기”를 키워보자!
             </div>
           </>
         );
       }
 
       // ========= 타임어택 모드 =========
-      function TimeAttackMode({ timeLimitMs }) {
+      function TimeAttackMode({ timeLimitMs, onFinished }) {
         const [question, setQuestion] = useState(() =>
           getQuestionWithChoices(null)
         );
@@ -469,8 +476,6 @@
         const [sumTime, setSumTime] = useState(0);
         const [lastMessage, setLastMessage] = useState("");
         const [finished, setFinished] = useState(false);
-        const [bestRecord, setBestRecord] = useState(null);
-        const [topRecords, setTopRecords] = useState([]);
         const [justSetNewBest, setJustSetNewBest] = useState(false);
         const timerRef = useRef(null);
 
@@ -485,20 +490,8 @@
           setCorrect(0);
           setSumTime(0);
           setLastMessage("");
+          setJustSetNewBest(false);
         }, [timeLimitMs]);
-
-        // 최초 로드 시 기록 불러오기
-        useEffect(() => {
-          try {
-            const records = loadRecords();
-            const best = pickBestRecord(records);
-            const top10 = getTopRecords(records, 10);
-            setBestRecord(best);
-            setTopRecords(top10);
-          } catch (e) {
-            // 무시
-          }
-        }, []);
 
         const startGame = () => {
           setRunning(true);
@@ -586,7 +579,7 @@
           else grade = "C";
         }
 
-        // 타임어택이 끝났을 때 기록 저장
+        // 타임어택 끝났을 때 상위 컴포넌트에 결과 전달 + 저장
         useEffect(() => {
           if (!finished || total === 0) return;
 
@@ -601,18 +594,17 @@
           };
 
           const records = saveRecord(record);
-          if (!records) return;
-          const best = pickBestRecord(records);
-          const top10 = getTopRecords(records, 10);
-          setBestRecord(best);
-          setTopRecords(top10);
+          let isNewBest = false;
+          if (records) {
+            const best = pickBestRecord(records);
+            if (best && compareRecord(record, best) === 0) {
+              isNewBest = true;
+            }
+          }
+          setJustSetNewBest(isNewBest);
 
-          if (!bestRecord) {
-            setJustSetNewBest(true);
-          } else {
-            // 새 기록이 이전 best보다 좋은지 보수적으로 한 번 더 확인
-            const isBetter = compareRecord(record, bestRecord) < 0;
-            if (isBetter) setJustSetNewBest(true);
+          if (onFinished) {
+            onFinished(record);
           }
         }, [finished]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -635,9 +627,7 @@
                 url: window.location.href,
               });
               return;
-            } catch (e) {
-              // 취소 등은 무시
-            }
+            } catch (e) {}
           }
 
           if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -647,9 +637,7 @@
                 "타임어택 결과를 클립보드에 복사했어요.\n카카오톡을 열고 채팅창에 붙여넣기 해서 공유해 주세요!"
               );
               return;
-            } catch (e) {
-              // 무시 후 fallback
-            }
+            } catch (e) {}
           }
 
           window.prompt(
@@ -667,12 +655,12 @@
 
               <div className="timer">
                 남은 시간:{" "}
-                <b style={{ color: timeLeftMs < 10000 ? "#c62828" : "#e76f51" }}>
+                <b style={{ color: timeLeftMs < 10000 ? "#c62828" : "#00a8ff" }}>
                   {secondsLeft}초
                 </b>
               </div>
 
-              <div className="question" style={{ marginTop: 8 }}>
+              <div className="question" style={{ marginTop: 4 }}>
                 {question.a} × {question.b} = ?
               </div>
 
@@ -689,11 +677,11 @@
                 ))}
               </div>
 
-              <div style={{ marginTop: 12, textAlign: "center" }}>
+              <div style={{ marginTop: 8, textAlign: "center" }}>
                 <button
                   className="primary-button"
                   onClick={startGame}
-                  style={{ padding: "8px 18px" }}
+                  style={{ padding: "6px 14px" }}
                 >
                   {running ? "다시 시작" : "시작하기"}
                 </button>
@@ -741,26 +729,58 @@
               <div className="result ok">{lastMessage}</div>
             )}
 
-            {bestRecord && (
-              <div className="best-record">
-                이 기기의 최고 기록:{" "}
-                <b>
-                  {bestRecord.timeLimitSec || 60}초 /
-                  {bestRecord.correct}/{bestRecord.total}
-                </b>{" "}
-                정답, 정답률 {bestRecord.accuracy}, 평균{" "}
-                {bestRecord.avgTime}초, 등급 {bestRecord.grade}
+            <div className="small-tip">
+              버튼만 톡톡 눌러도 되는 스피드 모드! <br />
+              “몇 초에 한 문제씩” 풀고 있는지 기록을 노려보자.
+            </div>
+          </>
+        );
+      }
+
+      // ========= 기록 보기 탭 =========
+      function RecordsView({ lastRecord }) {
+        const [bestRecord, setBestRecord] = useState(null);
+        const [topRecords, setTopRecords] = useState([]);
+
+        const reload = () => {
+          const records = loadRecords();
+          setBestRecord(pickBestRecord(records));
+          setTopRecords(getTopRecords(records, 10));
+        };
+
+        useEffect(() => {
+          reload();
+        }, []);
+
+        // 타임어택 막 끝나고 돌아왔을 때 새 기록 반영
+        useEffect(() => {
+          if (lastRecord) reload();
+        }, [lastRecord]);
+
+        return (
+          <div>
+            {bestRecord ? (
+              <div className="records-box">
+                <b>이 기기의 최고 기록</b>
+                <br />
+                {bestRecord.timeLimitSec || 60}초 /{" "}
+                {bestRecord.correct}/{bestRecord.total} 정답, 정답률{" "}
+                {bestRecord.accuracy}, 평균 {bestRecord.avgTime}초, 등급{" "}
+                {bestRecord.grade}
+              </div>
+            ) : (
+              <div className="records-box">
+                아직 기록이 없어요. <br />
+                타임어택 모드에서 첫 기록을 만들어 보세요!
               </div>
             )}
 
             {topRecords && topRecords.length > 0 && (
-              <div className="top-records">
-                <div>역대 최고 기록 TOP 10 (이 기기 기준)</div>
+              <div className="records-box">
+                <b>역대 최고 기록 TOP 10 (이 기기 기준)</b>
                 <ul>
                   {topRecords.map((r, idx) => {
-                    const d = r.timestamp
-                      ? new Date(r.timestamp)
-                      : null;
+                    const d = r.timestamp ? new Date(r.timestamp) : null;
                     const dateStr = d
                       ? d.toLocaleDateString("ko-KR", {
                           month: "short",
@@ -782,18 +802,18 @@
             )}
 
             <div className="small-tip">
-              타임어택 결과는 이 기기에 저장돼요. <br />
-              유라가 “내가 예전에 얼마나 잘했지?” 하면서
-              역대 기록 구경하기 좋게 만들어놨어요.
+              기록은 이 폰에만 저장돼요. <br />
+              유라가 “나 예전에 얼마나 잘했지?” 할 때, 여기서 구경하면 딱!
             </div>
-          </>
+          </div>
         );
       }
 
       // ========= 전체 App =========
       function App() {
-        const [mode, setMode] = useState("practice"); // 'practice' | 'timeAttack'
-        const [timeLimitMs, setTimeLimitMs] = useState(60000); // 30초/60초 선택
+        const [mode, setMode] = useState("practice"); // 'practice' | 'timeAttack' | 'records'
+        const [timeLimitMs, setTimeLimitMs] = useState(30000); // 기본 30초
+        const [lastRecord, setLastRecord] = useState(null);
 
         const timeLimitSec = Math.round(timeLimitMs / 1000);
 
@@ -801,21 +821,21 @@
           <div className="app">
             <div className="title">유라의 구구런 GUGU RUN</div>
             <div className="subtitle">
-              구구단 스피드 업! 짱구도 부러워할 타임어택 연습
+              민트 하늘색 구구단 연습장 · 속도 + 정확도 둘 다 잡기
             </div>
 
-            {/* 타임어택 시간 선택 */}
+            {/* 타임어택 시간 선택 (기록 탭에서는 비활성 의미가 크지 않지만 그대로 표시) */}
             <div
               style={{
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                marginBottom: 8,
-                gap: 8,
+                marginBottom: 4,
+                gap: 6,
               }}
             >
               <span className="section-title">타임어택 시간</span>
-              <div style={{ display: "flex", gap: 6 }}>
+              <div style={{ display: "flex", gap: 4 }}>
                 <button
                   className={
                     "pill-chip" + (timeLimitSec === 30 ? " active" : "")
@@ -835,47 +855,40 @@
               </div>
             </div>
 
-            {/* 모드 선택 */}
-            <div
-              style={{
-                display: "flex",
-                gap: 8,
-                marginTop: 4,
-                marginBottom: 8,
-              }}
-            >
+            {/* 모드 선택 탭 */}
+            <div className="tab-row">
               <button
-                className="primary-button"
-                style={{
-                  flex: 1,
-                  opacity: mode === "practice" ? 1 : 0.5,
-                }}
+                className={"tab-btn" + (mode === "practice" ? " active" : "")}
                 onClick={() => setMode("practice")}
               >
-                연습 모드
+                연습
               </button>
               <button
-                className="primary-button"
-                style={{
-                  flex: 1,
-                  opacity: mode === "timeAttack" ? 1 : 0.5,
-                }}
+                className={"tab-btn" + (mode === "timeAttack" ? " active" : "")}
                 onClick={() => setMode("timeAttack")}
               >
-                타임어택 모드
+                타임어택
+              </button>
+              <button
+                className={"tab-btn" + (mode === "records" ? " active" : "")}
+                onClick={() => setMode("records")}
+              >
+                기록 보기
               </button>
             </div>
 
-            {mode === "practice" ? (
-              <PracticeMode />
-            ) : (
-              <TimeAttackMode timeLimitMs={timeLimitMs} />
+            {mode === "practice" && <PracticeMode />}
+            {mode === "timeAttack" && (
+              <TimeAttackMode
+                timeLimitMs={timeLimitMs}
+                onFinished={(r) => setLastRecord(r)}
+              />
             )}
+            {mode === "records" && <RecordsView lastRecord={lastRecord} />}
           </div>
         );
       }
 
-      // React 18 호환용, 개발용 CDN이라 ReactDOM.render로 단순하게
       ReactDOM.render(<App />, document.getElementById("root"));
     </script>
   </body>
