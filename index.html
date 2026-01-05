@@ -293,48 +293,6 @@
         color: #fff;
       }
 
-      .daily-card {
-        margin-top: 4px;
-        padding: 8px 10px;
-        border-radius: 14px;
-        background: #ecfcff;
-        border: 1px solid #ccefff;
-        font-size: 0.78rem;
-        color: #345;
-      }
-
-      .daily-card-title {
-        font-weight: 700;
-        margin-bottom: 4px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .mission-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 2px;
-      }
-
-      .mission-name {
-        max-width: 70%;
-      }
-
-      .mission-status {
-        font-weight: 700;
-        font-size: 0.75rem;
-      }
-
-      .mission-status.done {
-        color: #008b5c;
-      }
-
-      .mission-status.todo {
-        color: #888;
-      }
-
       .share-row {
         margin-top: 6px;
         text-align: center;
@@ -425,6 +383,23 @@
         font-weight: 600;
       }
 
+      .mission-info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 4px;
+      }
+
+      .mission-label {
+        font-size: 0.8rem;
+        color: #345;
+      }
+
+      .mission-value {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #007f66;
+      }
+
       @media (max-width: 400px) {
         .app {
           padding: 14px 12px;
@@ -495,7 +470,7 @@
       }
 
       // ===== 로컬스토리지 유틸 =====
-      const STORAGE_KEY = "gugurun_timeattack_records_v1";
+      const STORAGE_KEY = "gugurun_timeattack_records_v2";
 
       function loadRecords() {
         try {
@@ -577,6 +552,126 @@
         if (level <= 7) return "구구단 천재(?) 유라";
         if (level <= 9) return "구구런 불꽃 유라";
         return "구구런 마스터 유라";
+      }
+
+      // ===== 등급 우선순위 =====
+      function gradePriority(g) {
+        if (g === "S") return 3;
+        if (g === "A") return 2;
+        if (g === "B") return 1;
+        if (g === "C") return 0;
+        return -1;
+      }
+
+      // ===== 오늘 미션/용돈 계산 (60초 타임어택 기준) =====
+      function calcTodayMissionAndAllowance(records) {
+        const now = new Date();
+        const todayStr = now.toISOString().slice(0, 10);
+
+        let count60 = 0;
+        let bestGrade = "-";
+
+        for (const r of records) {
+          if (!r.timestamp) continue;
+          const d = new Date(r.timestamp);
+          const dateStr = d.toISOString().slice(0, 10);
+          if (dateStr !== todayStr) continue;
+          if (r.timeLimitSec !== 60) continue;
+
+          count60 += 1;
+          const g = r.grade || "-";
+          if (gradePriority(g) > gradePriority(bestGrade)) {
+            bestGrade = g;
+          }
+        }
+
+        let allowance = 0;
+        if (bestGrade === "S") allowance = 1000;
+        else if (bestGrade === "A") allowance = 500;
+
+        const missionDone = count60 >= 2;
+
+        return {
+          todayStr,
+          count60,
+          bestGrade,
+          allowance,
+          missionDone,
+        };
+      }
+
+      // ===== 업적 배지 계산 =====
+      function calcBadges(records) {
+        const badges = [
+          {
+            id: "first_attack",
+            label: "첫 타임어택 완료",
+            earned: false,
+          },
+          {
+            id: "grade_s",
+            label: "S 등급 달성",
+            earned: false,
+          },
+          {
+            id: "grade_a_or_b",
+            label: "A/B 등급 여러 번",
+            earned: false,
+          },
+          {
+            id: "thirty_15correct",
+            label: "30초 모드에서 15개 이상 정답",
+            earned: false,
+          },
+          {
+            id: "sixty_25correct",
+            label: "60초 모드에서 25개 이상 정답",
+            earned: false,
+          },
+          {
+            id: "combo_master",
+            label: "정답률 100% 기록 얻기",
+            earned: false,
+          },
+        ];
+
+        if (!records || records.length === 0) return badges;
+
+        let hasFirst = records.length > 0;
+        let hasS = false;
+        let highGradeCount = 0;
+        let has30_15 = false;
+        let has60_25 = false;
+        let hasPerfect = false;
+
+        for (const r of records) {
+          if (r.grade === "S") hasS = true;
+          if (r.grade === "S" || r.grade === "A" || r.grade === "B") {
+            highGradeCount += 1;
+          }
+          if (r.timeLimitSec === 30 && (r.correct || 0) >= 15) {
+            has30_15 = true;
+          }
+          if (r.timeLimitSec === 60 && (r.correct || 0) >= 25) {
+            has60_25 = true;
+          }
+          const total = r.total || 0;
+          const correct = r.correct || 0;
+          if (total > 0 && correct === total) {
+            hasPerfect = true;
+          }
+        }
+
+        return badges.map((b) => {
+          if (b.id === "first_attack") return { ...b, earned: hasFirst };
+          if (b.id === "grade_s") return { ...b, earned: hasS };
+          if (b.id === "grade_a_or_b")
+            return { ...b, earned: highGradeCount >= 3 };
+          if (b.id === "thirty_15correct") return { ...b, earned: has30_15 };
+          if (b.id === "sixty_25correct") return { ...b, earned: has60_25 };
+          if (b.id === "combo_master") return { ...b, earned: hasPerfect };
+          return b;
+        });
       }
 
       // ===== 연습 모드 =====
@@ -691,7 +786,7 @@
 
             <div className="small-tip">
               답을 <b>톡톡 누르기만</b> 하면 되는 연습 모드예요. <br />
-              콤보를 길게 이어 볼수록, 머릿속 계산기가 점점 빨라질 거예요.
+              콤보를 길게 이어 볼수록, 머릿속 계산기가 점점 빨라집니다.
             </div>
           </>
         );
@@ -857,14 +952,13 @@
         const shareResult = async () => {
           const summary =
             `【유라의 구구런 타임어택 결과】\n` +
-            `짱구도 놀랄 구구단 실력 등장!\n\n` +
+            `짱구도 놀랄 구구단 실력!\n\n` +
             `⏱ 타임어택: ${timeLimitSec}초\n` +
             `✅ 정답: ${correct}/${total} (${accuracy})\n` +
             `⚡ 평균 반응속도: ${avgTime}초\n` +
             `🏅 등급: ${grade} 등급\n` +
             `🔁 최고 콤보: ${bestCombo}콤보\n\n` +
-            `\"아빠, 나 완전 천재 아냐?\" 느낌의 기록입니다 😄\n` +
-            `- from 유라의 구구런 GUGU RUN`;
+            `- from 유라의 구구런 GUGU RUN (앱 자동 계산 결과)`;
 
           if (navigator.share) {
             try {
@@ -999,224 +1093,6 @@
         );
       }
 
-      // ========= 미션/업적 계산 =========
-      function calcDailyWeeklyMissions(records) {
-        const now = new Date();
-        const todayStr = now.toISOString().slice(0, 10);
-
-        const startOfToday = new Date(
-          now.getFullYear(),
-          now.getMonth(),
-          now.getDate()
-        ).getTime();
-        const sevenDaysAgo = startOfToday - 6 * 24 * 60 * 60 * 1000;
-
-        let todayRuns = 0;
-        let todayTotalSolved = 0;
-        let todayHasHighGrade = false;
-
-        let weekRuns = 0;
-        let weekTotalSolved = 0;
-        const activeDaysSet = new Set();
-
-        for (const r of records) {
-          if (!r.timestamp) continue;
-          const ts = r.timestamp;
-          const d = new Date(ts);
-          const dateStr = d.toISOString().slice(0, 10);
-
-          if (dateStr === todayStr) {
-            todayRuns += 1;
-            todayTotalSolved += r.total || 0;
-            if (r.grade === "S" || r.grade === "A") {
-              todayHasHighGrade = true;
-            }
-          }
-
-          if (ts >= sevenDaysAgo && ts <= startOfToday + 24 * 60 * 60 * 1000) {
-            weekRuns += 1;
-            weekTotalSolved += r.total || 0;
-            activeDaysSet.add(dateStr);
-          }
-        }
-
-        const weekActiveDays = activeDaysSet.size;
-
-        // 미션 조건 (간단 버전)
-        const dailyMission1 = {
-          name: "오늘 문제 30개 풀기",
-          progress: todayTotalSolved,
-          target: 30,
-          done: todayTotalSolved >= 30,
-        };
-        const dailyMission2 = {
-          name: "타임어택 2번 도전하기",
-          progress: todayRuns,
-          target: 2,
-          done: todayRuns >= 2,
-        };
-        const dailyMission3 = {
-          name: "S 또는 A 등급 한 번 받기",
-          progress: todayHasHighGrade ? 1 : 0,
-          target: 1,
-          done: todayHasHighGrade,
-        };
-
-        const weeklyMission1 = {
-          name: "지난 7일 동안 5일 이상 도전하기",
-          progress: weekActiveDays,
-          target: 5,
-          done: weekActiveDays >= 5,
-        };
-        const weeklyMission2 = {
-          name: "지난 7일 동안 문제 200개 풀기",
-          progress: weekTotalSolved,
-          target: 200,
-          done: weekTotalSolved >= 200,
-        };
-
-        return {
-          daily: [dailyMission1, dailyMission2, dailyMission3],
-          weekly: [weeklyMission1, weeklyMission2],
-        };
-      }
-
-      function calcBadges(records) {
-        const badges = [
-          {
-            id: "first_attack",
-            label: "첫 타임어택 완료",
-            earned: false,
-          },
-          {
-            id: "grade_s",
-            label: "S 등급 달성",
-            earned: false,
-          },
-          {
-            id: "grade_a_or_b",
-            label: "A/B 등급 여러 번",
-            earned: false,
-          },
-          {
-            id: "thirty_15correct",
-            label: "30초 모드에서 15개 이상 정답",
-            earned: false,
-          },
-          {
-            id: "sixty_25correct",
-            label: "60초 모드에서 25개 이상 정답",
-            earned: false,
-          },
-          {
-            id: "combo_master",
-            label: "정답률 100% 기록 얻기",
-            earned: false,
-          },
-        ];
-
-        if (!records || records.length === 0) return badges;
-
-        let hasFirst = records.length > 0;
-        let hasS = false;
-        let highGradeCount = 0;
-        let has30_15 = false;
-        let has60_25 = false;
-        let hasPerfect = false;
-
-        for (const r of records) {
-          if (r.grade === "S") hasS = true;
-          if (r.grade === "S" || r.grade === "A" || r.grade === "B") {
-            highGradeCount += 1;
-          }
-          if (r.timeLimitSec === 30 && (r.correct || 0) >= 15) {
-            has30_15 = true;
-          }
-          if (r.timeLimitSec === 60 && (r.correct || 0) >= 25) {
-            has60_25 = true;
-          }
-          const total = r.total || 0;
-          const correct = r.correct || 0;
-          if (total > 0 && correct === total) {
-            hasPerfect = true;
-          }
-        }
-
-        return badges.map((b) => {
-          if (b.id === "first_attack") return { ...b, earned: hasFirst };
-          if (b.id === "grade_s") return { ...b, earned: hasS };
-          if (b.id === "grade_a_or_b")
-            return { ...b, earned: highGradeCount >= 3 };
-          if (b.id === "thirty_15correct") return { ...b, earned: has30_15 };
-          if (b.id === "sixty_25correct") return { ...b, earned: has60_25 };
-          if (b.id === "combo_master") return { ...b, earned: hasPerfect };
-          return b;
-        });
-      }
-
-      // ========= 미션 표시 컴포넌트 =========
-      function MissionsPanel({ recordsVersion }) {
-        const [missions, setMissions] = useState(null);
-
-        useEffect(() => {
-          const recs = loadRecords();
-          setMissions(calcDailyWeeklyMissions(recs));
-        }, [recordsVersion]);
-
-        if (!missions) return null;
-
-        return (
-          <div className="daily-card">
-            <div className="daily-card-title">
-              <span>오늘의 미션</span>
-            </div>
-            {missions.daily.map((m, idx) => (
-              <div className="mission-row" key={idx}>
-                <span className="mission-name">
-                  · {m.name}
-                  <br />
-                  <span style={{ fontSize: "0.7rem", color: "#678" }}>
-                    ({m.progress}/{m.target})
-                  </span>
-                </span>
-                <span
-                  className={
-                    "mission-status " + (m.done ? "done" : "todo")
-                  }
-                >
-                  {m.done ? "완료 🎉" : "진행중"}
-                </span>
-              </div>
-            ))}
-
-            <div
-              className="daily-card-title"
-              style={{ marginTop: 4, marginBottom: 2 }}
-            >
-              <span>주간 미션 (최근 7일)</span>
-            </div>
-            {missions.weekly.map((m, idx) => (
-              <div className="mission-row" key={idx}>
-                <span className="mission-name">
-                  · {m.name}
-                  <br />
-                  <span style={{ fontSize: "0.7rem", color: "#678" }}>
-                    ({m.progress}/{m.target})
-                  </span>
-                </span>
-                <span
-                  className={
-                    "mission-status " + (m.done ? "done" : "todo")
-                  }
-                >
-                  {m.done ? "완료 🎉" : "진행중"}
-                </span>
-              </div>
-            ))}
-          </div>
-        );
-      }
-
       // ========= 기록 보기 탭 =========
       function RecordsView({ recordsVersion }) {
         const [bestRecord, setBestRecord] = useState(null);
@@ -1331,9 +1207,121 @@
         );
       }
 
+      // ========= 미션/용돈 탭 =========
+      function MissionsView({ recordsVersion }) {
+        const [todayInfo, setTodayInfo] = useState(() =>
+          calcTodayMissionAndAllowance(loadRecords())
+        );
+
+        useEffect(() => {
+          const recs = loadRecords();
+          setTodayInfo(calcTodayMissionAndAllowance(recs));
+        }, [recordsVersion]);
+
+        const { todayStr, count60, bestGrade, allowance, missionDone } =
+          todayInfo;
+
+        const shareToday = async () => {
+          const summary =
+            `【유라의 구구런 오늘 미션 · 용돈 결과】\n` +
+            `날짜: ${todayStr}\n\n` +
+            `오늘 60초 타임어택 도전: ${count60}회\n` +
+            `오늘 최고 등급: ${bestGrade === "-" ? "없음" : bestGrade}\n` +
+            `오늘 미션(60초 2회) 달성: ${
+              missionDone ? "예 ✅" : "아직 ❗"
+            }\n` +
+            `오늘 용돈: ${allowance.toLocaleString()}원\n\n` +
+            `※ 유라의 구구런 GUGU RUN 앱에서 자동 계산된 결과입니다.`;
+
+          if (navigator.share) {
+            try {
+              await navigator.share({
+                title: "유라의 구구런 - 오늘 미션 결과",
+                text: summary,
+                url: window.location.href,
+              });
+              return;
+            } catch (e) {}
+          }
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            try {
+              await navigator.clipboard.writeText(summary);
+              alert(
+                "오늘 미션/용돈 결과를 클립보드에 복사했어요.\n카카오톡을 열고 채팅창에 붙여넣기 해서 공유해 주세요!"
+              );
+              return;
+            } catch (e) {}
+          }
+
+          window.prompt(
+            "이 텍스트를 전체 선택(Ctrl+A) 후 복사해서 카카오톡에 붙여넣기 해 주세요:",
+            summary
+          );
+        };
+
+        return (
+          <div>
+            <div className="records-box">
+              <h3>오늘의 미션 (고정)</h3>
+              <div className="mission-info-row">
+                <span className="mission-label">· 미션 내용</span>
+                <span className="mission-value">
+                  60초 타임어택 2회 도전
+                </span>
+              </div>
+              <div className="mission-info-row">
+                <span className="mission-label">· 오늘 60초 도전 횟수</span>
+                <span className="mission-value">{count60}회</span>
+              </div>
+              <div className="mission-info-row">
+                <span className="mission-label">· 미션 달성 여부</span>
+                <span className="mission-value">
+                  {missionDone ? "완료 🎉" : "아직 진행중"}
+                </span>
+              </div>
+            </div>
+
+            <div className="records-box">
+              <h3>오늘의 용돈 등급</h3>
+              <div className="mission-info-row">
+                <span className="mission-label">· 오늘 최고 등급</span>
+                <span className="mission-value">
+                  {bestGrade === "-" ? "아직 없음" : bestGrade}
+                </span>
+              </div>
+              <div className="mission-info-row">
+                <span className="mission-label">
+                  · 용돈 규칙 (하루 1회)
+                </span>
+                <span className="mission-value">
+                  S: 1,000원 / A: 500원
+                </span>
+              </div>
+              <div className="mission-info-row">
+                <span className="mission-label">· 오늘 계산된 용돈</span>
+                <span className="mission-value">
+                  {allowance.toLocaleString()}원
+                </span>
+              </div>
+              <div className="small-tip" style={{ marginTop: 4 }}>
+                매일 자정이 지나면 기록이 새로 계산돼요. <br />
+                오늘 60초 타임어택에서 S 또는 A 등급을 한 번이라도 받으면
+                그날의 용돈이 결정됩니다.
+              </div>
+              <div className="share-row">
+                <button className="share-button" onClick={shareToday}>
+                  오늘 결과 공유하기 (부모님께)
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
       // ========= 전체 App =========
       function App() {
-        const [mode, setMode] = useState("practice"); // 'practice' | 'timeAttack' | 'records'
+        const [mode, setMode] = useState("practice"); // 'practice' | 'timeAttack' | 'records' | 'missions'
         const [timeLimitMs, setTimeLimitMs] = useState(30000); // 기본 30초
         const [recordsVersion, setRecordsVersion] = useState(0);
         const [profile, setProfile] = useState(() =>
@@ -1391,7 +1379,7 @@
               </div>
             </div>
 
-            {/* 타임어택 시간 선택 */}
+            {/* 타임어택 시간 선택 (미션은 항상 60초지만, 연습용으로 30/60 선택 가능) */}
             <div
               style={{
                 display: "flex",
@@ -1401,7 +1389,7 @@
                 gap: 6,
               }}
             >
-              <span className="section-title">타임어택 시간</span>
+              <span className="section-title">타임어택 시간 (연습용)</span>
               <div style={{ display: "flex", gap: 4 }}>
                 <button
                   className={
@@ -1442,10 +1430,13 @@
               >
                 기록 보기
               </button>
+              <button
+                className={"tab-btn" + (mode === "missions" ? " active" : "")}
+                onClick={() => setMode("missions")}
+              >
+                미션·용돈
+              </button>
             </div>
-
-            {/* 오늘/주간 미션 (어떤 탭이든 공통 표시) */}
-            <MissionsPanel recordsVersion={recordsVersion} />
 
             {mode === "practice" && <PracticeMode />}
             {mode === "timeAttack" && (
@@ -1456,6 +1447,9 @@
             )}
             {mode === "records" && (
               <RecordsView recordsVersion={recordsVersion} />
+            )}
+            {mode === "missions" && (
+              <MissionsView recordsVersion={recordsVersion} />
             )}
           </div>
         );
