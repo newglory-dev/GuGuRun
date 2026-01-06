@@ -15,16 +15,11 @@
           sans-serif;
         background: linear-gradient(135deg, #e3f8ff, #f0ffff);
         color: #333;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
       }
 
       .app {
-        width: 100%;
         max-width: 480px;
-        margin: 12px;
+        margin: 8px auto;
         padding: 16px 14px 18px;
         border-radius: 22px;
         background: #ffffffee;
@@ -119,50 +114,6 @@
         font-size: 1.2rem;
       }
 
-      .settings-panel {
-        margin-bottom: 8px;
-        padding: 10px 10px 8px;
-        border-radius: 14px;
-        background: #f0fcff;
-        border: 1px solid #c4ecff;
-        font-size: 0.8rem;
-      }
-
-      .settings-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 6px;
-      }
-
-      .settings-row label {
-        font-weight: 600;
-        color: #333;
-      }
-
-      .settings-options {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-      }
-
-      .settings-chip {
-        border-radius: 999px;
-        border: 1px solid #aee5ff;
-        padding: 3px 8px;
-        font-size: 0.78rem;
-        cursor: pointer;
-        background: #ffffff;
-      }
-
-      .settings-chip.active {
-        background: linear-gradient(90deg, #16c7c0, #2d8bff);
-        color: white;
-        border-color: transparent;
-        font-weight: 600;
-      }
-
       .tabs {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -204,21 +155,21 @@
       .top-row {
         width: 100%;
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        font-size: 0.8rem;
-        color: #555;
+        justify-content: center;
+        margin-top: 4px;
       }
 
       .timer-row {
+        width: 100%;
         display: flex;
         align-items: center;
         gap: 6px;
       }
 
       .time-bar-wrap {
-        width: 140px;
-        height: 6px;
+        flex: 1;
+        height: 8px;
         border-radius: 999px;
         background: #dff4ff;
         overflow: hidden;
@@ -231,11 +182,18 @@
         transition: width 0.1s linear;
       }
 
+      .timer-row span {
+        font-size: 0.8rem;
+        min-width: 42px;
+        text-align: right;
+        color: #555;
+      }
+
       .question {
         font-size: 2.3rem;
         font-weight: 700;
         letter-spacing: 0.08em;
-        margin-top: 4px;
+        margin-top: 2px;
       }
 
       .choices {
@@ -276,10 +234,13 @@
         border-radius: 12px;
         border: 1px solid #c9ecff;
         background: #ffffff;
-        font-size: 1.6rem;
+        font-size: 1.3rem;
         font-weight: 700;
         text-align: center;
         min-height: 44px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .subject-input {
@@ -405,14 +366,6 @@
         font-size: 0.86rem;
       }
 
-      .badge {
-        padding: 2px 6px;
-        border-radius: 999px;
-        font-size: 0.7rem;
-        background: #d9f6ff;
-        color: #0077aa;
-      }
-
       .mission-list {
         margin-top: 4px;
         display: flex;
@@ -471,7 +424,8 @@
         font-weight: 600;
       }
 
-      .mission-popup-overlay {
+      .mission-popup-overlay,
+      .settings-overlay {
         position: fixed;
         inset: 0;
         background: rgba(0, 0, 0, 0.4);
@@ -481,7 +435,8 @@
         z-index: 9999;
       }
 
-      .mission-popup {
+      .mission-popup,
+      .settings-modal {
         width: min(90%, 360px);
         background: #ffffff;
         border-radius: 16px;
@@ -527,6 +482,56 @@
         color: #777;
       }
 
+      .settings-modal-title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+      }
+
+      .settings-panel {
+        font-size: 0.8rem;
+      }
+
+      .settings-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 6px;
+      }
+
+      .settings-row label {
+        font-weight: 600;
+        color: #333;
+      }
+
+      .settings-options {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .settings-chip {
+        border-radius: 999px;
+        border: 1px solid #aee5ff;
+        padding: 3px 8px;
+        font-size: 0.78rem;
+        cursor: pointer;
+        background: #ffffff;
+      }
+
+      .settings-chip.active {
+        background: linear-gradient(90deg, #16c7c0, #2d8bff);
+        color: white;
+        border-color: transparent;
+        font-weight: 600;
+      }
+
+      .settings-footer {
+        margin-top: 8px;
+        text-align: right;
+      }
+
       @media (max-width: 480px) {
         .question {
           font-size: 2.05rem;
@@ -548,13 +553,12 @@
     ></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- React 코드 -->
     <script type="text/babel">
       const { useState, useEffect, useRef } = React;
 
-      // ===== 유틸 =====
       const STORAGE_KEY_PROFILE = "gugurun_profile_v2";
       const STORAGE_KEY_RECORDS = "gugurun_records_v2";
+      const STORAGE_KEY_SETTINGS = "gugurun_settings_v1";
 
       function todayYMD() {
         const d = new Date();
@@ -565,14 +569,13 @@
       }
 
       function getWeekInfo(dateObj = new Date()) {
-        // 현재 날짜 기준 이번 주 월~일
         const d = new Date(
           dateObj.getFullYear(),
           dateObj.getMonth(),
           dateObj.getDate()
         );
-        const day = d.getDay(); // 0(일)~6(토)
-        const diffToMonday = (day + 6) % 7; // 월=0
+        const day = d.getDay();
+        const diffToMonday = (day + 6) % 7;
         const monday = new Date(d);
         monday.setDate(d.getDate() - diffToMonday);
         const sunday = new Date(monday);
@@ -584,24 +587,11 @@
             "0"
           )}.${String(x.getDate()).padStart(2, "0")}`;
 
-        const weekKey = `${monday.getFullYear()}-${String(
-          monday.getMonth() + 1
-        ).padStart(2, "0")}-${String(monday.getDate()).padStart(2, "0")}`;
         return {
           monday,
           sunday,
-          weekKey,
           label: `${fmt(monday)} ~ ${fmt(sunday)}`,
         };
-      }
-
-      function sameDay(ymd, dateObj) {
-        const [y, m, d] = ymd.split("-").map((v) => parseInt(v, 10));
-        return (
-          dateObj.getFullYear() === y &&
-          dateObj.getMonth() + 1 === m &&
-          dateObj.getDate() === d
-        );
       }
 
       function gradePriority(g) {
@@ -615,9 +605,7 @@
       // ===== 레벨/경험치 =====
       const MAX_LEVEL = 50;
 
-      // 레벨별 필요 경험치(증분): lv1->2=300, lv2->3=400, ...
       function xpNeededForLevelUp(level) {
-        // level: 현재 레벨 (1~49)
         return 300 + (level - 1) * 100;
       }
 
@@ -687,13 +675,28 @@
         } catch {}
       }
 
+      function loadSettings() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY_SETTINGS);
+          if (!raw) return null;
+          return JSON.parse(raw);
+        } catch {
+          return null;
+        }
+      }
+
+      function saveSettings(settings) {
+        try {
+          localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(settings));
+        } catch {}
+      }
+
       // ===== 문제 생성 =====
       function getRandomQuestion(excludeOneTimes) {
         const a = Math.floor(Math.random() * 8) + 2; // 2~9
         let b;
         if (excludeOneTimes) {
-          // 타임어택: 1단(×1) 제외
-          b = Math.floor(Math.random() * 8) + 2; // 2~9
+          b = Math.floor(Math.random() * 8) + 2; // 2~9, ×1 제외
         } else {
           b = Math.floor(Math.random() * 9) + 1; // 1~9
         }
@@ -705,7 +708,7 @@
         set.add(correct);
 
         while (set.size < 6) {
-          const delta = Math.floor(Math.random() * 9) - 4; // -4 ~ +4
+          const delta = Math.floor(Math.random() * 9) - 4;
           if (delta === 0) continue;
           const candidate = correct + delta;
           if (candidate <= 0) continue;
@@ -717,7 +720,6 @@
 
       function getQuestionWithChoices(prev, excludeOneTimes) {
         let base;
-        // 바로 직전 문제와 같지 않도록
         do {
           base = getRandomQuestion(excludeOneTimes);
         } while (prev && base.a === prev.a && base.b === prev.b);
@@ -837,24 +839,21 @@
         const [timeLeftMs, setTimeLeftMs] = useState(timeLimitSec * 1000);
         const [total, setTotal] = useState(0);
         const [correct, setCorrect] = useState(0);
-        const [sumTimeAll, setSumTimeAll] = useState(0); // 보조 표기용
+        const [sumTimeAll, setSumTimeAll] = useState(0);
         const [lastMessage, setLastMessage] = useState("");
         const [finishedSummary, setFinishedSummary] = useState(null);
         const timerRef = useRef(null);
 
-        // 정답속도 계산용 ref들
         const gameStartRef = useRef(null);
         const gameEndRef = useRef(null);
-        const correctTimesRef = useRef([]); // 정답 시각 배열
+        const correctTimesRef = useRef([]);
         const lastAnswerTimeRef = useRef(null);
         const totalRef = useRef(0);
         const correctRef = useRef(0);
 
-        // 주관식 입력
         const [inputValue, setInputValue] = useState("");
 
         useEffect(() => {
-          // 시간 설정이 바뀌면 리셋
           setTimeLeftMs(timeLimitSec * 1000);
         }, [timeLimitSec]);
 
@@ -876,12 +875,9 @@
         };
 
         const startGame = () => {
-          if (running) {
-            // 다시 시작
-            if (timerRef.current) {
-              clearInterval(timerRef.current);
-              timerRef.current = null;
-            }
+          if (timerRef.current) {
+            clearInterval(timerRef.current);
+            timerRef.current = null;
           }
           resetState();
           setRunning(true);
@@ -990,13 +986,12 @@
             submitSubjective();
           } else {
             setInputValue((prev) => {
-              if (prev.length >= 3) return prev; // 81까지면 2자리지만 넉넉히 3자리 제한
+              if (prev.length >= 3) return prev;
               return prev + key;
             });
           }
         };
 
-        // 등급/점수 계산 + 기록 저장
         const finalizeGame = (endTime) => {
           const totalQ = totalRef.current;
           const correctQ = correctRef.current;
@@ -1005,10 +1000,9 @@
           const durationSec = timeLimitSec;
           const accuracy = totalQ > 0 ? correctQ / totalQ : 0;
 
-          let avgAll =
+          const avgAll =
             totalQ > 0 ? (sumTimeAll / Math.max(totalQ, 1)).toFixed(2) : "-";
 
-          // 정답 속도: 정답 -> 다음 정답까지의 시간 + 마지막 정답~타임아웃 포함
           let avgCorrectSpeedSec = "-";
           const correctTimes = correctTimesRef.current;
           if (correctTimes.length > 0 && gameStartRef.current) {
@@ -1021,8 +1015,8 @@
               intervals.push(t - prev);
               prev = t;
             }
-            // 마지막 정답 이후 타임아웃까지 누적 (치트 방지)
-            intervals[intervals.length - 1] += end - correctTimes[correctTimes.length - 1];
+            intervals[intervals.length - 1] +=
+              end - correctTimes[correctTimes.length - 1];
 
             const WARMUP_CORRECTS = 3;
             const gradedIntervals =
@@ -1040,22 +1034,17 @@
             }
           }
 
-          // 점수: 속도 + 정답 수 + 정확도 모두 반영
           const effectiveAvgSec =
             avgCorrectSpeedSec === "-" ? null : parseFloat(avgCorrectSpeedSec);
           let score = 0;
           if (effectiveAvgSec && correctQ > 0) {
-            // 속도가 빠를수록, 정답 개수/정확도가 높을수록 점수↑
             score = Math.round(
               (correctQ * accuracy * 100) / (effectiveAvgSec * 0.7 + 0.3)
             );
           }
 
-          // 등급 판정: 최소 조건 + 속도 조건
-          // ★ 완화된 등급 기준 (요청하신 값 반영)
           let grade = "-";
           if (effectiveAvgSec && correctQ > 0) {
-            // 최소 조건
             const minCorrectForS = 15;
             const minCorrectForA = 10;
             const minAccuracyForS = 0.9;
@@ -1097,9 +1086,7 @@
           };
 
           setFinishedSummary(result);
-          if (onGameFinished) {
-            onGameFinished(result);
-          }
+          if (onGameFinished) onGameFinished(result);
         };
 
         const timeRatio = timeLeftMs / (timeLimitSec * 1000);
@@ -1121,7 +1108,6 @@
               </div>
 
               <div className="top-row">
-                <div>타임어택 시간</div>
                 <div className="timer-row">
                   <div className="time-bar-wrap">
                     <div
@@ -1129,10 +1115,7 @@
                       style={{ width: timeBarWidth }}
                     ></div>
                   </div>
-                  <span>
-                    {secondsLeft}
-                    초
-                  </span>
+                  <span>{secondsLeft}초</span>
                 </div>
               </div>
 
@@ -1160,19 +1143,12 @@
                       <input
                         className="subject-input"
                         type="tel"
-                        placeholder="정답을 숫자로 입력"
+                        placeholder="정답을 숫자로 입력 후 엔터"
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
                         onKeyDown={handleSystemInputKeyDown}
                         disabled={!running}
                       />
-                      <button
-                        className="primary-button"
-                        onClick={submitSubjective}
-                        disabled={!running}
-                      >
-                        입력
-                      </button>
                     </>
                   ) : (
                     <>
@@ -1180,22 +1156,33 @@
                         {inputValue || "숫자를 눌러서 입력"}
                       </div>
                       <div className="keypad">
-                        {["1", "2", "3", "삭제", "4", "5", "6", "입력", "7", "8", "9", "0"].map(
-                          (key) => (
-                            <button
-                              key={key}
-                              className={
-                                key === "삭제" || key === "입력"
-                                  ? "key-btn special"
-                                  : "key-btn"
-                              }
-                              onClick={() => handleKeypadPress(key)}
-                              disabled={!running}
-                            >
-                              {key}
-                            </button>
-                          )
-                        )}
+                        {[
+                          "1",
+                          "2",
+                          "3",
+                          "삭제",
+                          "4",
+                          "5",
+                          "6",
+                          "입력",
+                          "7",
+                          "8",
+                          "9",
+                          "0",
+                        ].map((key) => (
+                          <button
+                            key={key}
+                            className={
+                              key === "삭제" || key === "입력"
+                                ? "key-btn special"
+                                : "key-btn"
+                            }
+                            onClick={() => handleKeypadPress(key)}
+                            disabled={!running}
+                          >
+                            {key}
+                          </button>
+                        ))}
                       </div>
                     </>
                   )}
@@ -1208,7 +1195,7 @@
                   onClick={startGame}
                   style={{ padding: "8px 20px" }}
                 >
-                  {running ? "다시 시작" : "시작하기"}
+                  시작하기
                 </button>
               </div>
             </div>
@@ -1229,8 +1216,7 @@
                 타임어택 종료! 🎉
                 <br />
                 {timeLimitSec}초 동안 총 {finishedSummary.total}문제 중{" "}
-                {finishedSummary.correct}개 정답,
-                정답률{" "}
+                {finishedSummary.correct}개 정답, 정답률{" "}
                 {finishedSummary.total > 0
                   ? Math.round(
                       (finishedSummary.correct / finishedSummary.total) * 100
@@ -1273,11 +1259,7 @@
         const weekRecords = records.filter((r) => {
           const [y, m, d] = r.date.split("-").map((x) => parseInt(x, 10));
           const dt = new Date(y, m - 1, d);
-          return (
-            dt >= weekInfo.monday &&
-            dt <= weekInfo.sunday &&
-            r.durationSec === 60
-          );
+          return dt >= weekInfo.monday && dt <= weekInfo.sunday;
         });
 
         const todayCount60 = todayRecords.filter(
@@ -1410,7 +1392,6 @@
           );
         }
 
-        // 이 기기의 최고 기록 (등급 우선, 점수, 정답 수)
         const bestRecord = [...records].sort((a, b) => {
           const gp = gradePriority(b.grade) - gradePriority(a.grade);
           if (gp !== 0) return gp;
@@ -1513,17 +1494,22 @@
 
       // ===== 메인 App =====
       function App() {
-        const [mode, setMode] = useState("timeAttack"); // 'practice' | 'timeAttack' | 'missions' | 'records'
+        const [mode, setMode] = useState("timeAttack");
         const [profile, setProfile] = useState(() => loadProfile());
         const [records, setRecords] = useState(() => loadRecords());
 
-        // 설정: 타임어택 시간, 객관식/주관식, 키보드 타입
-        const [timeLimitSec, setTimeLimitSec] = useState(60);
-        const [answerType, setAnswerType] = useState("choice"); // 'choice' | 'input'
-        const [keyboardMode, setKeyboardMode] = useState("screen"); // 'system' | 'screen'
-        const [showSettings, setShowSettings] = useState(false);
+        const loadedSettings = loadSettings();
+        const [timeLimitSec, setTimeLimitSec] = useState(
+          loadedSettings?.timeLimitSec || 60
+        );
+        const [answerType, setAnswerType] = useState(
+          loadedSettings?.answerType || "choice"
+        );
+        const [keyboardMode, setKeyboardMode] = useState(
+          loadedSettings?.keyboardMode || "screen"
+        );
 
-        const [lastGameResult, setLastGameResult] = useState(null);
+        const [showSettings, setShowSettings] = useState(false);
         const [missionPopup, setMissionPopup] = useState(null);
 
         useEffect(() => {
@@ -1534,24 +1520,23 @@
           saveRecords(records);
         }, [records]);
 
-        // 타임어택 종료 시
+        useEffect(() => {
+          saveSettings({ timeLimitSec, answerType, keyboardMode });
+        }, [timeLimitSec, answerType, keyboardMode]);
+
         const handleGameFinished = (result) => {
-          setLastGameResult(result);
           setRecords((prev) => [...prev, result]);
 
-          // 경험치 계산
           let gainedXp = 0;
-          gainedXp += result.correct * 10; // 정답당 10xp
+          gainedXp += result.correct * 10;
           if (result.grade === "S") gainedXp += 200;
           else if (result.grade === "A") gainedXp += 120;
           else if (result.grade === "B") gainedXp += 60;
           else if (result.grade === "C") gainedXp += 30;
 
           const newTotalXp = (profile.totalXp || 0) + gainedXp;
-          const newProfile = { ...profile, totalXp: newTotalXp };
-          setProfile(newProfile);
+          setProfile({ ...profile, totalXp: newTotalXp });
 
-          // 오늘 미션 달성 여부 체크 (60초만 의미 있음)
           const today = todayYMD();
           const todayRecords = [...records, result].filter(
             (r) => r.date === today
@@ -1574,16 +1559,16 @@
             gradePriority(todayBestGrade) >= gradePriority("A");
 
           if (dailyDone && result.durationSec === 60) {
-            // 팝업용 공유 문구(짱구 톤 유지, 간단하게)
             const gradeText = result.grade || "-";
             const shareText = [
               `[유라의 구구런 오늘 미션 완료 보고서]`,
               ``,
               `오늘 타임어택 결과는 ${result.durationSec}초 동안`,
               `${result.total}문제 중 ${result.correct}개 정답!`,
-              `정답률 ${result.total > 0
-                ? Math.round((result.correct / result.total) * 100) + "%"
-                : "-"
+              `정답률 ${
+                result.total > 0
+                  ? Math.round((result.correct / result.total) * 100) + "%"
+                  : "-"
               }, 정답 속도 평균 ${
                 result.avgCorrectSpeedSec != null
                   ? result.avgCorrectSpeedSec.toFixed(2) + "초"
@@ -1598,9 +1583,7 @@
                 : "오늘은 연습 느낌이라 등급은 살짝 아쉽지만, 내일 더 잘할 거임!",
             ].join("\n");
 
-            setMissionPopup({
-              text: shareText,
-            });
+            setMissionPopup({ text: shareText });
           }
         };
 
@@ -1625,158 +1608,174 @@
         };
 
         return (
-          <div className="app">
-            <div className="title">유라의 구구런 GUGU RUN</div>
-            <div className="subtitle">
-              구구단 속도 + 정확도 둘 다 잡기
-            </div>
-
-            <div className="header-row">
-              <div className="level-card">
-                <div className="level-top">
-                  <div className="level-name">{title}</div>
-                  <div className="level-info">
-                    Lv.{level} · 총 경험치 {profile.totalXp || 0}
-                  </div>
-                </div>
-                <div className="level-bar-wrap">
-                  <div
-                    className="level-bar-inner"
-                    style={{ width: levelBarWidth }}
-                  ></div>
-                </div>
-                <div className="level-bottom">{nextLevelText}</div>
+          <>
+            <div className="app">
+              <div className="title">유라의 구구런 GUGU RUN</div>
+              <div className="subtitle">
+                구구단 속도 + 정확도 둘 다 잡기
               </div>
-              <button
-                className="settings-btn"
-                onClick={() => setShowSettings((v) => !v)}
-                title="설정"
-              >
-                <span>⚙️</span>
-              </button>
+
+              <div className="header-row">
+                <div className="level-card">
+                  <div className="level-top">
+                    <div className="level-name">{title}</div>
+                    <div className="level-info">
+                      Lv.{level} · 총 경험치 {profile.totalXp || 0}
+                    </div>
+                  </div>
+                  <div className="level-bar-wrap">
+                    <div
+                      className="level-bar-inner"
+                      style={{ width: levelBarWidth }}
+                    ></div>
+                  </div>
+                  <div className="level-bottom">{nextLevelText}</div>
+                </div>
+                <button
+                  className="settings-btn"
+                  onClick={() => setShowSettings(true)}
+                  title="설정"
+                >
+                  <span>⚙️</span>
+                </button>
+              </div>
+
+              <div className="tabs">
+                <button
+                  className={
+                    "tab-btn " + (mode === "practice" ? "active" : "")
+                  }
+                  onClick={() => setMode("practice")}
+                >
+                  연습
+                </button>
+                <button
+                  className={
+                    "tab-btn " + (mode === "timeAttack" ? "active" : "")
+                  }
+                  onClick={() => setMode("timeAttack")}
+                >
+                  타임어택
+                </button>
+                <button
+                  className={
+                    "tab-btn " + (mode === "missions" ? "active" : "")
+                  }
+                  onClick={() => setMode("missions")}
+                >
+                  미션
+                </button>
+                <button
+                  className={
+                    "tab-btn " + (mode === "records" ? "active" : "")
+                  }
+                  onClick={() => setMode("records")}
+                >
+                  기록
+                </button>
+              </div>
+
+              {mode === "practice" && <PracticeMode />}
+
+              {mode === "timeAttack" && (
+                <TimeAttackMode
+                  timeLimitSec={timeLimitSec}
+                  answerType={answerType}
+                  keyboardMode={keyboardMode}
+                  onGameFinished={handleGameFinished}
+                />
+              )}
+
+              {mode === "missions" && <MissionsTab records={records} />}
+
+              {mode === "records" && <RecordsTab records={records} />}
             </div>
 
             {showSettings && (
-              <div className="settings-panel">
-                <div className="settings-row">
-                  <label>타임어택 시간</label>
-                  <div className="settings-options">
-                    {[30, 60].map((sec) => (
-                      <button
-                        key={sec}
-                        className={
-                          "settings-chip " +
-                          (timeLimitSec === sec ? "active" : "")
-                        }
-                        onClick={() => setTimeLimitSec(sec)}
-                      >
-                        {sec}초
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="settings-row">
-                  <label>문제 유형</label>
-                  <div className="settings-options">
-                    <button
-                      className={
-                        "settings-chip " +
-                        (answerType === "choice" ? "active" : "")
-                      }
-                      onClick={() => setAnswerType("choice")}
-                    >
-                      객관식
-                    </button>
-                    <button
-                      className={
-                        "settings-chip " +
-                        (answerType === "input" ? "active" : "")
-                      }
-                      onClick={() => setAnswerType("input")}
-                    >
-                      주관식
-                    </button>
-                  </div>
-                </div>
-
-                {answerType === "input" && (
-                  <div className="settings-row">
-                    <label>주관식 입력 방식</label>
-                    <div className="settings-options">
-                      <button
-                        className={
-                          "settings-chip " +
-                          (keyboardMode === "system" ? "active" : "")
-                        }
-                        onClick={() => setKeyboardMode("system")}
-                      >
-                        시스템 키보드
-                      </button>
-                      <button
-                        className={
-                          "settings-chip " +
-                          (keyboardMode === "screen" ? "active" : "")
-                        }
-                        onClick={() => setKeyboardMode("screen")}
-                      >
-                        스크린 키보드
-                      </button>
+              <div className="settings-overlay">
+                <div className="settings-modal">
+                  <div className="settings-modal-title">설정</div>
+                  <div className="settings-panel">
+                    <div className="settings-row">
+                      <label>타임어택 시간</label>
+                      <div className="settings-options">
+                        {[30, 60].map((sec) => (
+                          <button
+                            key={sec}
+                            className={
+                              "settings-chip " +
+                              (timeLimitSec === sec ? "active" : "")
+                            }
+                            onClick={() => setTimeLimitSec(sec)}
+                          >
+                            {sec}초
+                          </button>
+                        ))}
+                      </div>
                     </div>
+
+                    <div className="settings-row">
+                      <label>문제 유형</label>
+                      <div className="settings-options">
+                        <button
+                          className={
+                            "settings-chip " +
+                            (answerType === "choice" ? "active" : "")
+                          }
+                          onClick={() => setAnswerType("choice")}
+                        >
+                          객관식
+                        </button>
+                        <button
+                          className={
+                            "settings-chip " +
+                            (answerType === "input" ? "active" : "")
+                          }
+                          onClick={() => setAnswerType("input")}
+                        >
+                          주관식
+                        </button>
+                      </div>
+                    </div>
+
+                    {answerType === "input" && (
+                      <div className="settings-row">
+                        <label>주관식 입력 방식</label>
+                        <div className="settings-options">
+                          <button
+                            className={
+                              "settings-chip " +
+                              (keyboardMode === "system" ? "active" : "")
+                            }
+                            onClick={() => setKeyboardMode("system")}
+                          >
+                            시스템 키보드
+                          </button>
+                          <button
+                            className={
+                              "settings-chip " +
+                              (keyboardMode === "screen" ? "active" : "")
+                            }
+                            onClick={() => setKeyboardMode("screen")}
+                          >
+                            스크린 키보드
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
+
+                  <div className="settings-footer">
+                    <button
+                      className="secondary-button"
+                      onClick={() => setShowSettings(false)}
+                    >
+                      닫기
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
-
-            <div className="tabs">
-              <button
-                className={
-                  "tab-btn " + (mode === "practice" ? "active" : "")
-                }
-                onClick={() => setMode("practice")}
-              >
-                연습
-              </button>
-              <button
-                className={
-                  "tab-btn " + (mode === "timeAttack" ? "active" : "")
-                }
-                onClick={() => setMode("timeAttack")}
-              >
-                타임어택
-              </button>
-              <button
-                className={
-                  "tab-btn " + (mode === "missions" ? "active" : "")
-                }
-                onClick={() => setMode("missions")}
-              >
-                미션
-              </button>
-              <button
-                className={
-                  "tab-btn " + (mode === "records" ? "active" : "")
-                }
-                onClick={() => setMode("records")}
-              >
-                기록
-              </button>
-            </div>
-
-            {mode === "practice" && <PracticeMode />}
-
-            {mode === "timeAttack" && (
-              <TimeAttackMode
-                timeLimitSec={timeLimitSec}
-                answerType={answerType}
-                keyboardMode={keyboardMode}
-                onGameFinished={handleGameFinished}
-              />
-            )}
-
-            {mode === "missions" && <MissionsTab records={records} />}
-
-            {mode === "records" && <RecordsTab records={records} />}
 
             {missionPopup && (
               <div className="mission-popup-overlay">
@@ -1812,7 +1811,7 @@
                 </div>
               </div>
             )}
-          </div>
+          </>
         );
       }
 
