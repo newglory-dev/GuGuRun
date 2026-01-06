@@ -532,6 +532,74 @@
         text-align: right;
       }
 
+      /* ==== 정답/오답 이펙트 ==== */
+      .effect-burst {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9000;
+        animation: burst-pop 0.45s ease-out forwards;
+      }
+
+      .effect-burst.correct {
+        background: radial-gradient(
+          circle at center,
+          rgba(0, 255, 170, 0.35),
+          transparent 70%
+        );
+      }
+
+      .effect-burst.wrong {
+        background: radial-gradient(
+          circle at center,
+          rgba(255, 80, 80, 0.3),
+          transparent 70%
+        );
+      }
+
+      @keyframes burst-pop {
+        0% {
+          transform: scale(0.9);
+          opacity: 0;
+        }
+        40% {
+          transform: scale(1.03);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1.1);
+          opacity: 0;
+        }
+      }
+
+      .shake {
+        animation: shake-anim 0.35s ease;
+      }
+
+      @keyframes shake-anim {
+        0% {
+          transform: translateX(0);
+        }
+        20% {
+          transform: translateX(-4px);
+        }
+        40% {
+          transform: translateX(4px);
+        }
+        60% {
+          transform: translateX(-3px);
+        }
+        80% {
+          transform: translateX(3px);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
       @media (max-width: 480px) {
         .question {
           font-size: 2.05rem;
@@ -738,10 +806,17 @@
         const [total, setTotal] = useState(0);
         const [correct, setCorrect] = useState(0);
         const [sumTime, setSumTime] = useState(0);
+        const [effect, setEffect] = useState(null);
 
         useEffect(() => {
           setQuestionStart(Date.now());
         }, [question]);
+
+        useEffect(() => {
+          if (!effect) return;
+          const t = setTimeout(() => setEffect(null), 450);
+          return () => clearTimeout(t);
+        }, [effect]);
 
         const handleChoice = (choice) => {
           const now = Date.now();
@@ -757,6 +832,7 @@
             setLastMessage(
               `정답! ${correctAnswer} ✨ (${elapsed.toFixed(2)}초)`
             );
+            setEffect("correct");
           } else {
             setLastCorrect(false);
             setLastMessage(
@@ -764,6 +840,7 @@
                 2
               )}초)`
             );
+            setEffect("wrong");
           }
 
           setQuestion((prev) => getQuestionWithChoices(prev, false));
@@ -775,7 +852,13 @@
 
         return (
           <>
-            <div className="question-box">
+            {effect && <div className={`effect-burst ${effect}`}></div>}
+
+            <div
+              className={
+                "question-box" + (effect === "wrong" ? " shake" : "")
+              }
+            >
               <div className="question-label">연습 모드 - 객관식 스피드 연습</div>
               <div className="question">
                 {question.a} × {question.b} = ?
@@ -852,10 +935,17 @@
         const correctRef = useRef(0);
 
         const [inputValue, setInputValue] = useState("");
+        const [effect, setEffect] = useState(null);
 
         useEffect(() => {
           setTimeLeftMs(timeLimitSec * 1000);
         }, [timeLimitSec]);
+
+        useEffect(() => {
+          if (!effect) return;
+          const t = setTimeout(() => setEffect(null), 450);
+          return () => clearTimeout(t);
+        }, [effect]);
 
         const resetState = () => {
           setQuestion((prev) => getQuestionWithChoices(null, true));
@@ -872,6 +962,7 @@
           lastAnswerTimeRef.current = null;
           totalRef.current = 0;
           correctRef.current = 0;
+          setEffect(null);
         };
 
         const startGame = () => {
@@ -930,10 +1021,12 @@
             setLastMessage(
               `굿! 정답 ${correctAnswer} (${elapsed.toFixed(2)}초)`
             );
+            setEffect("correct");
           } else {
             setLastMessage(
               `앗! 정답은 ${correctAnswer} (${elapsed.toFixed(2)}초)`
             );
+            setEffect("wrong");
           }
 
           lastAnswerTimeRef.current = now;
@@ -961,10 +1054,12 @@
             setLastMessage(
               `굿! 정답 ${correctAnswer} (${elapsed.toFixed(2)}초)`
             );
+            setEffect("correct");
           } else {
             setLastMessage(
               `앗! 정답은 ${correctAnswer} (${elapsed.toFixed(2)}초)`
             );
+            setEffect("wrong");
           }
 
           lastAnswerTimeRef.current = now;
@@ -1102,7 +1197,13 @@
 
         return (
           <>
-            <div className="question-box">
+            {effect && <div className={`effect-burst ${effect}`}></div>}
+
+            <div
+              className={
+                "question-box" + (effect === "wrong" ? " shake" : "")
+              }
+            >
               <div className="question-label">
                 타임어택 모드 - {timeLimitSec}초 안에 최대한 많이!
               </div>
