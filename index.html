@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <title>유라의 구구런 GUGU RUN - 구구단 타임어택 연습</title>
-    <!-- 반응형 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       * {
@@ -14,257 +13,321 @@
         margin: 0;
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
           sans-serif;
-        background: linear-gradient(135deg, #ccf6ff, #e0fffb);
+        background: linear-gradient(135deg, #e3f8ff, #f0ffff);
         color: #333;
         display: flex;
+        align-items: center;
         justify-content: center;
-        align-items: flex-start;
         min-height: 100vh;
-        padding-top: 8px;
       }
 
       .app {
         width: 100%;
-        max-width: 420px;
-        margin: 0 auto;
-        padding: 18px 16px;
-        border-radius: 24px;
-        background: #f7feff;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-        border: 1px solid #b3ecff;
+        max-width: 480px;
+        margin: 12px;
+        padding: 16px 14px 18px;
+        border-radius: 22px;
+        background: #ffffffee;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        backdrop-filter: blur(6px);
       }
 
       .title {
         text-align: center;
-        font-size: 1.6rem;
+        font-size: 1.5rem;
         font-weight: 800;
-        margin-bottom: 4px;
-        background: linear-gradient(90deg, #00c9a7, #00a8ff);
+        margin-bottom: 2px;
+        background: linear-gradient(90deg, #16c7c0, #2d8bff);
         -webkit-background-clip: text;
         color: transparent;
       }
 
+      .subtitle {
+        text-align: center;
+        font-size: 0.85rem;
+        color: #555;
+        margin-bottom: 10px;
+      }
+
       .header-row {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        margin-bottom: 6px;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 10px;
       }
 
-      .subtitle {
-        font-size: 0.85rem;
-        color: #28708a;
+      .level-card {
+        flex: 1;
+        padding: 8px 10px 10px;
+        border-radius: 16px;
+        background: #e1f9ff;
+        border: 1px solid #b9ecff;
       }
 
-      .settings-button {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
+      .level-top {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.83rem;
+        margin-bottom: 4px;
+      }
+
+      .level-name {
+        font-weight: 700;
+      }
+
+      .level-info {
+        font-weight: 600;
+        color: #0077aa;
+      }
+
+      .level-bar-wrap {
+        width: 100%;
+        height: 6px;
+        border-radius: 999px;
+        background: #c6f3ff;
+        overflow: hidden;
+        margin-bottom: 4px;
+      }
+
+      .level-bar-inner {
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #16c7c0, #2d8bff);
+        transition: width 0.3s ease;
+      }
+
+      .level-bottom {
+        font-size: 0.75rem;
+        color: #555;
+        text-align: right;
+      }
+
+      .settings-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 14px;
         border: none;
-        padding: 0;
-        margin-left: 6px;
-        background: radial-gradient(circle at 30% 30%, #ffffff, #b3f0ff);
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        background: #d8f4ff;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
       }
 
-      .settings-button img {
-        width: 18px;
-        height: 18px;
-        filter: hue-rotate(170deg) saturate(1.4);
+      .settings-btn span {
+        font-size: 1.2rem;
       }
 
-      .settings-button:active {
-        transform: translateY(1px);
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-      }
-
-      .profile-row {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        margin-bottom: 6px;
-        padding: 10px 10px;
+      .settings-panel {
+        margin-bottom: 8px;
+        padding: 10px 10px 8px;
         border-radius: 14px;
-        background: #ecfcff;
-        border: 1px solid #c0f0ff;
-        font-size: 0.9rem;
-        color: #345;
+        background: #f0fcff;
+        border: 1px solid #c4ecff;
+        font-size: 0.8rem;
       }
 
-      .profile-main {
+      .settings-row {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-      }
-
-      .profile-title {
-        font-weight: 700;
-      }
-
-      .profile-level {
-        font-size: 0.9rem;
-        font-weight: 700;
-        color: #008b8b;
-      }
-
-      .xp-bar {
-        position: relative;
-        width: 100%;
-        height: 8px;
-        border-radius: 999px;
-        background: #d6f7ff;
-        overflow: hidden;
-        margin-top: 4px;
-      }
-
-      .xp-bar-fill {
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        border-radius: 999px;
-        background: linear-gradient(90deg, #00c9a7, #00a8ff);
-      }
-
-      .xp-text {
-        font-size: 0.8rem;
-        text-align: right;
-        color: #567;
-        margin-top: 2px;
-      }
-
-      .current-config-row {
-        display: flex;
         justify-content: space-between;
-        margin-bottom: 4px;
-        font-size: 0.8rem;
-        color: #345;
+        margin-bottom: 6px;
       }
 
-      .current-config-label {
-        font-weight: 500;
-      }
-
-      .current-config-value {
+      .settings-row label {
         font-weight: 600;
-        color: #007f7f;
+        color: #333;
+      }
+
+      .settings-options {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .settings-chip {
+        border-radius: 999px;
+        border: 1px solid #aee5ff;
+        padding: 3px 8px;
+        font-size: 0.78rem;
+        cursor: pointer;
+        background: #ffffff;
+      }
+
+      .settings-chip.active {
+        background: linear-gradient(90deg, #16c7c0, #2d8bff);
+        color: white;
+        border-color: transparent;
+        font-weight: 600;
+      }
+
+      .tabs {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+
+      .tab-btn {
+        padding: 7px 0;
+        border-radius: 999px;
+        border: none;
+        background: #e3f6ff;
+        font-size: 0.78rem;
+        cursor: pointer;
+      }
+
+      .tab-btn.active {
+        background: linear-gradient(90deg, #16c7c0, #2d8bff);
+        color: #fff;
+        font-weight: 600;
       }
 
       .question-box {
-        margin: 10px 0;
-        padding: 14px 10px;
+        margin: 8px 0 12px;
+        padding: 16px 12px 14px;
         border-radius: 18px;
-        background: #e7fbff;
+        background: #f4fbff;
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 6px;
-        border: 1px dashed #7ee0ff;
-        transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
-      }
-
-      .question-box.fever {
-        background: linear-gradient(135deg, #d9fff3, #e5fffb);
-        box-shadow: 0 0 0 2px #00c9a777, 0 6px 14px rgba(0, 0, 0, 0.12);
-        transform: translateY(-1px);
-      }
-
-      .fever-label {
-        font-size: 0.75rem;
-        color: #00a86b;
-        font-weight: 700;
       }
 
       .question-label {
         font-size: 0.85rem;
-        color: #28708a;
+        color: #777;
+      }
+
+      .top-row {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8rem;
+        color: #555;
+      }
+
+      .timer-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .time-bar-wrap {
+        width: 140px;
+        height: 6px;
+        border-radius: 999px;
+        background: #dff4ff;
+        overflow: hidden;
+      }
+
+      .time-bar-inner {
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #16c7c0, #2d8bff);
+        transition: width 0.1s linear;
       }
 
       .question {
-        font-size: 2.1rem;
-        font-weight: 800;
-        letter-spacing: 0.06em;
-      }
-
-      .timer {
-        font-size: 0.85rem;
-        color: #00a8ff;
-      }
-
-      .combo-row {
-        margin-top: 2px;
-        font-size: 0.8rem;
-        color: #345;
-        display: flex;
-        gap: 8px;
-        justify-content: center;
-      }
-
-      .combo-current {
+        font-size: 2.3rem;
         font-weight: 700;
-        color: #007f7f;
+        letter-spacing: 0.08em;
+        margin-top: 4px;
       }
 
-      .combo-best {
-        color: #567;
-      }
-
-      .stats {
-        margin-top: 10px;
-        padding: 10px 8px;
-        border-radius: 14px;
-        background: #f0fcff;
-        font-size: 0.85rem;
+      .choices {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        row-gap: 2px;
-        border: 1px solid #ccefff;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-top: 10px;
+        width: 100%;
       }
 
-      .stats span.label {
-        color: #567;
-      }
-
-      .stats span.value {
+      .choice-btn {
+        padding: 9px 0;
+        border-radius: 12px;
+        border: none;
+        background: #ffffff;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+        font-size: 1.05rem;
         font-weight: 600;
+        cursor: pointer;
       }
 
-      .result {
-        margin-top: 8px;
+      .choice-btn:active {
+        transform: translateY(1px);
+      }
+
+      .subject-input-wrap {
+        margin-top: 10px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        align-items: center;
+      }
+
+      .subject-input-display {
+        width: 100%;
         padding: 8px 10px;
         border-radius: 12px;
-        font-size: 0.9rem;
+        border: 1px solid #c9ecff;
+        background: #ffffff;
+        font-size: 1.6rem;
+        font-weight: 700;
+        text-align: center;
+        min-height: 44px;
       }
 
-      .result.ok {
-        background: #e3fbf3;
-        color: #0c7a4c;
-      }
-
-      .result.bad {
-        background: #ffeef0;
-        color: #c62828;
-      }
-
-      .small-tip {
-        margin-top: 6px;
-        font-size: 0.78rem;
-        color: #567;
+      .subject-input {
+        width: 100%;
+        padding: 9px 10px;
+        border-radius: 12px;
+        border: 1px solid #c9ecff;
+        font-size: 1.4rem;
         text-align: center;
       }
 
-      .primary-button {
-        padding: 8px 14px;
-        border-radius: 16px;
+      .subject-input:focus {
+        outline: none;
+        border-color: #16c7c0;
+        box-shadow: 0 0 0 2px #b7f2ff;
+      }
+
+      .keypad {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+      }
+
+      .key-btn {
+        padding: 8px 0;
+        border-radius: 10px;
         border: none;
-        background: linear-gradient(135deg, #00c9a7, #00a8ff);
+        background: #ffffff;
+        font-size: 1.1rem;
+        font-weight: 600;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
+        cursor: pointer;
+      }
+
+      .key-btn.special {
+        background: #e3f6ff;
+        font-size: 0.92rem;
+      }
+
+      .primary-button {
+        padding: 9px 18px;
+        border-radius: 999px;
+        border: none;
+        background: linear-gradient(135deg, #16c7c0, #2d8bff);
         color: white;
         font-size: 0.95rem;
-        font-weight: 700;
+        font-weight: 600;
         cursor: pointer;
         white-space: nowrap;
       }
@@ -273,387 +336,200 @@
         transform: translateY(1px);
       }
 
-      /* 객관식 선택지 스타일 */
-      .choices {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 6px;
-        margin-top: 10px;
-        width: 100%;
+      .center-row {
+        margin-top: 8px;
+        text-align: center;
       }
 
-      .choice-btn {
-        padding: 8px 0;
-        border-radius: 14px;
-        border: none;
-        background: #ffffff;
-        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
-        font-size: 1.05rem;
-        font-weight: 700;
-        cursor: pointer;
-      }
-
-      .choice-btn:active {
-        transform: translateY(1px);
-      }
-
-      .section-title {
-        font-size: 0.78rem;
-        color: #456;
-      }
-
-      .pill-chip {
-        padding: 4px 8px;
-        border-radius: 999px;
-        border: none;
-        font-size: 0.78rem;
-        cursor: pointer;
-        background: #d3f8ff;
-        color: #28708a;
-      }
-
-      .pill-chip.active {
-        background: #00c9a7;
-        color: #fff;
-      }
-
-      .tab-row {
-        display: flex;
-        gap: 6px;
-        margin-top: 4px;
-        margin-bottom: 4px;
-      }
-
-      .tab-btn {
-        flex: 1;
-        padding: 8px 0;
+      .stats {
+        margin-top: 8px;
+        padding: 10px 10px;
         border-radius: 16px;
-        border: none;
+        background: #f8fdff;
+        font-size: 0.85rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        row-gap: 4px;
+      }
+
+      .stats span.label {
+        color: #777;
+      }
+
+      .stats span.value {
+        font-weight: 600;
+      }
+
+      .result {
+        margin-top: 8px;
+        padding: 10px 10px;
+        border-radius: 12px;
         font-size: 0.9rem;
-        font-weight: 700;
-        cursor: pointer;
-        background: #d3f8ff;
-        color: #28708a;
       }
 
-      .tab-btn.active {
-        background: linear-gradient(135deg, #00c9a7, #00a8ff);
-        color: #fff;
+      .result.ok {
+        background: #e8f9f1;
+        color: #1c7c4e;
       }
 
-      .share-row {
+      .result.bad {
+        background: #ffeff0;
+        color: #c62828;
+      }
+
+      .small-tip {
         margin-top: 6px;
+        font-size: 0.8rem;
+        color: #777;
         text-align: center;
       }
 
-      .share-button {
-        padding: 6px 10px;
-        border-radius: 14px;
-        border: none;
-        background: #ffdd57;
-        color: #5a4300;
-        font-size: 0.85rem;
-        font-weight: 700;
-        cursor: pointer;
-      }
-
-      .share-button:active {
-        transform: translateY(1px);
-      }
-
-      .records-box {
+      .section-card {
         margin-top: 6px;
-        padding: 8px 8px;
-        border-radius: 14px;
-        background: #f0fcff;
-        font-size: 0.8rem;
-        color: #345;
-        border: 1px solid #ccefff;
+        padding: 10px 10px 8px;
+        border-radius: 16px;
+        background: #f5fcff;
+        border: 1px solid #d6f0ff;
+        font-size: 0.82rem;
       }
 
-      .records-box h3 {
-        margin: 0 0 4px;
-        font-size: 0.85rem;
-        color: #256d85;
-      }
-
-      .records-table-wrapper {
-        margin-top: 4px;
-        max-height: 260px;
-        overflow-y: auto;
-      }
-
-      table.records-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.78rem;
-      }
-
-      table.records-table thead {
-        background: #d9f5ff;
-        position: sticky;
-        top: 0;
-        z-index: 1;
-      }
-
-      table.records-table th,
-      table.records-table td {
-        padding: 3px 4px;
-        text-align: center;
-        border-bottom: 1px solid #e3f2ff;
-        white-space: nowrap;
-      }
-
-      table.records-table tbody tr:nth-child(even) {
-        background: #f6fcff;
-      }
-
-      .badge-row {
-        margin-top: 4px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 4px;
-      }
-
-      .badge {
-        padding: 3px 6px;
-        border-radius: 999px;
-        border: 1px solid #a0e7ff;
-        background: #e6fbff;
-        font-size: 0.72rem;
-        color: #256d85;
-      }
-
-      .badge.earned {
-        border-color: #00c9a7;
-        background: #d9fff5;
-        color: #007f66;
-        font-weight: 600;
-      }
-
-      .mission-info-row {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 4px;
-      }
-
-      .mission-label {
-        font-size: 0.8rem;
-        color: #345;
-      }
-
-      .mission-value {
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: #007f66;
-      }
-
-      /* 타이머 프로그레스 바 */
-      .time-bar {
-        position: relative;
-        width: 100%;
-        height: 10px;
-        border-radius: 999px;
-        background: #d6f7ff;
-        overflow: hidden;
-        margin-top: 4px;
-      }
-
-      .time-bar-inner {
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        border-radius: inherit;
-        background: linear-gradient(90deg, #00c9a7, #00a8ff);
-        transition: width 0.1s linear;
-      }
-
-      .time-bar-text {
-        position: absolute;
-        top: -16px;
-        right: 0;
-        font-size: 0.8rem;
-        color: #00a8ff;
-      }
-
-      /* 미션 카드 레이아웃 */
-      .mission-list {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        margin-top: 4px;
-      }
-
-      .mission-item {
-        padding: 6px 8px;
-        border-radius: 10px;
-        background: #e8f8ff;
-        border: 1px solid #c3ecff;
-      }
-
-      .mission-main {
+      .section-title-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 0.8rem;
+        margin-bottom: 4px;
       }
 
-      .mission-title {
-        color: #234;
-        font-weight: 600;
+      .section-title {
+        font-weight: 700;
+        font-size: 0.86rem;
+      }
+
+      .badge {
+        padding: 2px 6px;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        background: #d9f6ff;
+        color: #0077aa;
+      }
+
+      .mission-list {
+        margin-top: 4px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .mission-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .mission-main {
+        font-weight: 500;
+      }
+
+      .mission-sub {
+        font-size: 0.78rem;
+        color: #777;
       }
 
       .mission-status {
         font-size: 0.78rem;
-        font-weight: 600;
+        font-weight: 700;
       }
 
       .mission-status.done {
-        color: #008b39;
+        color: #1c7c4e;
       }
 
-      .mission-status.pending {
-        color: #007bff;
+      .mission-status.doing {
+        color: #0077aa;
       }
 
-      .mission-progress {
-        margin-top: 2px;
+      .records-table {
+        width: 100%;
+        border-collapse: collapse;
         font-size: 0.78rem;
-        color: #456;
+        margin-top: 4px;
       }
 
-      /* 미션 완료 / 설정 팝업 */
-      .mission-popup-backdrop {
+      .records-table th,
+      .records-table td {
+        padding: 3px 4px;
+        text-align: center;
+        border-bottom: 1px solid #e1f0ff;
+      }
+
+      .records-table th {
+        background: #e8f7ff;
+        font-weight: 700;
+      }
+
+      .highlight-row {
+        font-weight: 600;
+      }
+
+      .mission-popup-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.35);
+        background: rgba(0, 0, 0, 0.4);
         display: flex;
-        justify-content: center;
         align-items: center;
-        z-index: 999;
+        justify-content: center;
+        z-index: 9999;
       }
 
-      .mission-popup-card {
-        width: 90%;
-        max-width: 360px;
-        background: #fdfefc;
-        border-radius: 18px;
-        padding: 14px 12px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-        border: 1px solid #ffe48a;
+      .mission-popup {
+        width: min(90%, 360px);
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 14px 14px 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        font-size: 0.85rem;
       }
 
       .mission-popup-title {
-        font-size: 0.95rem;
         font-weight: 700;
-        color: #5a4300;
+        font-size: 0.95rem;
         margin-bottom: 6px;
       }
 
-      .mission-popup-text {
-        font-size: 0.8rem;
-        color: #444;
+      .mission-popup-body {
+        white-space: pre-line;
+        margin-bottom: 10px;
         line-height: 1.4;
-        max-height: 260px;
-        overflow-y: auto;
       }
 
       .mission-popup-buttons {
-        margin-top: 10px;
         display: flex;
-        gap: 6px;
         justify-content: flex-end;
-        flex-wrap: wrap;
+        gap: 6px;
       }
 
-      .mission-popup-btn {
+      .secondary-button {
         padding: 7px 10px;
         border-radius: 999px;
-        border: none;
+        border: 1px solid #cdefff;
+        background: #f5fcff;
         font-size: 0.8rem;
-        font-weight: 700;
         cursor: pointer;
       }
 
-      .mission-popup-btn.primary {
-        background: #ffdd57;
-        color: #5a4300;
-      }
-
-      .mission-popup-btn.secondary {
-        background: #e0f3ff;
-        color: #22516e;
-      }
-
-      .mission-popup-btn:active {
+      .secondary-button:active {
         transform: translateY(1px);
       }
 
-      /* 주관식 입력용 */
-      .subjective-box {
-        margin-top: 8px;
-        width: 100%;
-        text-align: center;
+      .copy-hint {
+        margin-top: 2px;
+        font-size: 0.7rem;
+        color: #777;
       }
 
-      .subjective-label {
-        font-size: 0.78rem;
-        color: #456;
-        margin-bottom: 4px;
-      }
-
-      .subjective-display {
-        min-height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 16px;
-        border: 1px solid #aeefff;
-        background: #ffffff;
-        font-size: 1.7rem;
-        font-weight: 800;
-        letter-spacing: 0.07em;
-        margin-bottom: 4px;
-      }
-
-      .subjective-display.empty {
-        color: #bbb;
-        font-size: 0.9rem;
-        font-weight: 500;
-        letter-spacing: 0;
-      }
-
-      .subjective-hidden-input {
-        opacity: 0;
-        position: absolute;
-        pointer-events: none;
-        height: 0;
-        width: 0;
-      }
-
-      .subjective-focus-button {
-        padding: 4px 10px;
-        border-radius: 14px;
-        border: none;
-        background: #d3f8ff;
-        color: #28708a;
-        font-size: 0.78rem;
-        font-weight: 600;
-        cursor: pointer;
-      }
-
-      .subjective-focus-button:active {
-        transform: translateY(1px);
-      }
-
-      @media (max-width: 400px) {
-        .app {
-          padding: 14px 12px;
-          border-radius: 20px;
-        }
+      @media (max-width: 480px) {
         .question {
-          font-size: 1.9rem;
+          font-size: 2.05rem;
         }
       }
     </style>
@@ -661,7 +537,7 @@
   <body>
     <div id="root"></div>
 
-    <!-- React & ReactDOM & Babel (개발용) -->
+    <!-- React & ReactDOM & Babel -->
     <script
       crossorigin
       src="https://unpkg.com/react@18/umd/react.development.js"
@@ -676,13 +552,154 @@
     <script type="text/babel">
       const { useState, useEffect, useRef } = React;
 
-      function getRandomQuestion() {
+      // ===== 유틸 =====
+      const STORAGE_KEY_PROFILE = "gugurun_profile_v2";
+      const STORAGE_KEY_RECORDS = "gugurun_records_v2";
+
+      function todayYMD() {
+        const d = new Date();
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        return `${y}-${m}-${day}`;
+      }
+
+      function getWeekInfo(dateObj = new Date()) {
+        // 현재 날짜 기준 이번 주 월~일
+        const d = new Date(
+          dateObj.getFullYear(),
+          dateObj.getMonth(),
+          dateObj.getDate()
+        );
+        const day = d.getDay(); // 0(일)~6(토)
+        const diffToMonday = (day + 6) % 7; // 월=0
+        const monday = new Date(d);
+        monday.setDate(d.getDate() - diffToMonday);
+        const sunday = new Date(monday);
+        sunday.setDate(monday.getDate() + 6);
+
+        const fmt = (x) =>
+          `${x.getFullYear()}.${String(x.getMonth() + 1).padStart(
+            2,
+            "0"
+          )}.${String(x.getDate()).padStart(2, "0")}`;
+
+        const weekKey = `${monday.getFullYear()}-${String(
+          monday.getMonth() + 1
+        ).padStart(2, "0")}-${String(monday.getDate()).padStart(2, "0")}`;
+        return {
+          monday,
+          sunday,
+          weekKey,
+          label: `${fmt(monday)} ~ ${fmt(sunday)}`,
+        };
+      }
+
+      function sameDay(ymd, dateObj) {
+        const [y, m, d] = ymd.split("-").map((v) => parseInt(v, 10));
+        return (
+          dateObj.getFullYear() === y &&
+          dateObj.getMonth() + 1 === m &&
+          dateObj.getDate() === d
+        );
+      }
+
+      function gradePriority(g) {
+        if (g === "S") return 4;
+        if (g === "A") return 3;
+        if (g === "B") return 2;
+        if (g === "C") return 1;
+        return 0;
+      }
+
+      // ===== 레벨/경험치 =====
+      const MAX_LEVEL = 50;
+
+      // 레벨별 필요 경험치(증분): lv1->2=300, lv2->3=400, ...
+      function xpNeededForLevelUp(level) {
+        // level: 현재 레벨 (1~49)
+        return 300 + (level - 1) * 100;
+      }
+
+      function calcLevelFromXp(totalXp) {
+        let level = 1;
+        let xp = Math.max(0, totalXp || 0);
+        let need = xpNeededForLevelUp(level);
+
+        while (level < MAX_LEVEL && xp >= need) {
+          xp -= need;
+          level += 1;
+          if (level < MAX_LEVEL) {
+            need = xpNeededForLevelUp(level);
+          } else {
+            need = 0;
+          }
+        }
+        const xpInLevel = xp;
+        const xpToNext = level === MAX_LEVEL ? 0 : need;
+        return { level, xpInLevel, xpToNext };
+      }
+
+      function getTitleForLevel(level) {
+        if (level >= 46) return "완전체 유라";
+        if (level >= 41) return "전설 유라";
+        if (level >= 36) return "초월자 유라";
+        if (level >= 31) return "마스터 유라";
+        if (level >= 26) return "스피드 스타 유라";
+        if (level >= 21) return "계산 요정 유라";
+        if (level >= 16) return "천재 유라";
+        if (level >= 11) return "반장 유라";
+        if (level >= 6) return "성장 유라";
+        return "새싹 유라";
+      }
+
+      function loadProfile() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY_PROFILE);
+          if (!raw) return { totalXp: 0 };
+          return JSON.parse(raw);
+        } catch {
+          return { totalXp: 0 };
+        }
+      }
+
+      function saveProfile(profile) {
+        try {
+          localStorage.setItem(STORAGE_KEY_PROFILE, JSON.stringify(profile));
+        } catch {}
+      }
+
+      function loadRecords() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY_RECORDS);
+          if (!raw) return [];
+          const arr = JSON.parse(raw);
+          if (!Array.isArray(arr)) return [];
+          return arr;
+        } catch {
+          return [];
+        }
+      }
+
+      function saveRecords(records) {
+        try {
+          localStorage.setItem(STORAGE_KEY_RECORDS, JSON.stringify(records));
+        } catch {}
+      }
+
+      // ===== 문제 생성 =====
+      function getRandomQuestion(excludeOneTimes) {
         const a = Math.floor(Math.random() * 8) + 2; // 2~9
-        const b = Math.floor(Math.random() * 9) + 1; // 1~9
+        let b;
+        if (excludeOneTimes) {
+          // 타임어택: 1단(×1) 제외
+          b = Math.floor(Math.random() * 8) + 2; // 2~9
+        } else {
+          b = Math.floor(Math.random() * 9) + 1; // 1~9
+        }
         return { a, b };
       }
 
-      // 정답 근처 숫자 위주의 6지선다
       function getChoices(correct) {
         const set = new Set();
         set.add(correct);
@@ -695,181 +712,592 @@
           set.add(candidate);
         }
 
-        return Array.from(set).sort(() => Math.random() - 0.5); // 섞기
+        return Array.from(set).sort(() => Math.random() - 0.5);
       }
 
-      // 바로 직전 문제와 같지 않도록 보장
-      function getQuestionWithChoices(prevQuestion) {
+      function getQuestionWithChoices(prev, excludeOneTimes) {
         let base;
+        // 바로 직전 문제와 같지 않도록
         do {
-          base = getRandomQuestion();
-        } while (
-          prevQuestion &&
-          base.a === prevQuestion.a &&
-          base.b === prevQuestion.b
+          base = getRandomQuestion(excludeOneTimes);
+        } while (prev && base.a === prev.a && base.b === prev.b);
+        const correct = base.a * base.b;
+        return { ...base, choices: getChoices(correct) };
+      }
+
+      // ===== 연습 모드 =====
+      function PracticeMode() {
+        const [question, setQuestion] = useState(() =>
+          getQuestionWithChoices(null, false)
+        );
+        const [questionStart, setQuestionStart] = useState(Date.now());
+        const [lastCorrect, setLastCorrect] = useState(null);
+        const [lastMessage, setLastMessage] = useState("");
+        const [total, setTotal] = useState(0);
+        const [correct, setCorrect] = useState(0);
+        const [sumTime, setSumTime] = useState(0);
+
+        useEffect(() => {
+          setQuestionStart(Date.now());
+        }, [question]);
+
+        const handleChoice = (choice) => {
+          const now = Date.now();
+          const elapsed = (now - questionStart) / 1000;
+          const correctAnswer = question.a * question.b;
+
+          setTotal((t) => t + 1);
+          setSumTime((s) => s + elapsed);
+
+          if (choice === correctAnswer) {
+            setCorrect((c) => c + 1);
+            setLastCorrect(true);
+            setLastMessage(
+              `정답! ${correctAnswer} ✨ (${elapsed.toFixed(2)}초)`
+            );
+          } else {
+            setLastCorrect(false);
+            setLastMessage(
+              `아쉬워요! 정답은 ${correctAnswer} 입니다. (${elapsed.toFixed(
+                2
+              )}초)`
+            );
+          }
+
+          setQuestion((prev) => getQuestionWithChoices(prev, false));
+        };
+
+        const avgTime = total > 0 ? (sumTime / total).toFixed(2) : "-";
+        const accuracy =
+          total > 0 ? Math.round((correct / total) * 100) + "%" : "-";
+
+        return (
+          <>
+            <div className="question-box">
+              <div className="question-label">연습 모드 - 객관식 스피드 연습</div>
+              <div className="question">
+                {question.a} × {question.b} = ?
+              </div>
+              <div className="timer">
+                문제 보인 지{" "}
+                {((Date.now() - questionStart) / 1000).toFixed(1)}초 경과
+              </div>
+
+              <div className="choices">
+                {question.choices.map((c) => (
+                  <button
+                    key={c}
+                    className="choice-btn"
+                    onClick={() => handleChoice(c)}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="stats">
+              <span className="label">푼 문제 수</span>
+              <span className="value">{total}</span>
+              <span className="label">정답 개수</span>
+              <span className="value">{correct}</span>
+              <span className="label">정답률</span>
+              <span className="value">{accuracy}</span>
+              <span className="label">정답 속도(평균)</span>
+              <span className="value">
+                {avgTime === "-" ? "-" : `${avgTime}초`}
+              </span>
+            </div>
+
+            {lastMessage && (
+              <div className={`result ${lastCorrect ? "ok" : "bad"}`}>
+                {lastMessage}
+              </div>
+            )}
+
+            <div className="small-tip">
+              연습 모드는 가볍게 손풀기용이에요. 타임어택 기록에는 영향을 주지
+              않습니다.
+            </div>
+          </>
+        );
+      }
+
+      // ===== 타임어택 모드 =====
+      function TimeAttackMode({
+        timeLimitSec,
+        answerType,
+        keyboardMode,
+        onGameFinished,
+      }) {
+        const [question, setQuestion] = useState(() =>
+          getQuestionWithChoices(null, true)
+        );
+        const [running, setRunning] = useState(false);
+        const [timeLeftMs, setTimeLeftMs] = useState(timeLimitSec * 1000);
+        const [total, setTotal] = useState(0);
+        const [correct, setCorrect] = useState(0);
+        const [sumTimeAll, setSumTimeAll] = useState(0); // 보조 표기용
+        const [lastMessage, setLastMessage] = useState("");
+        const [finishedSummary, setFinishedSummary] = useState(null);
+        const timerRef = useRef(null);
+
+        // 정답속도 계산용 ref들
+        const gameStartRef = useRef(null);
+        const gameEndRef = useRef(null);
+        const correctTimesRef = useRef([]); // 정답 시각 배열
+        const lastAnswerTimeRef = useRef(null);
+        const totalRef = useRef(0);
+        const correctRef = useRef(0);
+
+        // 주관식 입력
+        const [inputValue, setInputValue] = useState("");
+
+        useEffect(() => {
+          // 시간 설정이 바뀌면 리셋
+          setTimeLeftMs(timeLimitSec * 1000);
+        }, [timeLimitSec]);
+
+        const resetState = () => {
+          setQuestion((prev) => getQuestionWithChoices(null, true));
+          setTimeLeftMs(timeLimitSec * 1000);
+          setTotal(0);
+          setCorrect(0);
+          setSumTimeAll(0);
+          setLastMessage("");
+          setFinishedSummary(null);
+          setInputValue("");
+          correctTimesRef.current = [];
+          gameStartRef.current = null;
+          gameEndRef.current = null;
+          lastAnswerTimeRef.current = null;
+          totalRef.current = 0;
+          correctRef.current = 0;
+        };
+
+        const startGame = () => {
+          if (running) {
+            // 다시 시작
+            if (timerRef.current) {
+              clearInterval(timerRef.current);
+              timerRef.current = null;
+            }
+          }
+          resetState();
+          setRunning(true);
+          const now = Date.now();
+          gameStartRef.current = now;
+          lastAnswerTimeRef.current = now;
+
+          timerRef.current = setInterval(() => {
+            setTimeLeftMs((prev) => {
+              const next = prev - 100;
+              if (next <= 0) {
+                clearInterval(timerRef.current);
+                timerRef.current = null;
+                const endTime = Date.now();
+                setRunning(false);
+                gameEndRef.current = endTime;
+                finalizeGame(endTime);
+                return 0;
+              }
+              return next;
+            });
+          }, 100);
+        };
+
+        useEffect(() => {
+          return () => {
+            if (timerRef.current) {
+              clearInterval(timerRef.current);
+              timerRef.current = null;
+            }
+          };
+        }, []);
+
+        const secondsLeft = (timeLeftMs / 1000).toFixed(1);
+
+        const handleObjectiveChoice = (choice) => {
+          if (!running) return;
+          const now = Date.now();
+          const elapsed = (now - lastAnswerTimeRef.current) / 1000;
+          const correctAnswer = question.a * question.b;
+
+          setTotal((t) => t + 1);
+          totalRef.current += 1;
+          setSumTimeAll((s) => s + elapsed);
+
+          if (choice === correctAnswer) {
+            setCorrect((c) => c + 1);
+            correctRef.current += 1;
+            correctTimesRef.current.push(now);
+            setLastMessage(
+              `굿! 정답 ${correctAnswer} (${elapsed.toFixed(2)}초)`
+            );
+          } else {
+            setLastMessage(
+              `앗! 정답은 ${correctAnswer} (${elapsed.toFixed(2)}초)`
+            );
+          }
+
+          lastAnswerTimeRef.current = now;
+          setQuestion((prev) => getQuestionWithChoices(prev, true));
+        };
+
+        const submitSubjective = () => {
+          if (!running) return;
+          if (!inputValue || inputValue.trim() === "") return;
+          const valueNum = parseInt(inputValue, 10);
+          if (Number.isNaN(valueNum)) return;
+
+          const now = Date.now();
+          const elapsed = (now - lastAnswerTimeRef.current) / 1000;
+          const correctAnswer = question.a * question.b;
+
+          setTotal((t) => t + 1);
+          totalRef.current += 1;
+          setSumTimeAll((s) => s + elapsed);
+
+          if (valueNum === correctAnswer) {
+            setCorrect((c) => c + 1);
+            correctRef.current += 1;
+            correctTimesRef.current.push(now);
+            setLastMessage(
+              `굿! 정답 ${correctAnswer} (${elapsed.toFixed(2)}초)`
+            );
+          } else {
+            setLastMessage(
+              `앗! 정답은 ${correctAnswer} (${elapsed.toFixed(2)}초)`
+            );
+          }
+
+          lastAnswerTimeRef.current = now;
+          setInputValue("");
+          setQuestion((prev) => getQuestionWithChoices(prev, true));
+        };
+
+        const handleSystemInputKeyDown = (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            submitSubjective();
+          }
+        };
+
+        const handleKeypadPress = (key) => {
+          if (key === "삭제") {
+            setInputValue((prev) => prev.slice(0, -1));
+          } else if (key === "입력") {
+            submitSubjective();
+          } else {
+            setInputValue((prev) => {
+              if (prev.length >= 3) return prev; // 81까지면 2자리지만 넉넉히 3자리 제한
+              return prev + key;
+            });
+          }
+        };
+
+        // 등급/점수 계산 + 기록 저장
+        const finalizeGame = (endTime) => {
+          const totalQ = totalRef.current;
+          const correctQ = correctRef.current;
+          const wrongQ = totalQ - correctQ;
+
+          const durationSec = timeLimitSec;
+          const accuracy = totalQ > 0 ? correctQ / totalQ : 0;
+
+          let avgAll =
+            totalQ > 0 ? (sumTimeAll / Math.max(totalQ, 1)).toFixed(2) : "-";
+
+          // 정답 속도: 정답 -> 다음 정답까지의 시간 + 마지막 정답~타임아웃 포함
+          let avgCorrectSpeedSec = "-";
+          const correctTimes = correctTimesRef.current;
+          if (correctTimes.length > 0 && gameStartRef.current) {
+            const start = gameStartRef.current;
+            const end = endTime;
+            const intervals = [];
+            let prev = start;
+            for (let i = 0; i < correctTimes.length; i++) {
+              const t = correctTimes[i];
+              intervals.push(t - prev);
+              prev = t;
+            }
+            // 마지막 정답 이후 타임아웃까지 누적 (치트 방지)
+            intervals[intervals.length - 1] += end - correctTimes[correctTimes.length - 1];
+
+            const WARMUP_CORRECTS = 3;
+            const gradedIntervals =
+              intervals.length > WARMUP_CORRECTS
+                ? intervals.slice(WARMUP_CORRECTS)
+                : [];
+
+            if (gradedIntervals.length > 0) {
+              const sum = gradedIntervals.reduce((a, b) => a + b, 0);
+              avgCorrectSpeedSec = (sum / gradedIntervals.length / 1000).toFixed(
+                2
+              );
+            } else {
+              avgCorrectSpeedSec = "-";
+            }
+          }
+
+          // 점수: 속도 + 정답 수 + 정확도 모두 반영
+          const effectiveAvgSec =
+            avgCorrectSpeedSec === "-" ? null : parseFloat(avgCorrectSpeedSec);
+          let score = 0;
+          if (effectiveAvgSec && correctQ > 0) {
+            // 속도가 빠를수록, 정답 개수/정확도가 높을수록 점수↑
+            score = Math.round(
+              (correctQ * accuracy * 100) / (effectiveAvgSec * 0.7 + 0.3)
+            );
+          }
+
+          // 등급 판정: 최소 조건 + 속도 조건
+          // ★ 완화된 등급 기준 (요청하신 값 반영)
+          let grade = "-";
+          if (effectiveAvgSec && correctQ > 0) {
+            // 최소 조건
+            const minCorrectForS = 15;
+            const minCorrectForA = 10;
+            const minAccuracyForS = 0.9;
+            const minAccuracyForA = 0.8;
+
+            if (
+              effectiveAvgSec < 2.0 &&
+              correctQ >= minCorrectForS &&
+              accuracy >= minAccuracyForS
+            ) {
+              grade = "S";
+            } else if (
+              effectiveAvgSec < 3.0 &&
+              correctQ >= minCorrectForA &&
+              accuracy >= minAccuracyForA
+            ) {
+              grade = "A";
+            } else if (effectiveAvgSec < 4.0) {
+              grade = "B";
+            } else {
+              grade = "C";
+            }
+          }
+
+          const result = {
+            date: todayYMD(),
+            durationSec,
+            total: totalQ,
+            correct: correctQ,
+            wrong: wrongQ,
+            accuracy,
+            avgAllSec: avgAll === "-" ? null : parseFloat(avgAll),
+            avgCorrectSpeedSec:
+              avgCorrectSpeedSec === "-"
+                ? null
+                : parseFloat(avgCorrectSpeedSec),
+            grade,
+            score,
+          };
+
+          setFinishedSummary(result);
+          if (onGameFinished) {
+            onGameFinished(result);
+          }
+        };
+
+        const timeRatio = timeLeftMs / (timeLimitSec * 1000);
+        const timeBarWidth = `${Math.max(0, Math.min(1, timeRatio)) * 100}%`;
+
+        const avgCorrectSpeedDisplay =
+          finishedSummary && finishedSummary.avgCorrectSpeedSec != null
+            ? `${finishedSummary.avgCorrectSpeedSec.toFixed(2)}초`
+            : "-";
+
+        const accuracyPercent =
+          total > 0 ? Math.round((correct / total) * 100) + "%" : "-";
+
+        return (
+          <>
+            <div className="question-box">
+              <div className="question-label">
+                타임어택 모드 - {timeLimitSec}초 안에 최대한 많이!
+              </div>
+
+              <div className="top-row">
+                <div>타임어택 시간</div>
+                <div className="timer-row">
+                  <div className="time-bar-wrap">
+                    <div
+                      className="time-bar-inner"
+                      style={{ width: timeBarWidth }}
+                    ></div>
+                  </div>
+                  <span>
+                    {secondsLeft}
+                    초
+                  </span>
+                </div>
+              </div>
+
+              <div className="question">
+                {question.a} × {question.b} = ?
+              </div>
+
+              {answerType === "choice" ? (
+                <div className="choices">
+                  {question.choices.map((c) => (
+                    <button
+                      key={c}
+                      className="choice-btn"
+                      onClick={() => handleObjectiveChoice(c)}
+                      disabled={!running}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="subject-input-wrap">
+                  {keyboardMode === "system" ? (
+                    <>
+                      <input
+                        className="subject-input"
+                        type="tel"
+                        placeholder="정답을 숫자로 입력"
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        onKeyDown={handleSystemInputKeyDown}
+                        disabled={!running}
+                      />
+                      <button
+                        className="primary-button"
+                        onClick={submitSubjective}
+                        disabled={!running}
+                      >
+                        입력
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <div className="subject-input-display">
+                        {inputValue || "숫자를 눌러서 입력"}
+                      </div>
+                      <div className="keypad">
+                        {["1", "2", "3", "삭제", "4", "5", "6", "입력", "7", "8", "9", "0"].map(
+                          (key) => (
+                            <button
+                              key={key}
+                              className={
+                                key === "삭제" || key === "입력"
+                                  ? "key-btn special"
+                                  : "key-btn"
+                              }
+                              onClick={() => handleKeypadPress(key)}
+                              disabled={!running}
+                            >
+                              {key}
+                            </button>
+                          )
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+
+              <div className="center-row">
+                <button
+                  className="primary-button"
+                  onClick={startGame}
+                  style={{ padding: "8px 20px" }}
+                >
+                  {running ? "다시 시작" : "시작하기"}
+                </button>
+              </div>
+            </div>
+
+            <div className="stats">
+              <span className="label">푼 문제 수</span>
+              <span className="value">{total}</span>
+              <span className="label">정답 개수</span>
+              <span className="value">{correct}</span>
+              <span className="label">정답률</span>
+              <span className="value">{accuracyPercent}</span>
+              <span className="label">정답 속도(평균)</span>
+              <span className="value">{avgCorrectSpeedDisplay}</span>
+            </div>
+
+            {finishedSummary && (
+              <div className="result ok">
+                타임어택 종료! 🎉
+                <br />
+                {timeLimitSec}초 동안 총 {finishedSummary.total}문제 중{" "}
+                {finishedSummary.correct}개 정답,
+                정답률{" "}
+                {finishedSummary.total > 0
+                  ? Math.round(
+                      (finishedSummary.correct / finishedSummary.total) * 100
+                    ) + "%"
+                  : "-"}
+                ,
+                <br />
+                정답 속도(평균){" "}
+                {finishedSummary.avgCorrectSpeedSec != null
+                  ? `${finishedSummary.avgCorrectSpeedSec.toFixed(2)}초`
+                  : "-"}
+                , 점수 {finishedSummary.score}, 등급{" "}
+                {finishedSummary.grade || "-"} 등급!
+              </div>
+            )}
+
+            {lastMessage && !finishedSummary && (
+              <div className="result ok">{lastMessage}</div>
+            )}
+
+            <div className="small-tip">
+              정답 사이의 시간과 타임아웃까지의 시간까지 모두 정답 속도에
+              반영돼요.
+              <br />
+              끝까지 꾸준히 풀수록 좋은 등급을 받기 쉬워요.
+            </div>
+          </>
+        );
+      }
+
+      // ===== 미션/기록 탭 =====
+      function MissionsTab({ records }) {
+        const today = todayYMD();
+        const todayDate = new Date();
+        const { label: weekLabel } = getWeekInfo(todayDate);
+
+        const todayRecords = records.filter((r) => r.date === today);
+        const weekInfo = getWeekInfo(todayDate);
+
+        const weekRecords = records.filter((r) => {
+          const [y, m, d] = r.date.split("-").map((x) => parseInt(x, 10));
+          const dt = new Date(y, m - 1, d);
+          return (
+            dt >= weekInfo.monday &&
+            dt <= weekInfo.sunday &&
+            r.durationSec === 60
+          );
+        });
+
+        const todayCount60 = todayRecords.filter(
+          (r) => r.durationSec === 60
+        ).length;
+        const todayCorrectSum = todayRecords.reduce(
+          (s, r) => s + (r.correct || 0),
+          0
+        );
+        const todayBestGrade = todayRecords.reduce((best, r) => {
+          if (gradePriority(r.grade) > gradePriority(best)) return r.grade;
+          return best;
+        }, "-");
+
+        const weekCountAll = weekRecords.length;
+        const weekCorrectSum = weekRecords.reduce(
+          (s, r) => s + (r.correct || 0),
+          0
         );
 
-        const correct = base.a * base.b;
-        return {
-          ...base,
-          choices: getChoices(correct),
-        };
-      }
-
-      // ===== 로컬스토리지 유틸 =====
-      const STORAGE_KEY = "gugurun_timeattack_records_v2";
-
-      function loadRecords() {
-        try {
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if (!raw) return [];
-          const parsed = JSON.parse(raw);
-          if (!Array.isArray(parsed)) return [];
-          return parsed;
-        } catch (e) {
-          return [];
-        }
-      }
-
-      function saveRecord(record) {
-        try {
-          const records = loadRecords();
-          records.push(record);
-          const trimmed = records.slice(-200);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
-          return trimmed;
-        } catch (e) {
-          return null;
-        }
-      }
-
-      function compareRecord(a, b) {
-        if (a.correct !== b.correct) return b.correct - a.correct;
-        if (a.total !== b.total) return b.total - a.total;
-        const at = parseFloat(a.avgTime || "999");
-        const bt = parseFloat(b.avgTime || "999");
-        if (!isNaN(at) && !isNaN(bt) && at !== bt) return at - bt;
-        return (b.timestamp || 0) - (a.timestamp || 0);
-      }
-
-      function pickBestRecord(records) {
-        if (!records || records.length === 0) return null;
-        const sorted = [...records].sort(compareRecord);
-        return sorted[0];
-      }
-
-      function getTopRecords(records, limit = 10) {
-        if (!records || records.length === 0) return [];
-        const sorted = [...records].sort(compareRecord);
-        return sorted.slice(0, limit);
-      }
-
-      // ===== 프로필/레벨 계산 =====
-      function calcProfileFromRecords(records) {
-        let xp = 0;
-        if (records && records.length > 0) {
-          for (const r of records) {
-            const correct = r.correct || 0;
-            const total = r.total || 0;
-            const grade = r.grade || "-";
-            xp += correct * 10 + total * 2;
-            if (grade === "S") xp += 100;
-            else if (grade === "A") xp += 50;
-          }
-        }
-        const level = Math.floor(xp / 300) + 1;
-        const levelBaseXp = (level - 1) * 300;
-        const xpForNextLevel = 300;
-        const xpInLevel = xp - levelBaseXp;
-        const title = getTitleForLevel(level);
-        return {
-          xp,
-          level,
-          title,
-          xpInLevel,
-          xpForNextLevel,
-        };
-      }
-
-      function getTitleForLevel(level) {
-        if (level <= 1) return "구구단 새싹 유라";
-        if (level <= 3) return "구구단 성장 유라";
-        if (level <= 5) return "구구단 반장 유라";
-        if (level <= 7) return "구구단 천재(?) 유라";
-        if (level <= 9) return "구구런 불꽃 유라";
-        return "구구런 마스터 유라";
-      }
-
-      // ===== 등급 우선순위 =====
-      function gradePriority(g) {
-        if (g === "S") return 3;
-        if (g === "A") return 2;
-        if (g === "B") return 1;
-        if (g === "C") return 0;
-        return -1;
-      }
-
-      // ===== 오늘/주간 미션 + 용돈 계산 =====
-      function calcTodayMissionAndAllowance(records) {
-        const now = new Date();
-        const todayStr = now.toISOString().slice(0, 10);
-
-        // 오늘 필터
-        const todayRecords = (records || []).filter((r) => {
-          if (!r.timestamp) return false;
-          const d = new Date(r.timestamp);
-          const dateStr = d.toISOString().slice(0, 10);
-          return dateStr === todayStr;
-        });
-
-        // 이번 주 (월~일)
-        const weekStart = new Date(now);
-        weekStart.setHours(0, 0, 0, 0);
-        const day = weekStart.getDay(); // 0~6
-        const diffFromMonday = (day + 6) % 7;
-        weekStart.setDate(weekStart.getDate() - diffFromMonday);
-
-        const weekEnd = new Date(weekStart);
-        weekEnd.setDate(weekEnd.getDate() + 6);
-        weekEnd.setHours(23, 59, 59, 999);
-
-        const weekRecords = (records || []).filter((r) => {
-          if (!r.timestamp) return false;
-          const d = new Date(r.timestamp);
-          return d >= weekStart && d <= weekEnd;
-        });
-
-        const pad2 = (n) => n.toString().padStart(2, "0");
-        const weekRangeStr =
-          `${weekStart.getFullYear()}.${pad2(weekStart.getMonth() + 1)}.${pad2(
-            weekStart.getDate()
-          )}` +
-          ` ~ ` +
-          `${pad2(weekEnd.getMonth() + 1)}.${pad2(weekEnd.getDate())}`;
-
-        // 오늘 통계
-        let todayCountAll = todayRecords.length;
-        let todayCount60 = 0;
-        let todayCorrectSum = 0;
-        let bestGrade = "-";
-
-        for (const r of todayRecords) {
-          if (r.timeLimitSec === 60) todayCount60 += 1;
-          todayCorrectSum += r.correct || 0;
-          const g = r.grade || "-";
-          if (gradePriority(g) > gradePriority(bestGrade)) {
-            bestGrade = g;
-          }
-        }
-
-        // 주간 통계
-        let weekCountAll = weekRecords.length;
-        let weekCorrectSum = 0;
-        for (const r of weekRecords) {
-          weekCorrectSum += r.correct || 0;
-        }
-
-        // 일일 미션
         const dailyMissions = [
           {
             id: "daily_60s_2times",
@@ -886,15 +1314,14 @@
           {
             id: "daily_grade_A_or_S",
             title: "오늘 A 또는 S 등급 한 번 달성",
-            done: gradePriority(bestGrade) >= gradePriority("A"),
+            done: gradePriority(todayBestGrade) >= gradePriority("A"),
             progress:
-              bestGrade === "-"
+              todayBestGrade === "-"
                 ? "아직 등급 없음"
-                : `현재 최고 등급: ${bestGrade}`,
+                : `현재 최고 등급: ${todayBestGrade}`,
           },
         ];
 
-        // 주간 미션
         const weeklyMissions = [
           {
             id: "weekly_20_times",
@@ -910,1259 +1337,487 @@
           },
         ];
 
-        // 용돈 계산 (하루 1번)
-        let allowance = 0;
-        if (bestGrade === "S") allowance = 1000;
-        else if (bestGrade === "A") allowance = 500;
-
-        return {
-          todayStr,
-          todayCountAll,
-          todayCount60,
-          todayCorrectSum,
-          bestGrade,
-          allowance,
-          dailyMissions,
-          weeklyMissions,
-          weekRangeStr,
-        };
-      }
-
-      // ===== 업적 배지 =====
-      function calcBadges(records) {
-        const badges = [
-          {
-            id: "first_attack",
-            label: "첫 타임어택 완료",
-            earned: false,
-          },
-          {
-            id: "grade_s",
-            label: "S 등급 달성",
-            earned: false,
-          },
-          {
-            id: "grade_a_or_b",
-            label: "A/B 등급 여러 번",
-            earned: false,
-          },
-          {
-            id: "thirty_15correct",
-            label: "30초 모드에서 15개 이상 정답",
-            earned: false,
-          },
-          {
-            id: "sixty_25correct",
-            label: "60초 모드에서 25개 이상 정답",
-            earned: false,
-          },
-          {
-            id: "combo_master",
-            label: "정답률 100% 기록 얻기",
-            earned: false,
-          },
-        ];
-
-        if (!records || records.length === 0) return badges;
-
-        let hasFirst = records.length > 0;
-        let hasS = false;
-        let highGradeCount = 0;
-        let has30_15 = false;
-        let has60_25 = false;
-        let hasPerfect = false;
-
-        for (const r of records) {
-          if (r.grade === "S") hasS = true;
-          if (r.grade === "S" || r.grade === "A" || r.grade === "B") {
-            highGradeCount += 1;
-          }
-          if (r.timeLimitSec === 30 && (r.correct || 0) >= 15) {
-            has30_15 = true;
-          }
-          if (r.timeLimitSec === 60 && (r.correct || 0) >= 25) {
-            has60_25 = true;
-          }
-          const total = r.total || 0;
-          const correct = r.correct || 0;
-          if (total > 0 && correct === total) {
-            hasPerfect = true;
-          }
-        }
-
-        return badges.map((b) => {
-          if (b.id === "first_attack") return { ...b, earned: hasFirst };
-          if (b.id === "grade_s") return { ...b, earned: hasS };
-          if (b.id === "grade_a_or_b")
-            return { ...b, earned: highGradeCount >= 3 };
-          if (b.id === "thirty_15correct") return { ...b, earned: has30_15 };
-          if (b.id === "sixty_25correct") return { ...b, earned: has60_25 };
-          if (b.id === "combo_master") return { ...b, earned: hasPerfect };
-          return b;
-        });
-      }
-
-      // ===== 주관식 입력 공통 컴포넌트 =====
-      function SubjectiveInput({ value, onChange, onSubmit }) {
-        const inputRef = useRef(null);
-
-        useEffect(() => {
-          if (inputRef.current) {
-            inputRef.current.focus();
-          }
-        }, []);
-
-        const handleKeyDown = (e) => {
-          const key = e.key;
-          if (key >= "0" && key <= "9") {
-            e.preventDefault();
-            onChange((prev) => {
-              const next = (prev || "") + key;
-              // 3자리까지만 (최대 81)
-              return next.slice(0, 3);
-            });
-          } else if (key === "Enter") {
-            e.preventDefault();
-            if (!value || value.length === 0) return;
-            const num = parseInt(value, 10);
-            if (!isNaN(num)) {
-              onSubmit(num);
-            }
-            onChange("");
-          } else {
-            // Backspace 등은 모두 무시 (편집 기능 제공 안 함)
-            e.preventDefault();
-          }
-        };
-
-        const handleFocusClick = () => {
-          if (inputRef.current) {
-            inputRef.current.focus();
-          }
-        };
-
-        return (
-          <div className="subjective-box">
-            <div className="subjective-label">
-              숫자 키보드로 답을 입력하고, 엔터를 눌러요.
-            </div>
-            <div
-              className={
-                "subjective-display" + (!value ? " empty" : "")
-              }
-            >
-              {value ? (
-                value
-              ) : (
-                <>아직 입력한 숫자가 없어요</>
-              )}
-            </div>
-            <input
-              ref={inputRef}
-              className="subjective-hidden-input"
-              type="tel"
-              onKeyDown={handleKeyDown}
-            />
-            <button
-              type="button"
-              className="subjective-focus-button"
-              onClick={handleFocusClick}
-            >
-              키보드 다시 불러오기
-            </button>
-          </div>
-        );
-      }
-
-      // ========= 연습 모드 =========
-      function PracticeMode({ answerMode }) {
-        const [question, setQuestion] = useState(() =>
-          getQuestionWithChoices(null)
-        );
-        const [questionStart, setQuestionStart] = useState(Date.now());
-        const [lastCorrect, setLastCorrect] = useState(null);
-        const [lastMessage, setLastMessage] = useState("");
-        const [total, setTotal] = useState(0);
-        const [correct, setCorrect] = useState(0);
-        const [sumTime, setSumTime] = useState(0);
-        const [sumCorrectTime, setSumCorrectTime] = useState(0);
-        const [combo, setCombo] = useState(0);
-        const [bestCombo, setBestCombo] = useState(0);
-        const [typed, setTyped] = useState("");
-
-        useEffect(() => {
-          setQuestionStart(Date.now());
-        }, [question]);
-
-        const processAnswer = (answerValue) => {
-          const now = Date.now();
-          const elapsed = (now - questionStart) / 1000;
-          const correctAnswer = question.a * question.b;
-
-          setTotal((t) => t + 1);
-          setSumTime((s) => s + elapsed);
-
-          if (answerValue === correctAnswer) {
-            setCorrect((c) => c + 1);
-            setSumCorrectTime((s) => s + elapsed);
-            setLastCorrect(true);
-            setLastMessage(
-              `정답! ${correctAnswer} ✨ (${elapsed.toFixed(2)}초)`
-            );
-            setCombo((prev) => {
-              const next = prev + 1;
-              setBestCombo((b) => Math.max(b, next));
-              return next;
-            });
-          } else {
-            setLastCorrect(false);
-            setLastMessage(
-              `아쉬워요! 정답은 ${correctAnswer} 입니다. (${elapsed.toFixed(
-                2
-              )}초)`
-            );
-            setCombo(0);
-          }
-
-          setQuestion((prev) => getQuestionWithChoices(prev));
-        };
-
-        const handleChoice = (choice) => {
-          processAnswer(choice);
-        };
-
-        const handleSubjectSubmit = (num) => {
-          processAnswer(num);
-        };
-
-        const avgCorrectTime =
-          correct > 0 ? (sumCorrectTime / correct).toFixed(2) : "-";
-        const accuracy =
-          total > 0 ? Math.round((correct / total) * 100) + "%" : "-";
-
-        const isFever = combo >= 5;
-
         return (
           <>
-            <div className={"question-box" + (isFever ? " fever" : "")}>
-              {isFever && (
-                <div className="fever-label">FEVER 모드! 연속 정답 유지 중 🔥</div>
-              )}
-              <div className="question-label">
-                연습 모드 - 객관식/주관식 스피드 연습
-              </div>
-              <div className="question">
-                {question.a} × {question.b} = ?
-              </div>
-              <div className="timer">
-                문제 보인 지{" "}
-                {((Date.now() - questionStart) / 1000).toFixed(1)}초 경과
-              </div>
-
-              <div className="combo-row">
-                <span className="combo-current">콤보: {combo} 🔁</span>
-                <span className="combo-best">최고 콤보: {bestCombo}</span>
-              </div>
-
-              {answerMode === "choice" ? (
-                <div className="choices">
-                  {question.choices.map((c) => (
-                    <button
-                      key={c}
-                      className="choice-btn"
-                      onClick={() => handleChoice(c)}
-                    >
-                      {c}
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                <SubjectiveInput
-                  value={typed}
-                  onChange={setTyped}
-                  onSubmit={handleSubjectSubmit}
-                />
-              )}
-            </div>
-
-            <div className="stats">
-              <span className="label">총 문제 수</span>
-              <span className="value">{total}</span>
-              <span className="label">정답 개수</span>
-              <span className="value">{correct}</span>
-              <span className="label">정답률</span>
-              <span className="value">{accuracy}</span>
-              <span className="label">정답 속도</span>
-              <span className="value">
-                {avgCorrectTime === "-" ? "-" : `${avgCorrectTime}초`}
-              </span>
-            </div>
-
-            {lastMessage && (
-              <div className={`result ${lastCorrect ? "ok" : "bad"}`}>
-                {lastMessage}
-              </div>
-            )}
-
-            <div className="small-tip">
-              답을 <b>톡톡 누르거나</b> 숫자를 입력해서 엔터를 눌러요. <br />
-              콤보를 길게 이어 볼수록, 머릿속 계산기가 점점 빨라집니다.
-            </div>
-          </>
-        );
-      }
-
-      // ========= 타임어택 모드 =========
-      function TimeAttackMode({ timeLimitMs, answerMode, onRecordsUpdated }) {
-        const [question, setQuestion] = useState(() =>
-          getQuestionWithChoices(null)
-        );
-        const [questionStart, setQuestionStart] = useState(Date.now());
-        const [running, setRunning] = useState(false);
-        const [timeLeftMs, setTimeLeftMs] = useState(timeLimitMs);
-        const [total, setTotal] = useState(0);
-        const [correct, setCorrect] = useState(0);
-        const [sumTime, setSumTime] = useState(0);
-        const [sumCorrectTime, setSumCorrectTime] = useState(0);
-        const [lastMessage, setLastMessage] = useState("");
-        const [finished, setFinished] = useState(false);
-        const [justSetNewBest, setJustSetNewBest] = useState(false);
-        const [combo, setCombo] = useState(0);
-        const [bestCombo, setBestCombo] = useState(0);
-        const [showMissionPopup, setShowMissionPopup] = useState(false);
-        const [missionPopupText, setMissionPopupText] = useState("");
-        const [typed, setTyped] = useState("");
-        const timerRef = useRef(null);
-
-        const timeLimitSec = Math.round(timeLimitMs / 1000);
-
-        useEffect(() => {
-          setRunning(false);
-          setFinished(false);
-          setTimeLeftMs(timeLimitMs);
-          setTotal(0);
-          setCorrect(0);
-          setSumTime(0);
-          setSumCorrectTime(0);
-          setLastMessage("");
-          setJustSetNewBest(false);
-          setCombo(0);
-          setBestCombo(0);
-          setShowMissionPopup(false);
-          setTyped("");
-        }, [timeLimitMs, answerMode]);
-
-        const startGame = () => {
-          setRunning(true);
-          setFinished(false);
-          setTimeLeftMs(timeLimitMs);
-          setTotal(0);
-          setCorrect(0);
-          setSumTime(0);
-          setSumCorrectTime(0);
-          setLastMessage("");
-          setJustSetNewBest(false);
-          setCombo(0);
-          setBestCombo(0);
-          setShowMissionPopup(false);
-          setTyped("");
-          setQuestion((prev) => getQuestionWithChoices(prev));
-          setQuestionStart(Date.now());
-        };
-
-        // 타이머
-        useEffect(() => {
-          if (!running) {
-            if (timerRef.current) {
-              clearInterval(timerRef.current);
-              timerRef.current = null;
-            }
-            return;
-          }
-
-          timerRef.current = setInterval(() => {
-            setTimeLeftMs((prev) => {
-              const next = prev - 100;
-              if (next <= 0) {
-                clearInterval(timerRef.current);
-                timerRef.current = null;
-                setRunning(false);
-                setFinished(true);
-                return 0;
-              }
-              return next;
-            });
-          }, 100);
-
-          return () => {
-            if (timerRef.current) {
-              clearInterval(timerRef.current);
-              timerRef.current = null;
-            }
-          };
-        }, [running]);
-
-        useEffect(() => {
-          setQuestionStart(Date.now());
-        }, [question]);
-
-        const processAnswer = (answerValue) => {
-          if (!running) return;
-
-          const now = Date.now();
-          const elapsed = (now - questionStart) / 1000;
-          const correctAnswer = question.a * question.b;
-
-          setTotal((t) => t + 1);
-          setSumTime((s) => s + elapsed);
-
-          if (answerValue === correctAnswer) {
-            setCorrect((c) => c + 1);
-            setSumCorrectTime((s) => s + elapsed);
-            setLastMessage(
-              `굿! 정답 ${correctAnswer} (${elapsed.toFixed(2)}초)`
-            );
-            setCombo((prev) => {
-              const next = prev + 1;
-              setBestCombo((b) => Math.max(b, next));
-              return next;
-            });
-          } else {
-            setLastMessage(
-              `앗! 정답은 ${correctAnswer} (${elapsed.toFixed(2)}초)`
-            );
-            setCombo(0);
-          }
-
-          setQuestion((prev) => getQuestionWithChoices(prev));
-        };
-
-        const handleChoice = (choice) => {
-          processAnswer(choice);
-        };
-
-        const handleSubjectSubmit = (num) => {
-          processAnswer(num);
-        };
-
-        const secondsLeft = (timeLeftMs / 1000).toFixed(1);
-        const avgCorrectTime =
-          correct > 0 ? (sumCorrectTime / correct).toFixed(2) : "-";
-        const accuracy =
-          total > 0 ? Math.round((correct / total) * 100) + "%" : "-";
-
-        const progressPercent = Math.max(
-          0,
-          Math.min(100, (timeLeftMs / timeLimitMs) * 100)
-        );
-
-        // ★ 완화된 등급 기준 + 치트 방지
-        let grade = "-";
-        if (avgCorrectTime !== "-" && correct > 0) {
-          const t = parseFloat(avgCorrectTime);
-          if (!isNaN(t)) {
-            if (t < 2.0) grade = "S";
-            else if (t < 3.0) grade = "A";
-            else if (t < 4.0) grade = "B";
-            else grade = "C";
-          }
-        }
-        // 정답이 너무 적으면 높은 등급 제한 (한 문제만 빨리 풀고 기다리는 치트 방지)
-        if (correct > 0 && correct < 5 && grade !== "-") {
-          if (grade === "S" || grade === "A") {
-            grade = "B";
-          }
-        }
-
-        const buildSummary = () => {
-          const lines = [];
-          lines.push("유라의 구구런 타임어택 결과 보고!");
-          lines.push(`- 모드: ${timeLimitSec}초`);
-          lines.push(`- 정답: ${correct}/${total} (${accuracy})`);
-          lines.push(`- 정답 속도: ${avgCorrectTime}초`);
-          lines.push(`- 등급: ${grade} 등급`);
-          lines.push(`- 최고 콤보: ${bestCombo}콤보`);
-          lines.push("");
-          if (grade === "S" || grade === "A") {
-            const money = grade === "S" ? 1000 : 500;
-            lines.push(
-              `오늘은 ${grade} 등급이니까, 약속한 용돈 ${money.toLocaleString()}원 주세요 😆`
-            );
-          } else {
-            lines.push(
-              `오늘은 S/A는 아니지만, 열심히 했어요! 칭찬도 주세요 😊`
-            );
-          }
-          return lines.join("\n");
-        };
-
-        const shareResult = async () => {
-          const summary = buildSummary();
-
-          if (navigator.share) {
-            try {
-              await navigator.share({
-                title: "유라의 구구런 GUGU RUN",
-                text: summary,
-                url: window.location.href,
-              });
-              return;
-            } catch (e) {}
-          }
-
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            try {
-              await navigator.clipboard.writeText(summary);
-              alert(
-                "타임어택 결과를 클립보드에 복사했어요.\n카카오톡을 열고 채팅창에 붙여넣기 해서 공유해 주세요!"
-              );
-              return;
-            } catch (e) {}
-          }
-
-          window.prompt(
-            "이 텍스트를 전체 선택(Ctrl+A) 후 복사해서 카카오톡에 붙여넣기 해 주세요:",
-            summary
-          );
-        };
-
-        // 팝업 내 카카오톡 공유(자동 복사)
-        const handleMissionCopy = async () => {
-          const text = missionPopupText || buildSummary();
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            try {
-              await navigator.clipboard.writeText(text);
-              alert(
-                "결과를 클립보드에 복사했어요.\n카카오톡을 열고 채팅창에 붙여넣기만 하면 돼요!"
-              );
-              setShowMissionPopup(false);
-              return;
-            } catch (e) {}
-          }
-          window.prompt(
-            "아래 내용을 복사해서 카카오톡에 붙여넣기 해 주세요:",
-            text
-          );
-        };
-
-        // 종료 시 기록 저장 + 오늘 일일 미션 완료 시 팝업 띄우기
-        useEffect(() => {
-          if (!finished || total === 0) return;
-
-          const record = {
-            timestamp: Date.now(),
-            total,
-            correct,
-            accuracy,
-            avgTime: avgCorrectTime,
-            grade,
-            timeLimitSec,
-          };
-
-          const records = saveRecord(record);
-          let isNewBest = false;
-          if (records) {
-            const best = pickBestRecord(records);
-            if (best && compareRecord(record, best) === 0) {
-              isNewBest = true;
-            }
-          }
-          setJustSetNewBest(isNewBest);
-
-          if (onRecordsUpdated) {
-            onRecordsUpdated();
-          }
-
-          // 오늘 미션 체크
-          try {
-            const allRecords = loadRecords();
-            const info = calcTodayMissionAndAllowance(allRecords);
-            const allDailyDone =
-              info.dailyMissions &&
-              info.dailyMissions.length > 0 &&
-              info.dailyMissions.every((m) => m.done);
-
-            if (allDailyDone) {
-              const popupLines = [];
-              popupLines.push("오늘 일일 미션을 모두 완료했어요! 🎉");
-              popupLines.push("");
-              popupLines.push("이번 타임어택 결과는 아래와 같아요.");
-              popupLines.push(`- 모드: ${timeLimitSec}초`);
-              popupLines.push(
-                `- 정답: ${correct}/${total} (${accuracy})`
-              );
-              popupLines.push(`- 정답 속도: ${avgCorrectTime}초`);
-              popupLines.push(`- 등급: ${grade} 등급`);
-              popupLines.push(`- 최고 콤보: ${bestCombo}콤보`);
-              popupLines.push("");
-              if (grade === "S" || grade === "A") {
-                const money = grade === "S" ? 1000 : 500;
-                popupLines.push(
-                  `오늘은 ${grade} 등급이라서, 약속한 용돈 ${money.toLocaleString()}원 부탁드려요 😆`
-                );
-              } else {
-                popupLines.push(
-                  "오늘은 S/A는 아니지만, 그래도 열심히 했어요! 칭찬도 함께 부탁해요 😊"
-                );
-              }
-              popupLines.push("");
-              popupLines.push(
-                "아래 [카카오톡 공유] 버튼을 누르면 이 내용이 자동으로 복사돼요."
-              );
-              setMissionPopupText(popupLines.join("\n"));
-              setShowMissionPopup(true);
-            }
-          } catch (e) {
-            // 무시
-          }
-        }, [finished]); // eslint-disable-line react-hooks/exhaustive-deps
-
-        const isFever = combo >= 5;
-
-        return (
-          <>
-            <div className={"question-box" + (isFever ? " fever" : "")}>
-              {isFever && (
-                <div className="fever-label">
-                  FEVER 모드! 연속 정답 {combo}콤보 🔥
-                </div>
-              )}
-              <div className="question-label">
-                타임어택 모드 - {timeLimitSec}초 안에 최대한 많이!
-              </div>
-
-              <div className="timer" style={{ width: "100%" }}>
-                <div className="time-bar">
-                  <div
-                    className="time-bar-inner"
-                    style={{
-                      width: `${progressPercent}%`,
-                      background:
-                        timeLeftMs < 10000
-                          ? "linear-gradient(90deg, #ff6b6b, #ff9f43)"
-                          : "linear-gradient(90deg, #00c9a7, #00a8ff)",
-                    }}
-                  />
-                  <span className="time-bar-text">
-                    남은 시간: {secondsLeft}초
-                  </span>
+            <div className="section-card">
+              <div className="section-title-row">
+                <div className="section-title">
+                  오늘의 미션 (모두 타임어택으로 달성)
                 </div>
               </div>
-
-              <div className="question" style={{ marginTop: 4 }}>
-                {question.a} × {question.b} = ?
-              </div>
-
-              <div className="combo-row">
-                <span className="combo-current">콤보: {combo} 🔁</span>
-                <span className="combo-best">최고 콤보: {bestCombo}</span>
-              </div>
-
-              {answerMode === "choice" ? (
-                <div className="choices">
-                  {question.choices.map((c) => (
-                    <button
-                      key={c}
-                      className="choice-btn"
-                      onClick={() => handleChoice(c)}
-                      disabled={!running}
-                    >
-                      {c}
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                <SubjectiveInput
-                  value={typed}
-                  onChange={setTyped}
-                  onSubmit={handleSubjectSubmit}
-                />
-              )}
-
-              <div style={{ marginTop: 8, textAlign: "center" }}>
-                <button
-                  className="primary-button"
-                  onClick={startGame}
-                  style={{ padding: "6px 14px" }}
-                >
-                  {running ? "다시 시작" : "시작하기"}
-                </button>
-              </div>
-            </div>
-
-            <div className="stats">
-              <span className="label">푼 문제 수</span>
-              <span className="value">{total}</span>
-              <span className="label">정답 개수</span>
-              <span className="value">{correct}</span>
-              <span className="label">정답률</span>
-              <span className="value">{accuracy}</span>
-              <span className="label">정답 속도</span>
-              <span className="value">
-                {avgCorrectTime === "-" ? "-" : `${avgCorrectTime}초`}
-              </span>
-            </div>
-
-            {finished && (
-              <>
-                <div className="result ok">
-                  타임어택 종료! 🎉
-                  <br />
-                  <b>{total}</b>문제 중 <b>{correct}</b>개 정답, 정답률{" "}
-                  {accuracy},
-                  <br />
-                  정답 속도{" "}
-                  {avgCorrectTime === "-"
-                    ? "-"
-                    : `${avgCorrectTime}초`}{" "}
-                  / 등급 {grade} 등급!
-                  <br />
-                  최고 콤보 {bestCombo}콤보
-                  {justSetNewBest && (
-                    <>
-                      <br />
-                      ✨ 짱구도 박수칠 최고 기록 갱신!
-                    </>
-                  )}
-                </div>
-                <div className="share-row">
-                  <button className="share-button" onClick={shareResult}>
-                    결과 공유하기 (카카오톡 등)
-                  </button>
-                </div>
-              </>
-            )}
-
-            {lastMessage && !finished && (
-              <div className="result ok">{lastMessage}</div>
-            )}
-
-            <div className="small-tip">
-              버튼을 톡톡 누르거나 숫자를 입력해서 <b>초스피드로</b> 풀어봐요.{" "}
-              <br />
-              오늘 S/A 등급을 노려서 용돈도 챙겨 보자 ✨
-            </div>
-
-            {showMissionPopup && (
-              <div className="mission-popup-backdrop">
-                <div className="mission-popup-card">
-                  <div className="mission-popup-title">
-                    오늘 미션 완료! 🎉
+              <div className="mission-list">
+                {dailyMissions.map((m) => (
+                  <div key={m.id}>
+                    <div className="mission-row">
+                      <div className="mission-main">· {m.title}</div>
+                      <div
+                        className={
+                          "mission-status " + (m.done ? "done" : "doing")
+                        }
+                      >
+                        {m.done ? "달성" : "진행중"}
+                      </div>
+                    </div>
+                    <div className="mission-sub">{m.progress}</div>
                   </div>
-                  <div className="mission-popup-text">
-                    {missionPopupText.split("\n").map((line, idx) => (
-                      <React.Fragment key={idx}>
-                        {line}
-                        <br />
-                      </React.Fragment>
-                    ))}
-                  </div>
-                  <div className="mission-popup-buttons">
-                    <button
-                      className="mission-popup-btn primary"
-                      onClick={handleMissionCopy}
-                    >
-                      카카오톡 공유 (자동 복사)
-                    </button>
-                    <button
-                      className="mission-popup-btn secondary"
-                      onClick={() => setShowMissionPopup(false)}
-                    >
-                      닫기
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </>
-        );
-      }
-
-      // ========= 기록 보기 탭 =========
-      function RecordsView({ recordsVersion }) {
-        const [bestRecord, setBestRecord] = useState(null);
-        const [topRecords, setTopRecords] = useState([]);
-        const [badges, setBadges] = useState([]);
-
-        const reload = () => {
-          const records = loadRecords();
-          setBestRecord(pickBestRecord(records));
-          setTopRecords(getTopRecords(records, 10));
-          setBadges(calcBadges(records));
-        };
-
-        useEffect(() => {
-          reload();
-        }, []);
-
-        useEffect(() => {
-          reload();
-        }, [recordsVersion]);
-
-        return (
-          <div>
-            {bestRecord ? (
-              <div className="records-box">
-                <h3>이 기기의 최고 기록</h3>
-                <div>
-                  ⏱ {bestRecord.timeLimitSec || 60}초 ·{" "}
-                  <b>
-                    {bestRecord.correct}/{bestRecord.total}
-                  </b>{" "}
-                  정답, 정답률 {bestRecord.accuracy}, 정답 속도{" "}
-                  {bestRecord.avgTime}초, 등급 {bestRecord.grade}
-                </div>
-              </div>
-            ) : (
-              <div className="records-box">
-                아직 기록이 없어요. <br />
-                타임어택 모드에서 첫 기록을 만들어 보세요!
-              </div>
-            )}
-
-            {topRecords && topRecords.length > 0 && (
-              <div className="records-box">
-                <h3>역대 최고 기록 TOP 10</h3>
-                <div className="records-table-wrapper">
-                  <table className="records-table">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>날짜</th>
-                        <th>시간</th>
-                        <th>정답/문제</th>
-                        <th>정답률</th>
-                        <th>정답 속도</th>
-                        <th>등급</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {topRecords.map((r, idx) => {
-                        const d = r.timestamp
-                          ? new Date(r.timestamp)
-                          : null;
-                        const dateStr = d
-                          ? d.toLocaleDateString("ko-KR", {
-                              month: "short",
-                              day: "numeric",
-                            })
-                          : "";
-                        const sec = r.timeLimitSec || 60;
-                        return (
-                          <tr key={idx}>
-                            <td>{idx + 1}</td>
-                            <td>{dateStr}</td>
-                            <td>{sec}초</td>
-                            <td>
-                              {r.correct}/{r.total}
-                            </td>
-                            <td>{r.accuracy}</td>
-                            <td>{r.avgTime}초</td>
-                            <td>{r.grade}</td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-
-            <div className="records-box">
-              <h3>유라의 업적 배지</h3>
-              <div className="badge-row">
-                {badges.map((b) => (
-                  <span
-                    key={b.id}
-                    className={"badge " + (b.earned ? "earned" : "")}
-                  >
-                    {b.earned ? "⭐ " : "⬜ "}
-                    {b.label}
-                  </span>
                 ))}
               </div>
-              <div className="small-tip" style={{ marginTop: 4 }}>
-                회색 배지는 아직 잠겨 있는 도전 과제예요.
-                <br />
-                노란 별이 붙은 배지가 많아질수록, “구구런 마스터 유라”에
-                가까워집니다.
-              </div>
-            </div>
-          </div>
-        );
-      }
-
-      // ========= 미션/용돈 탭 =========
-      function MissionsView({ recordsVersion }) {
-        const [info, setInfo] = useState(() =>
-          calcTodayMissionAndAllowance(loadRecords())
-        );
-
-        useEffect(() => {
-          const recs = loadRecords();
-          setInfo(calcTodayMissionAndAllowance(recs));
-        }, [recordsVersion]);
-
-        const {
-          todayStr,
-          bestGrade,
-          allowance,
-          dailyMissions,
-          weeklyMissions,
-          weekRangeStr,
-        } = info;
-
-        const shareToday = async () => {
-          const doneCount = dailyMissions.filter((m) => m.done).length;
-
-          let allowanceLine = "";
-          if (allowance > 0 && bestGrade !== "-") {
-            allowanceLine = `오늘은 ${bestGrade} 등급이라서, 약속한 용돈 ${allowance.toLocaleString()}원 주세요 😆`;
-          } else {
-            allowanceLine =
-              "오늘은 아직 S/A 등급은 아니지만, 구구단 연습 열심히 했어요! 칭찬도 부탁해요 😊";
-          }
-
-          const summary =
-            `유라의 구구런 오늘 미션 보고!\n` +
-            `- 오늘 날짜: ${todayStr}\n` +
-            `- 일일 미션 완료: ${doneCount} / ${dailyMissions.length}개\n` +
-            `- 오늘 최고 등급: ${
-              bestGrade === "-" ? "없음" : bestGrade
-            }\n` +
-            `- 오늘 용돈: ${allowance.toLocaleString()}원\n\n` +
-            allowanceLine;
-
-          if (navigator.share) {
-            try {
-              await navigator.share({
-                title: "유라의 구구런 - 오늘 미션 결과",
-                text: summary,
-                url: window.location.href,
-              });
-              return;
-            } catch (e) {}
-          }
-
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            try {
-              await navigator.clipboard.writeText(summary);
-              alert(
-                "오늘 미션/용돈 결과를 클립보드에 복사했어요.\n카카오톡을 열고 채팅창에 붙여넣기 해서 공유해 주세요!"
-              );
-              return;
-            } catch (e) {}
-          }
-
-          window.prompt(
-            "이 텍스트를 전체 선택(Ctrl+A) 후 복사해서 카카오톡에 붙여넣기 해 주세요:",
-            summary
-          );
-        };
-
-        return (
-          <div>
-            {/* 오늘의 일일 미션 */}
-            <div className="records-box">
-              <h3>오늘의 미션 (모두 타임어택으로 달성)</h3>
-
-              {dailyMissions.length > 0 ? (
-                <div className="mission-list">
-                  {dailyMissions.map((m) => (
-                    <div className="mission-item" key={m.id}>
-                      <div className="mission-main">
-                        <span className="mission-title">{m.title}</span>
-                        <span
-                          className={
-                            "mission-status " + (m.done ? "done" : "pending")
-                          }
-                        >
-                          {m.done ? "완료 🎉" : "진행중"}
-                        </span>
-                      </div>
-                      <div className="mission-progress">{m.progress}</div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="small-tip">
-                  아직 타임어택 기록이 없어요. 오늘 첫 미션을 시작해 보세요!
-                </div>
-              )}
             </div>
 
-            {/* 주간 미션 */}
-            <div className="records-box">
-              <h3>주간 미션 (이번 주: {weekRangeStr})</h3>
-
-              {weeklyMissions.length > 0 ? (
-                <div className="mission-list">
-                  {weeklyMissions.map((m) => (
-                    <div className="mission-item" key={m.id}>
-                      <div className="mission-main">
-                        <span className="mission-title">{m.title}</span>
-                        <span
-                          className={
-                            "mission-status " + (m.done ? "done" : "pending")
-                          }
-                        >
-                          {m.done ? "완료 ✅" : "진행중"}
-                        </span>
-                      </div>
-                      <div className="mission-progress">{m.progress}</div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="small-tip">
-                  이번 주에는 아직 타임어택 기록이 없어요.
-                </div>
-              )}
-            </div>
-
-            {/* 오늘 용돈 정보 */}
-            <div className="records-box">
-              <h3>오늘의 용돈 등급</h3>
-              <div className="mission-info-row">
-                <span className="mission-label">· 오늘 최고 등급</span>
-                <span className="mission-value">
-                  {bestGrade === "-" ? "아직 없음" : bestGrade}
-                </span>
-              </div>
-              <div className="mission-info-row">
-                <span className="mission-label">
-                  · 용돈 규칙 (하루 1회)
-                </span>
-                <span className="mission-value">
-                  S: 1,000원 / A: 500원
-                </span>
-              </div>
-              <div className="mission-info-row">
-                <span className="mission-label">· 오늘 계산된 용돈</span>
-                <span className="mission-value">
-                  {allowance.toLocaleString()}원
-                </span>
-              </div>
-              <div className="small-tip" style={{ marginTop: 4 }}>
-                매일 자정이 지나면 새로운 하루로 다시 계산돼요. <br />
-                이번 주 주간 미션은 월요일부터 일요일까지의 타임어택 기록만
-                사용해서 계산합니다.
-              </div>
-              <div className="share-row">
-                <button className="share-button" onClick={shareToday}>
-                  오늘 결과 공유하기 (부모님께)
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-      }
-
-      // ========= 전체 App =========
-      function App() {
-        const [mode, setMode] = useState("practice"); // 'practice' | 'timeAttack' | 'records' | 'missions'
-        const [timeLimitMs, setTimeLimitMs] = useState(60000); // 기본 60초
-        const [answerMode, setAnswerMode] = useState("choice"); // 'choice' | 'subjective'
-        const [recordsVersion, setRecordsVersion] = useState(0);
-        const [profile, setProfile] = useState(() =>
-          calcProfileFromRecords(loadRecords())
-        );
-        const [showSettings, setShowSettings] = useState(false);
-
-        const timeLimitSec = Math.round(timeLimitMs / 1000);
-
-        const refreshProfile = () => {
-          const recs = loadRecords();
-          setProfile(calcProfileFromRecords(recs));
-        };
-
-        const handleRecordsUpdated = () => {
-          setRecordsVersion((v) => v + 1);
-          refreshProfile();
-        };
-
-        const xpPercent =
-          profile.xpForNextLevel > 0
-            ? Math.max(
-                0,
-                Math.min(
-                  100,
-                  Math.round(
-                    (profile.xpInLevel / profile.xpForNextLevel) * 100
-                  )
-                )
-              )
-            : 0;
-
-        const answerModeLabel =
-          answerMode === "choice" ? "객관식" : "주관식";
-
-        return (
-          <>
-            <div className="app">
-              <div className="title">유라의 구구런 GUGU RUN</div>
-              <div className="header-row">
-                <div className="subtitle">
-                  구구단 속도 + 정확도 둘 다 잡기
-                </div>
-                <button
-                  className="settings-button"
-                  onClick={() => setShowSettings(true)}
-                  aria-label="설정"
-                >
-                  <img src="icon_setting.png" alt="설정" />
-                </button>
-              </div>
-
-              <div className="profile-row">
-                <div className="profile-main">
-                  <span className="profile-title">{profile.title}</span>
-                  <span className="profile-level">
-                    Lv.{profile.level} · 총 경험치 {profile.xp}
-                  </span>
-                </div>
-                <div className="xp-bar">
-                  <div
-                    className="xp-bar-fill"
-                    style={{ width: `${xpPercent}%` }}
-                  />
-                </div>
-                <div className="xp-text">
-                  다음 레벨까지{" "}
-                  {profile.xpForNextLevel - profile.xpInLevel}점 남음
+            <div className="section-card">
+              <div className="section-title-row">
+                <div className="section-title">
+                  주간 미션 (이번 주: {weekLabel})
                 </div>
               </div>
-
-              <div className="current-config-row">
-                <span className="current-config-label">현재 설정</span>
-                <span className="current-config-value">
-                  타임어택 {timeLimitSec}초 · {answerModeLabel}
-                </span>
-              </div>
-
-              {/* 탭 */}
-              <div className="tab-row">
-                <button
-                  className={
-                    "tab-btn" + (mode === "practice" ? " active" : "")
-                  }
-                  onClick={() => setMode("practice")}
-                >
-                  연습
-                </button>
-                <button
-                  className={
-                    "tab-btn" + (mode === "timeAttack" ? " active" : "")
-                  }
-                  onClick={() => setMode("timeAttack")}
-                >
-                  타임어택
-                </button>
-                <button
-                  className={
-                    "tab-btn" + (mode === "records" ? " active" : "")
-                  }
-                  onClick={() => setMode("records")}
-                >
-                  기록 보기
-                </button>
-                <button
-                  className={
-                    "tab-btn" + (mode === "missions" ? " active" : "")
-                  }
-                  onClick={() => setMode("missions")}
-                >
-                  미션·용돈
-                </button>
-              </div>
-
-              {mode === "practice" && <PracticeMode answerMode={answerMode} />}
-              {mode === "timeAttack" && (
-                <TimeAttackMode
-                  timeLimitMs={timeLimitMs}
-                  answerMode={answerMode}
-                  onRecordsUpdated={handleRecordsUpdated}
-                />
-              )}
-              {mode === "records" && (
-                <RecordsView recordsVersion={recordsVersion} />
-              )}
-              {mode === "missions" && (
-                <MissionsView recordsVersion={recordsVersion} />
-              )}
-            </div>
-
-            {/* 설정 팝업 */}
-            {showSettings && (
-              <div className="mission-popup-backdrop">
-                <div className="mission-popup-card">
-                  <div className="mission-popup-title">설정</div>
-                  <div className="mission-popup-text">
-                    <div style={{ marginBottom: "6px" }}>
-                      <b>타임어택 시간</b>
-                      <br />
-                      <div style={{ marginTop: "4px", display: "flex", gap: 6 }}>
-                        <button
-                          className={
-                            "pill-chip" +
-                            (timeLimitSec === 30 ? " active" : "")
-                          }
-                          onClick={() => setTimeLimitMs(30000)}
-                        >
-                          30초
-                        </button>
-                        <button
-                          className={
-                            "pill-chip" +
-                            (timeLimitSec === 60 ? " active" : "")
-                          }
-                          onClick={() => setTimeLimitMs(60000)}
-                        >
-                          60초
-                        </button>
+              <div className="mission-list">
+                {weeklyMissions.map((m) => (
+                  <div key={m.id}>
+                    <div className="mission-row">
+                      <div className="mission-main">· {m.title}</div>
+                      <div
+                        className={
+                          "mission-status " + (m.done ? "done" : "doing")
+                        }
+                      >
+                        {m.done ? "달성" : "진행중"}
                       </div>
                     </div>
-                    <div style={{ marginTop: "8px" }}>
-                      <b>답안 방식</b>
-                      <br />
-                      <div style={{ marginTop: "4px", display: "flex", gap: 6 }}>
-                        <button
-                          className={
-                            "pill-chip" +
-                            (answerMode === "choice" ? " active" : "")
-                          }
-                          onClick={() => setAnswerMode("choice")}
-                        >
-                          객관식 (6지선다)
-                        </button>
-                        <button
-                          className={
-                            "pill-chip" +
-                            (answerMode === "subjective" ? " active" : "")
-                          }
-                          onClick={() => setAnswerMode("subjective")}
-                        >
-                          주관식 (숫자 입력)
-                        </button>
-                      </div>
-                    </div>
+                    <div className="mission-sub">{m.progress}</div>
                   </div>
-                  <div className="mission-popup-buttons">
-                    <button
-                      className="mission-popup-btn secondary"
-                      onClick={() => setShowSettings(false)}
-                    >
-                      닫기
-                    </button>
-                  </div>
-                </div>
+                ))}
               </div>
-            )}
+            </div>
+
+            <div className="small-tip">
+              모든 미션은 60초 타임어택 기록을 기준으로 계산됩니다.
+              <br />
+              S/A 등급을 받으면 용돈 미션 달성으로 연결되게 설계해 두었어요.
+            </div>
           </>
         );
       }
 
-      ReactDOM.render(<App />, document.getElementById("root"));
+      function RecordsTab({ records }) {
+        if (!records || records.length === 0) {
+          return (
+            <div className="section-card">
+              <div className="section-title">아직 기록이 없어요</div>
+              <div style={{ marginTop: 4, fontSize: "0.8rem" }}>
+                타임어택 모드에서 게임을 마치면 이곳에 기록이 쌓입니다.
+              </div>
+            </div>
+          );
+        }
+
+        // 이 기기의 최고 기록 (등급 우선, 점수, 정답 수)
+        const bestRecord = [...records].sort((a, b) => {
+          const gp = gradePriority(b.grade) - gradePriority(a.grade);
+          if (gp !== 0) return gp;
+          if ((b.score || 0) !== (a.score || 0)) {
+            return (b.score || 0) - (a.score || 0);
+          }
+          return (b.correct || 0) - (a.correct || 0);
+        })[0];
+
+        const top10 = [...records]
+          .sort((a, b) => {
+            const gp = gradePriority(b.grade) - gradePriority(a.grade);
+            if (gp !== 0) return gp;
+            if ((b.score || 0) !== (a.score || 0)) {
+              return (b.score || 0) - (a.score || 0);
+            }
+            return (b.correct || 0) - (a.correct || 0);
+          })
+          .slice(0, 10);
+
+        const gradeLabel = (g) =>
+          g === "-" || !g ? "등급 없음" : `${g} 등급`;
+
+        return (
+          <>
+            <div className="section-card">
+              <div className="section-title">이 기기의 최고 기록</div>
+              <div style={{ marginTop: 4, fontSize: "0.8rem" }}>
+                {bestRecord.durationSec}초 · {bestRecord.date}
+                <br />
+                {bestRecord.correct}/{bestRecord.total} 정답, 정답률{" "}
+                {bestRecord.total > 0
+                  ? Math.round((bestRecord.correct / bestRecord.total) * 100) +
+                    "%"
+                  : "-"}
+                , 정답 속도{" "}
+                {bestRecord.avgCorrectSpeedSec != null
+                  ? `${bestRecord.avgCorrectSpeedSec.toFixed(2)}초`
+                  : "-"}
+                , 점수 {bestRecord.score}, {gradeLabel(bestRecord.grade)}
+              </div>
+            </div>
+
+            <div className="section-card">
+              <div className="section-title">역대 최고 기록 TOP 10</div>
+              <table className="records-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>날짜</th>
+                    <th>시간</th>
+                    <th>정답/문제</th>
+                    <th>정답률</th>
+                    <th>속도(초)</th>
+                    <th>점수</th>
+                    <th>등급</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {top10.map((r, idx) => (
+                    <tr
+                      key={idx}
+                      className={
+                        r === bestRecord ? "highlight-row" : undefined
+                      }
+                    >
+                      <td>{idx + 1}</td>
+                      <td>{r.date}</td>
+                      <td>{r.durationSec}s</td>
+                      <td>
+                        {r.correct}/{r.total}
+                      </td>
+                      <td>
+                        {r.total > 0
+                          ? Math.round((r.correct / r.total) * 100) + "%"
+                          : "-"}
+                      </td>
+                      <td>
+                        {r.avgCorrectSpeedSec != null
+                          ? r.avgCorrectSpeedSec.toFixed(2)
+                          : "-"}
+                      </td>
+                      <td>{r.score}</td>
+                      <td>{r.grade || "-"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="small-tip">
+              기록은 이 기기(브라우저)에만 저장됩니다.
+              <br />
+              유라가 “내가 전에 얼마나 잘했지?” 하고 궁금해할 때 같이 보는
+              용도예요.
+            </div>
+          </>
+        );
+      }
+
+      // ===== 메인 App =====
+      function App() {
+        const [mode, setMode] = useState("timeAttack"); // 'practice' | 'timeAttack' | 'missions' | 'records'
+        const [profile, setProfile] = useState(() => loadProfile());
+        const [records, setRecords] = useState(() => loadRecords());
+
+        // 설정: 타임어택 시간, 객관식/주관식, 키보드 타입
+        const [timeLimitSec, setTimeLimitSec] = useState(60);
+        const [answerType, setAnswerType] = useState("choice"); // 'choice' | 'input'
+        const [keyboardMode, setKeyboardMode] = useState("screen"); // 'system' | 'screen'
+        const [showSettings, setShowSettings] = useState(false);
+
+        const [lastGameResult, setLastGameResult] = useState(null);
+        const [missionPopup, setMissionPopup] = useState(null);
+
+        useEffect(() => {
+          saveProfile(profile);
+        }, [profile]);
+
+        useEffect(() => {
+          saveRecords(records);
+        }, [records]);
+
+        // 타임어택 종료 시
+        const handleGameFinished = (result) => {
+          setLastGameResult(result);
+          setRecords((prev) => [...prev, result]);
+
+          // 경험치 계산
+          let gainedXp = 0;
+          gainedXp += result.correct * 10; // 정답당 10xp
+          if (result.grade === "S") gainedXp += 200;
+          else if (result.grade === "A") gainedXp += 120;
+          else if (result.grade === "B") gainedXp += 60;
+          else if (result.grade === "C") gainedXp += 30;
+
+          const newTotalXp = (profile.totalXp || 0) + gainedXp;
+          const newProfile = { ...profile, totalXp: newTotalXp };
+          setProfile(newProfile);
+
+          // 오늘 미션 달성 여부 체크 (60초만 의미 있음)
+          const today = todayYMD();
+          const todayRecords = [...records, result].filter(
+            (r) => r.date === today
+          );
+          const todayCount60 = todayRecords.filter(
+            (r) => r.durationSec === 60
+          ).length;
+          const todayCorrectSum = todayRecords.reduce(
+            (s, r) => s + (r.correct || 0),
+            0
+          );
+          const todayBestGrade = todayRecords.reduce((best, r) => {
+            if (gradePriority(r.grade) > gradePriority(best)) return r.grade;
+            return best;
+          }, "-");
+
+          const dailyDone =
+            todayCount60 >= 2 &&
+            todayCorrectSum >= 30 &&
+            gradePriority(todayBestGrade) >= gradePriority("A");
+
+          if (dailyDone && result.durationSec === 60) {
+            // 팝업용 공유 문구(짱구 톤 유지, 간단하게)
+            const gradeText = result.grade || "-";
+            const shareText = [
+              `[유라의 구구런 오늘 미션 완료 보고서]`,
+              ``,
+              `오늘 타임어택 결과는 ${result.durationSec}초 동안`,
+              `${result.total}문제 중 ${result.correct}개 정답!`,
+              `정답률 ${result.total > 0
+                ? Math.round((result.correct / result.total) * 100) + "%"
+                : "-"
+              }, 정답 속도 평균 ${
+                result.avgCorrectSpeedSec != null
+                  ? result.avgCorrectSpeedSec.toFixed(2) + "초"
+                  : "-"
+              }`,
+              `등급은 ${gradeText} 등급이얌!`,
+              ``,
+              gradeText === "S"
+                ? "오늘은 S급이라 용돈 1,000원 줘야 하는 거 아님? 😏"
+                : gradeText === "A"
+                ? "오늘은 A급이니까 용돈 500원 달라고요~ 😎"
+                : "오늘은 연습 느낌이라 등급은 살짝 아쉽지만, 내일 더 잘할 거임!",
+            ].join("\n");
+
+            setMissionPopup({
+              text: shareText,
+            });
+          }
+        };
+
+        const { level, xpInLevel, xpToNext } = calcLevelFromXp(
+          profile.totalXp || 0
+        );
+        const title = getTitleForLevel(level);
+        const levelBarWidth =
+          xpToNext > 0
+            ? `${Math.min(1, xpInLevel / xpToNext) * 100}%`
+            : "100%";
+        const nextLevelText =
+          level === MAX_LEVEL
+            ? "최고 레벨에 도달했어요!"
+            : `다음 레벨까지 ${xpToNext - xpInLevel}점 남음`;
+
+        const handleCopyShare = () => {
+          if (!missionPopup) return;
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(missionPopup.text).catch(() => {});
+          }
+        };
+
+        return (
+          <div className="app">
+            <div className="title">유라의 구구런 GUGU RUN</div>
+            <div className="subtitle">
+              구구단 속도 + 정확도 둘 다 잡기
+            </div>
+
+            <div className="header-row">
+              <div className="level-card">
+                <div className="level-top">
+                  <div className="level-name">{title}</div>
+                  <div className="level-info">
+                    Lv.{level} · 총 경험치 {profile.totalXp || 0}
+                  </div>
+                </div>
+                <div className="level-bar-wrap">
+                  <div
+                    className="level-bar-inner"
+                    style={{ width: levelBarWidth }}
+                  ></div>
+                </div>
+                <div className="level-bottom">{nextLevelText}</div>
+              </div>
+              <button
+                className="settings-btn"
+                onClick={() => setShowSettings((v) => !v)}
+                title="설정"
+              >
+                <span>⚙️</span>
+              </button>
+            </div>
+
+            {showSettings && (
+              <div className="settings-panel">
+                <div className="settings-row">
+                  <label>타임어택 시간</label>
+                  <div className="settings-options">
+                    {[30, 60].map((sec) => (
+                      <button
+                        key={sec}
+                        className={
+                          "settings-chip " +
+                          (timeLimitSec === sec ? "active" : "")
+                        }
+                        onClick={() => setTimeLimitSec(sec)}
+                      >
+                        {sec}초
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="settings-row">
+                  <label>문제 유형</label>
+                  <div className="settings-options">
+                    <button
+                      className={
+                        "settings-chip " +
+                        (answerType === "choice" ? "active" : "")
+                      }
+                      onClick={() => setAnswerType("choice")}
+                    >
+                      객관식
+                    </button>
+                    <button
+                      className={
+                        "settings-chip " +
+                        (answerType === "input" ? "active" : "")
+                      }
+                      onClick={() => setAnswerType("input")}
+                    >
+                      주관식
+                    </button>
+                  </div>
+                </div>
+
+                {answerType === "input" && (
+                  <div className="settings-row">
+                    <label>주관식 입력 방식</label>
+                    <div className="settings-options">
+                      <button
+                        className={
+                          "settings-chip " +
+                          (keyboardMode === "system" ? "active" : "")
+                        }
+                        onClick={() => setKeyboardMode("system")}
+                      >
+                        시스템 키보드
+                      </button>
+                      <button
+                        className={
+                          "settings-chip " +
+                          (keyboardMode === "screen" ? "active" : "")
+                        }
+                        onClick={() => setKeyboardMode("screen")}
+                      >
+                        스크린 키보드
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="tabs">
+              <button
+                className={
+                  "tab-btn " + (mode === "practice" ? "active" : "")
+                }
+                onClick={() => setMode("practice")}
+              >
+                연습
+              </button>
+              <button
+                className={
+                  "tab-btn " + (mode === "timeAttack" ? "active" : "")
+                }
+                onClick={() => setMode("timeAttack")}
+              >
+                타임어택
+              </button>
+              <button
+                className={
+                  "tab-btn " + (mode === "missions" ? "active" : "")
+                }
+                onClick={() => setMode("missions")}
+              >
+                미션
+              </button>
+              <button
+                className={
+                  "tab-btn " + (mode === "records" ? "active" : "")
+                }
+                onClick={() => setMode("records")}
+              >
+                기록
+              </button>
+            </div>
+
+            {mode === "practice" && <PracticeMode />}
+
+            {mode === "timeAttack" && (
+              <TimeAttackMode
+                timeLimitSec={timeLimitSec}
+                answerType={answerType}
+                keyboardMode={keyboardMode}
+                onGameFinished={handleGameFinished}
+              />
+            )}
+
+            {mode === "missions" && <MissionsTab records={records} />}
+
+            {mode === "records" && <RecordsTab records={records} />}
+
+            {missionPopup && (
+              <div className="mission-popup-overlay">
+                <div className="mission-popup">
+                  <div className="mission-popup-title">
+                    오늘 미션 달성 완료! 🎉
+                  </div>
+                  <div className="mission-popup-body">
+                    {missionPopup.text}
+                  </div>
+                  <div className="mission-popup-buttons">
+                    <button
+                      className="secondary-button"
+                      onClick={() => setMissionPopup(null)}
+                    >
+                      닫기
+                    </button>
+                    <button
+                      className="primary-button"
+                      onClick={() => {
+                        handleCopyShare();
+                        alert(
+                          "결과 문구를 클립보드에 복사했어요.\n카카오톡 가족방에 붙여넣기 해서 보내면 돼요!"
+                        );
+                      }}
+                    >
+                      결과 공유하기 (복사)
+                    </button>
+                  </div>
+                  <div className="copy-hint">
+                    * 버튼을 누르면 문구가 자동으로 복사됩니다.
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
     </script>
   </body>
 </html>
