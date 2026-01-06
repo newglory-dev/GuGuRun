@@ -44,11 +44,42 @@
         color: transparent;
       }
 
+      .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+      }
+
       .subtitle {
-        text-align: center;
         font-size: 0.85rem;
         color: #28708a;
-        margin-bottom: 6px;
+      }
+
+      .settings-button {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: none;
+        padding: 0;
+        margin-left: 6px;
+        background: radial-gradient(circle at 30% 30%, #ffffff, #b3f0ff);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .settings-button img {
+        width: 18px;
+        height: 18px;
+        filter: hue-rotate(170deg) saturate(1.4);
+      }
+
+      .settings-button:active {
+        transform: translateY(1px);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
       }
 
       .profile-row {
@@ -56,11 +87,11 @@
         flex-direction: column;
         gap: 4px;
         margin-bottom: 6px;
-        padding: 8px 10px;
+        padding: 10px 10px;
         border-radius: 14px;
         background: #ecfcff;
         border: 1px solid #c0f0ff;
-        font-size: 0.78rem;
+        font-size: 0.9rem;
         color: #345;
       }
 
@@ -75,7 +106,7 @@
       }
 
       .profile-level {
-        font-size: 0.82rem;
+        font-size: 0.9rem;
         font-weight: 700;
         color: #008b8b;
       }
@@ -83,11 +114,11 @@
       .xp-bar {
         position: relative;
         width: 100%;
-        height: 6px;
+        height: 8px;
         border-radius: 999px;
         background: #d6f7ff;
         overflow: hidden;
-        margin-top: 2px;
+        margin-top: 4px;
       }
 
       .xp-bar-fill {
@@ -100,10 +131,27 @@
       }
 
       .xp-text {
-        font-size: 0.7rem;
+        font-size: 0.8rem;
         text-align: right;
         color: #567;
         margin-top: 2px;
+      }
+
+      .current-config-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 4px;
+        font-size: 0.8rem;
+        color: #345;
+      }
+
+      .current-config-label {
+        font-weight: 500;
+      }
+
+      .current-config-value {
+        font-weight: 600;
+        color: #007f7f;
       }
 
       .question-box {
@@ -475,7 +523,7 @@
         color: #456;
       }
 
-      /* 미션 완료 팝업 */
+      /* 미션 완료 / 설정 팝업 */
       .mission-popup-backdrop {
         position: fixed;
         inset: 0;
@@ -507,7 +555,7 @@
         font-size: 0.8rem;
         color: #444;
         line-height: 1.4;
-        max-height: 220px;
+        max-height: 260px;
         overflow-y: auto;
       }
 
@@ -539,6 +587,63 @@
       }
 
       .mission-popup-btn:active {
+        transform: translateY(1px);
+      }
+
+      /* 주관식 입력용 */
+      .subjective-box {
+        margin-top: 8px;
+        width: 100%;
+        text-align: center;
+      }
+
+      .subjective-label {
+        font-size: 0.78rem;
+        color: #456;
+        margin-bottom: 4px;
+      }
+
+      .subjective-display {
+        min-height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        border: 1px solid #aeefff;
+        background: #ffffff;
+        font-size: 1.7rem;
+        font-weight: 800;
+        letter-spacing: 0.07em;
+        margin-bottom: 4px;
+      }
+
+      .subjective-display.empty {
+        color: #bbb;
+        font-size: 0.9rem;
+        font-weight: 500;
+        letter-spacing: 0;
+      }
+
+      .subjective-hidden-input {
+        opacity: 0;
+        position: absolute;
+        pointer-events: none;
+        height: 0;
+        width: 0;
+      }
+
+      .subjective-focus-button {
+        padding: 4px 10px;
+        border-radius: 14px;
+        border: none;
+        background: #d3f8ff;
+        color: #28708a;
+        font-size: 0.78rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .subjective-focus-button:active {
         transform: translateY(1px);
       }
 
@@ -897,8 +1002,80 @@
         });
       }
 
+      // ===== 주관식 입력 공통 컴포넌트 =====
+      function SubjectiveInput({ value, onChange, onSubmit }) {
+        const inputRef = useRef(null);
+
+        useEffect(() => {
+          if (inputRef.current) {
+            inputRef.current.focus();
+          }
+        }, []);
+
+        const handleKeyDown = (e) => {
+          const key = e.key;
+          if (key >= "0" && key <= "9") {
+            e.preventDefault();
+            onChange((prev) => {
+              const next = (prev || "") + key;
+              // 3자리까지만 (최대 81)
+              return next.slice(0, 3);
+            });
+          } else if (key === "Enter") {
+            e.preventDefault();
+            if (!value || value.length === 0) return;
+            const num = parseInt(value, 10);
+            if (!isNaN(num)) {
+              onSubmit(num);
+            }
+            onChange("");
+          } else {
+            // Backspace 등은 모두 무시 (편집 기능 제공 안 함)
+            e.preventDefault();
+          }
+        };
+
+        const handleFocusClick = () => {
+          if (inputRef.current) {
+            inputRef.current.focus();
+          }
+        };
+
+        return (
+          <div className="subjective-box">
+            <div className="subjective-label">
+              숫자 키보드로 답을 입력하고, 엔터를 눌러요.
+            </div>
+            <div
+              className={
+                "subjective-display" + (!value ? " empty" : "")
+              }
+            >
+              {value ? (
+                value
+              ) : (
+                <>아직 입력한 숫자가 없어요</>
+              )}
+            </div>
+            <input
+              ref={inputRef}
+              className="subjective-hidden-input"
+              type="tel"
+              onKeyDown={handleKeyDown}
+            />
+            <button
+              type="button"
+              className="subjective-focus-button"
+              onClick={handleFocusClick}
+            >
+              키보드 다시 불러오기
+            </button>
+          </div>
+        );
+      }
+
       // ========= 연습 모드 =========
-      function PracticeMode() {
+      function PracticeMode({ answerMode }) {
         const [question, setQuestion] = useState(() =>
           getQuestionWithChoices(null)
         );
@@ -908,14 +1085,16 @@
         const [total, setTotal] = useState(0);
         const [correct, setCorrect] = useState(0);
         const [sumTime, setSumTime] = useState(0);
+        const [sumCorrectTime, setSumCorrectTime] = useState(0);
         const [combo, setCombo] = useState(0);
         const [bestCombo, setBestCombo] = useState(0);
+        const [typed, setTyped] = useState("");
 
         useEffect(() => {
           setQuestionStart(Date.now());
         }, [question]);
 
-        const handleChoice = (choice) => {
+        const processAnswer = (answerValue) => {
           const now = Date.now();
           const elapsed = (now - questionStart) / 1000;
           const correctAnswer = question.a * question.b;
@@ -923,8 +1102,9 @@
           setTotal((t) => t + 1);
           setSumTime((s) => s + elapsed);
 
-          if (choice === correctAnswer) {
+          if (answerValue === correctAnswer) {
             setCorrect((c) => c + 1);
+            setSumCorrectTime((s) => s + elapsed);
             setLastCorrect(true);
             setLastMessage(
               `정답! ${correctAnswer} ✨ (${elapsed.toFixed(2)}초)`
@@ -947,7 +1127,16 @@
           setQuestion((prev) => getQuestionWithChoices(prev));
         };
 
-        const avgTime = total > 0 ? (sumTime / total).toFixed(2) : "-";
+        const handleChoice = (choice) => {
+          processAnswer(choice);
+        };
+
+        const handleSubjectSubmit = (num) => {
+          processAnswer(num);
+        };
+
+        const avgCorrectTime =
+          correct > 0 ? (sumCorrectTime / correct).toFixed(2) : "-";
         const accuracy =
           total > 0 ? Math.round((correct / total) * 100) + "%" : "-";
 
@@ -960,7 +1149,7 @@
                 <div className="fever-label">FEVER 모드! 연속 정답 유지 중 🔥</div>
               )}
               <div className="question-label">
-                연습 모드 - 객관식 스피드 연습
+                연습 모드 - 객관식/주관식 스피드 연습
               </div>
               <div className="question">
                 {question.a} × {question.b} = ?
@@ -975,17 +1164,25 @@
                 <span className="combo-best">최고 콤보: {bestCombo}</span>
               </div>
 
-              <div className="choices">
-                {question.choices.map((c) => (
-                  <button
-                    key={c}
-                    className="choice-btn"
-                    onClick={() => handleChoice(c)}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
+              {answerMode === "choice" ? (
+                <div className="choices">
+                  {question.choices.map((c) => (
+                    <button
+                      key={c}
+                      className="choice-btn"
+                      onClick={() => handleChoice(c)}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <SubjectiveInput
+                  value={typed}
+                  onChange={setTyped}
+                  onSubmit={handleSubjectSubmit}
+                />
+              )}
             </div>
 
             <div className="stats">
@@ -995,9 +1192,9 @@
               <span className="value">{correct}</span>
               <span className="label">정답률</span>
               <span className="value">{accuracy}</span>
-              <span className="label">평균 반응속도</span>
+              <span className="label">정답 속도</span>
               <span className="value">
-                {avgTime === "-" ? "-" : `${avgTime}초`}
+                {avgCorrectTime === "-" ? "-" : `${avgCorrectTime}초`}
               </span>
             </div>
 
@@ -1008,7 +1205,7 @@
             )}
 
             <div className="small-tip">
-              답을 <b>톡톡 누르기만</b> 하면 되는 연습 모드예요. <br />
+              답을 <b>톡톡 누르거나</b> 숫자를 입력해서 엔터를 눌러요. <br />
               콤보를 길게 이어 볼수록, 머릿속 계산기가 점점 빨라집니다.
             </div>
           </>
@@ -1016,7 +1213,7 @@
       }
 
       // ========= 타임어택 모드 =========
-      function TimeAttackMode({ timeLimitMs, onRecordsUpdated }) {
+      function TimeAttackMode({ timeLimitMs, answerMode, onRecordsUpdated }) {
         const [question, setQuestion] = useState(() =>
           getQuestionWithChoices(null)
         );
@@ -1026,6 +1223,7 @@
         const [total, setTotal] = useState(0);
         const [correct, setCorrect] = useState(0);
         const [sumTime, setSumTime] = useState(0);
+        const [sumCorrectTime, setSumCorrectTime] = useState(0);
         const [lastMessage, setLastMessage] = useState("");
         const [finished, setFinished] = useState(false);
         const [justSetNewBest, setJustSetNewBest] = useState(false);
@@ -1033,6 +1231,7 @@
         const [bestCombo, setBestCombo] = useState(0);
         const [showMissionPopup, setShowMissionPopup] = useState(false);
         const [missionPopupText, setMissionPopupText] = useState("");
+        const [typed, setTyped] = useState("");
         const timerRef = useRef(null);
 
         const timeLimitSec = Math.round(timeLimitMs / 1000);
@@ -1044,12 +1243,14 @@
           setTotal(0);
           setCorrect(0);
           setSumTime(0);
+          setSumCorrectTime(0);
           setLastMessage("");
           setJustSetNewBest(false);
           setCombo(0);
           setBestCombo(0);
           setShowMissionPopup(false);
-        }, [timeLimitMs]);
+          setTyped("");
+        }, [timeLimitMs, answerMode]);
 
         const startGame = () => {
           setRunning(true);
@@ -1058,11 +1259,13 @@
           setTotal(0);
           setCorrect(0);
           setSumTime(0);
+          setSumCorrectTime(0);
           setLastMessage("");
           setJustSetNewBest(false);
           setCombo(0);
           setBestCombo(0);
           setShowMissionPopup(false);
+          setTyped("");
           setQuestion((prev) => getQuestionWithChoices(prev));
           setQuestionStart(Date.now());
         };
@@ -1103,7 +1306,7 @@
           setQuestionStart(Date.now());
         }, [question]);
 
-        const handleChoice = (choice) => {
+        const processAnswer = (answerValue) => {
           if (!running) return;
 
           const now = Date.now();
@@ -1113,8 +1316,9 @@
           setTotal((t) => t + 1);
           setSumTime((s) => s + elapsed);
 
-          if (choice === correctAnswer) {
+          if (answerValue === correctAnswer) {
             setCorrect((c) => c + 1);
+            setSumCorrectTime((s) => s + elapsed);
             setLastMessage(
               `굿! 정답 ${correctAnswer} (${elapsed.toFixed(2)}초)`
             );
@@ -1133,8 +1337,17 @@
           setQuestion((prev) => getQuestionWithChoices(prev));
         };
 
+        const handleChoice = (choice) => {
+          processAnswer(choice);
+        };
+
+        const handleSubjectSubmit = (num) => {
+          processAnswer(num);
+        };
+
         const secondsLeft = (timeLeftMs / 1000).toFixed(1);
-        const avgTime = total > 0 ? (sumTime / total).toFixed(2) : "-";
+        const avgCorrectTime =
+          correct > 0 ? (sumCorrectTime / correct).toFixed(2) : "-";
         const accuracy =
           total > 0 ? Math.round((correct / total) * 100) + "%" : "-";
 
@@ -1143,23 +1356,30 @@
           Math.min(100, (timeLeftMs / timeLimitMs) * 100)
         );
 
-        // ★ 등급 기준 (S<2, A<3, B<4)
+        // ★ 완화된 등급 기준 + 치트 방지
         let grade = "-";
-        if (avgTime !== "-" && total > 0) {
-          const t = parseFloat(avgTime);
-          if (t < 2.0) grade = "S";
-          else if (t < 3.0) grade = "A";
-          else if (t < 4.0) grade = "B";
-          else grade = "C";
+        if (avgCorrectTime !== "-" && correct > 0) {
+          const t = parseFloat(avgCorrectTime);
+          if (!isNaN(t)) {
+            if (t < 2.0) grade = "S";
+            else if (t < 3.0) grade = "A";
+            else if (t < 4.0) grade = "B";
+            else grade = "C";
+          }
+        }
+        // 정답이 너무 적으면 높은 등급 제한 (한 문제만 빨리 풀고 기다리는 치트 방지)
+        if (correct > 0 && correct < 5 && grade !== "-") {
+          if (grade === "S" || grade === "A") {
+            grade = "B";
+          }
         }
 
-        // 결과 문구 생성 (공유/팝업에서 공통 사용)
         const buildSummary = () => {
           const lines = [];
           lines.push("유라의 구구런 타임어택 결과 보고!");
           lines.push(`- 모드: ${timeLimitSec}초`);
           lines.push(`- 정답: ${correct}/${total} (${accuracy})`);
-          lines.push(`- 평균속도: ${avgTime}초`);
+          lines.push(`- 정답 속도: ${avgCorrectTime}초`);
           lines.push(`- 등급: ${grade} 등급`);
           lines.push(`- 최고 콤보: ${bestCombo}콤보`);
           lines.push("");
@@ -1176,7 +1396,6 @@
           return lines.join("\n");
         };
 
-        // 공유 (일반 공유 버튼)
         const shareResult = async () => {
           const summary = buildSummary();
 
@@ -1235,7 +1454,7 @@
             total,
             correct,
             accuracy,
-            avgTime,
+            avgTime: avgCorrectTime,
             grade,
             timeLimitSec,
           };
@@ -1269,8 +1488,10 @@
               popupLines.push("");
               popupLines.push("이번 타임어택 결과는 아래와 같아요.");
               popupLines.push(`- 모드: ${timeLimitSec}초`);
-              popupLines.push(`- 정답: ${correct}/${total} (${accuracy})`);
-              popupLines.push(`- 평균속도: ${avgTime}초`);
+              popupLines.push(
+                `- 정답: ${correct}/${total} (${accuracy})`
+              );
+              popupLines.push(`- 정답 속도: ${avgCorrectTime}초`);
               popupLines.push(`- 등급: ${grade} 등급`);
               popupLines.push(`- 최고 콤보: ${bestCombo}콤보`);
               popupLines.push("");
@@ -1337,18 +1558,26 @@
                 <span className="combo-best">최고 콤보: {bestCombo}</span>
               </div>
 
-              <div className="choices">
-                {question.choices.map((c) => (
-                  <button
-                    key={c}
-                    className="choice-btn"
-                    onClick={() => handleChoice(c)}
-                    disabled={!running}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
+              {answerMode === "choice" ? (
+                <div className="choices">
+                  {question.choices.map((c) => (
+                    <button
+                      key={c}
+                      className="choice-btn"
+                      onClick={() => handleChoice(c)}
+                      disabled={!running}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <SubjectiveInput
+                  value={typed}
+                  onChange={setTyped}
+                  onSubmit={handleSubjectSubmit}
+                />
+              )}
 
               <div style={{ marginTop: 8, textAlign: "center" }}>
                 <button
@@ -1368,9 +1597,9 @@
               <span className="value">{correct}</span>
               <span className="label">정답률</span>
               <span className="value">{accuracy}</span>
-              <span className="label">평균 반응속도</span>
+              <span className="label">정답 속도</span>
               <span className="value">
-                {avgTime === "-" ? "-" : `${avgTime}초`}
+                {avgCorrectTime === "-" ? "-" : `${avgCorrectTime}초`}
               </span>
             </div>
 
@@ -1382,7 +1611,11 @@
                   <b>{total}</b>문제 중 <b>{correct}</b>개 정답, 정답률{" "}
                   {accuracy},
                   <br />
-                  평균 {avgTime === "-" ? "-" : `${avgTime}초`} / 등급 {grade} 등급!
+                  정답 속도{" "}
+                  {avgCorrectTime === "-"
+                    ? "-"
+                    : `${avgCorrectTime}초`}{" "}
+                  / 등급 {grade} 등급!
                   <br />
                   최고 콤보 {bestCombo}콤보
                   {justSetNewBest && (
@@ -1405,7 +1638,8 @@
             )}
 
             <div className="small-tip">
-              버튼만 톡톡 누르기만 해도 되는 스피드 모드! <br />
+              버튼을 톡톡 누르거나 숫자를 입력해서 <b>초스피드로</b> 풀어봐요.{" "}
+              <br />
               오늘 S/A 등급을 노려서 용돈도 챙겨 보자 ✨
             </div>
 
@@ -1475,7 +1709,7 @@
                   <b>
                     {bestRecord.correct}/{bestRecord.total}
                   </b>{" "}
-                  정답, 정답률 {bestRecord.accuracy}, 평균{" "}
+                  정답, 정답률 {bestRecord.accuracy}, 정답 속도{" "}
                   {bestRecord.avgTime}초, 등급 {bestRecord.grade}
                 </div>
               </div>
@@ -1498,7 +1732,7 @@
                         <th>시간</th>
                         <th>정답/문제</th>
                         <th>정답률</th>
-                        <th>평균속도</th>
+                        <th>정답 속도</th>
                         <th>등급</th>
                       </tr>
                     </thead>
@@ -1571,9 +1805,6 @@
 
         const {
           todayStr,
-          todayCountAll,
-          todayCount60,
-          todayCorrectSum,
           bestGrade,
           allowance,
           dailyMissions,
@@ -1730,11 +1961,13 @@
       // ========= 전체 App =========
       function App() {
         const [mode, setMode] = useState("practice"); // 'practice' | 'timeAttack' | 'records' | 'missions'
-        const [timeLimitMs, setTimeLimitMs] = useState(30000); // 기본 30초
+        const [timeLimitMs, setTimeLimitMs] = useState(60000); // 기본 60초
+        const [answerMode, setAnswerMode] = useState("choice"); // 'choice' | 'subjective'
         const [recordsVersion, setRecordsVersion] = useState(0);
         const [profile, setProfile] = useState(() =>
           calcProfileFromRecords(loadRecords())
         );
+        const [showSettings, setShowSettings] = useState(false);
 
         const timeLimitSec = Math.round(timeLimitMs / 1000);
 
@@ -1761,105 +1994,171 @@
               )
             : 0;
 
-        return (
-          <div className="app">
-            <div className="title">유라의 구구런 GUGU RUN</div>
-            <div className="subtitle">
-              민트 하늘색 구구단 연습장 · 속도 + 정확도 둘 다 잡기
-            </div>
+        const answerModeLabel =
+          answerMode === "choice" ? "객관식" : "주관식";
 
-            <div className="profile-row">
-              <div className="profile-main">
-                <span className="profile-title">{profile.title}</span>
-                <span className="profile-level">
-                  Lv.{profile.level} · 총 경험치 {profile.xp}
+        return (
+          <>
+            <div className="app">
+              <div className="title">유라의 구구런 GUGU RUN</div>
+              <div className="header-row">
+                <div className="subtitle">
+                  구구단 속도 + 정확도 둘 다 잡기
+                </div>
+                <button
+                  className="settings-button"
+                  onClick={() => setShowSettings(true)}
+                  aria-label="설정"
+                >
+                  <img src="icon_setting.png" alt="설정" />
+                </button>
+              </div>
+
+              <div className="profile-row">
+                <div className="profile-main">
+                  <span className="profile-title">{profile.title}</span>
+                  <span className="profile-level">
+                    Lv.{profile.level} · 총 경험치 {profile.xp}
+                  </span>
+                </div>
+                <div className="xp-bar">
+                  <div
+                    className="xp-bar-fill"
+                    style={{ width: `${xpPercent}%` }}
+                  />
+                </div>
+                <div className="xp-text">
+                  다음 레벨까지{" "}
+                  {profile.xpForNextLevel - profile.xpInLevel}점 남음
+                </div>
+              </div>
+
+              <div className="current-config-row">
+                <span className="current-config-label">현재 설정</span>
+                <span className="current-config-value">
+                  타임어택 {timeLimitSec}초 · {answerModeLabel}
                 </span>
               </div>
-              <div className="xp-bar">
-                <div
-                  className="xp-bar-fill"
-                  style={{ width: `${xpPercent}%` }}
+
+              {/* 탭 */}
+              <div className="tab-row">
+                <button
+                  className={
+                    "tab-btn" + (mode === "practice" ? " active" : "")
+                  }
+                  onClick={() => setMode("practice")}
+                >
+                  연습
+                </button>
+                <button
+                  className={
+                    "tab-btn" + (mode === "timeAttack" ? " active" : "")
+                  }
+                  onClick={() => setMode("timeAttack")}
+                >
+                  타임어택
+                </button>
+                <button
+                  className={
+                    "tab-btn" + (mode === "records" ? " active" : "")
+                  }
+                  onClick={() => setMode("records")}
+                >
+                  기록 보기
+                </button>
+                <button
+                  className={
+                    "tab-btn" + (mode === "missions" ? " active" : "")
+                  }
+                  onClick={() => setMode("missions")}
+                >
+                  미션·용돈
+                </button>
+              </div>
+
+              {mode === "practice" && <PracticeMode answerMode={answerMode} />}
+              {mode === "timeAttack" && (
+                <TimeAttackMode
+                  timeLimitMs={timeLimitMs}
+                  answerMode={answerMode}
+                  onRecordsUpdated={handleRecordsUpdated}
                 />
-              </div>
-              <div className="xp-text">
-                다음 레벨까지{" "}
-                {profile.xpForNextLevel - profile.xpInLevel}점 남음
-              </div>
+              )}
+              {mode === "records" && (
+                <RecordsView recordsVersion={recordsVersion} />
+              )}
+              {mode === "missions" && (
+                <MissionsView recordsVersion={recordsVersion} />
+              )}
             </div>
 
-            {/* 타임어택 시간 선택 */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: 4,
-                gap: 6,
-              }}
-            >
-              <span className="section-title">타임어택 시간 (연습용)</span>
-              <div style={{ display: "flex", gap: 4 }}>
-                <button
-                  className={
-                    "pill-chip" + (timeLimitSec === 30 ? " active" : "")
-                  }
-                  onClick={() => setTimeLimitMs(30000)}
-                >
-                  30초
-                </button>
-                <button
-                  className={
-                    "pill-chip" + (timeLimitSec === 60 ? " active" : "")
-                  }
-                  onClick={() => setTimeLimitMs(60000)}
-                >
-                  60초
-                </button>
+            {/* 설정 팝업 */}
+            {showSettings && (
+              <div className="mission-popup-backdrop">
+                <div className="mission-popup-card">
+                  <div className="mission-popup-title">설정</div>
+                  <div className="mission-popup-text">
+                    <div style={{ marginBottom: "6px" }}>
+                      <b>타임어택 시간</b>
+                      <br />
+                      <div style={{ marginTop: "4px", display: "flex", gap: 6 }}>
+                        <button
+                          className={
+                            "pill-chip" +
+                            (timeLimitSec === 30 ? " active" : "")
+                          }
+                          onClick={() => setTimeLimitMs(30000)}
+                        >
+                          30초
+                        </button>
+                        <button
+                          className={
+                            "pill-chip" +
+                            (timeLimitSec === 60 ? " active" : "")
+                          }
+                          onClick={() => setTimeLimitMs(60000)}
+                        >
+                          60초
+                        </button>
+                      </div>
+                    </div>
+                    <div style={{ marginTop: "8px" }}>
+                      <b>답안 방식</b>
+                      <br />
+                      <div style={{ marginTop: "4px", display: "flex", gap: 6 }}>
+                        <button
+                          className={
+                            "pill-chip" +
+                            (answerMode === "choice" ? " active" : "")
+                          }
+                          onClick={() => setAnswerMode("choice")}
+                        >
+                          객관식 (6지선다)
+                        </button>
+                        <button
+                          className={
+                            "pill-chip" +
+                            (answerMode === "subjective" ? " active" : "")
+                          }
+                          onClick={() => setAnswerMode("subjective")}
+                        >
+                          주관식 (숫자 입력)
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mission-popup-buttons">
+                    <button
+                      className="mission-popup-btn secondary"
+                      onClick={() => setShowSettings(false)}
+                    >
+                      닫기
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            {/* 탭 */}
-            <div className="tab-row">
-              <button
-                className={"tab-btn" + (mode === "practice" ? " active" : "")}
-                onClick={() => setMode("practice")}
-              >
-                연습
-              </button>
-              <button
-                className={"tab-btn" + (mode === "timeAttack" ? " active" : "")}
-                onClick={() => setMode("timeAttack")}
-              >
-                타임어택
-              </button>
-              <button
-                className={"tab-btn" + (mode === "records" ? " active" : "")}
-                onClick={() => setMode("records")}
-              >
-                기록 보기
-              </button>
-              <button
-                className={"tab-btn" + (mode === "missions" ? " active" : "")}
-                onClick={() => setMode("missions")}
-              >
-                미션·용돈
-              </button>
-            </div>
-
-            {mode === "practice" && <PracticeMode />}
-            {mode === "timeAttack" && (
-              <TimeAttackMode
-                timeLimitMs={timeLimitMs}
-                onRecordsUpdated={handleRecordsUpdated}
-              />
             )}
-            {mode === "records" && (
-              <RecordsView recordsVersion={recordsVersion} />
-            )}
-            {mode === "missions" && (
-              <MissionsView recordsVersion={recordsVersion} />
-            )}
-          </div>
+          </>
         );
       }
 
