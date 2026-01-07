@@ -532,7 +532,7 @@
         text-align: right;
       }
 
-      /* ==== 정답/오답 이펙트 ==== */
+      /* 정답/오답 화면 이펙트 */
       .effect-burst {
         position: fixed;
         inset: 0;
@@ -624,7 +624,7 @@
     <script type="text/babel">
       const { useState, useEffect, useRef } = React;
 
-      /* ========= 소리 이펙트 (Web Audio API) ========= */
+      /* ========= 소리 이펙트 (정답/오답) ========= */
       let sharedAudioContext = null;
       function getAudioContext() {
         try {
@@ -696,18 +696,24 @@
       /* ========= 배경음악 (BGM) ========= */
       const BGM_FILES = {
         none: null,
-        BGM1: "bgm1.mp3", // [001] Second Run.mp3 를 bgm1.mp3로 저장
-        BGM2: "bgm2.mp3", // [002] Third run (original ver).mp3 → bgm2.mp3
-        BGM3: "bgm3.mp3", // [003] Essence.mp3 → bgm3.mp3
+        BGM1: "bgm1.mp3",
+        BGM2: "bgm2.mp3",
+        BGM3: "bgm3.mp3",
       };
 
       let bgmAudio = null;
 
-      function updateBgm(choice) {
+      function stopBgm() {
+        if (bgmAudio) {
+          bgmAudio.pause();
+          bgmAudio.currentTime = 0;
+        }
+      }
+
+      function updateBgm(choice, shouldPlay = false) {
         const file = BGM_FILES[choice] || null;
 
         if (!file) {
-          // 배경음악 없음
           if (bgmAudio) {
             bgmAudio.pause();
             bgmAudio = null;
@@ -720,23 +726,24 @@
         if (!bgmAudio) {
           bgmAudio = new Audio(src);
           bgmAudio.loop = true;
-          bgmAudio.volume = 0.4;
+          bgmAudio.volume = 0.28; // 30% 정도 볼륨 다운
         } else {
           const currentPath = bgmAudio.src || "";
           if (!currentPath.endsWith("/" + src)) {
-            // 다른 곡으로 교체
             bgmAudio.pause();
             bgmAudio = new Audio(src);
             bgmAudio.loop = true;
-            bgmAudio.volume = 0.4;
+            bgmAudio.volume = 0.28;
           }
         }
 
-        const playPromise = bgmAudio.play();
-        if (playPromise && playPromise.catch) {
-          playPromise.catch(() => {
-            // 모바일에서 사용자 제스처 없으면 막힐 수 있음
-          });
+        if (shouldPlay) {
+          const playPromise = bgmAudio.play();
+          if (playPromise && playPromise.catch) {
+            playPromise.catch(() => {
+              // 모바일에서 사용자 제스처 없으면 막힐 수 있음
+            });
+          }
         }
       }
 
@@ -747,6 +754,7 @@
         }
       });
 
+      /* ========= 공통 유틸 & 스토리지 ========= */
       const STORAGE_KEY_PROFILE = "gugurun_profile_v2";
       const STORAGE_KEY_RECORDS = "gugurun_records_v2";
       const STORAGE_KEY_SETTINGS = "gugurun_settings_v1";
@@ -793,7 +801,7 @@
         return 0;
       }
 
-      // ===== 레벨/경험치 =====
+      // 레벨 시스템
       const MAX_LEVEL = 50;
 
       function xpNeededForLevelUp(level) {
@@ -882,7 +890,7 @@
         } catch {}
       }
 
-      // ===== 문제 생성 =====
+      /* ========= 문제 생성 ========= */
       function getRandomQuestion(excludeOneTimes) {
         const a = Math.floor(Math.random() * 8) + 2; // 2~9
         let b;
@@ -918,7 +926,7 @@
         return { ...base, choices: getChoices(correct) };
       }
 
-      // ===== 연습 모드 =====
+      /* ========= 연습 모드 ========= */
       function PracticeMode() {
         const [question, setQuestion] = useState(() =>
           getQuestionWithChoices(null, false)
@@ -1033,11 +1041,12 @@
         );
       }
 
-      // ===== 타임어택 모드 =====
+      /* ========= 타임어택 모드 ========= */
       function TimeAttackMode({
         timeLimitSec,
         answerType,
         keyboardMode,
+        bgmChoice,
         onGameFinished,
       }) {
         const [question, setQuestion] = useState(() =>
@@ -1106,6 +1115,9 @@
             audioCtx.resume().catch(() => {});
           }
 
+          // 타임어택 시작 시 BGM 재생
+          updateBgm(bgmChoice, true);
+
           timerRef.current = setInterval(() => {
             setTimeLeftMs((prev) => {
               const next = prev - 100;
@@ -1129,6 +1141,8 @@
               clearInterval(timerRef.current);
               timerRef.current = null;
             }
+            // 컴포넌트 언마운트 시에도 BGM 정지
+            stopBgm();
           };
         }, []);
 
@@ -1222,6 +1236,9 @@
         };
 
         const finalizeGame = (endTime) => {
+          // 타임어택 종료 시 BGM 정지
+          stopBgm();
+
           const totalQ = totalRef.current;
           const correctQ = correctRef.current;
           const wrongQ = totalQ - correctQ;
@@ -1263,60 +1280,61 @@
             }
           }
 
-          const effectiveAvgSec =
-            avgCorrectSpeedSec === "-" ? null : parseFloat(avgCorrectSpeedSec);
-          let score = 0;
-          if (effectiveAvgSec && correctQ > 0) {
-            score = Math.round(
-              (correctQ * accuracy * 100) / (effectiveAvgSec * 0.7 + 0.3)
-            );
+        const effectiveAvgSec =
+          avgCorrectSpeedSec === "-" ? null : parseFloat(avgCorrectSpeedSec);
+        let score = 0;
+        if (effectiveAvgSec && correctQ > 0) {
+          score = Math.round(
+            (correctQ * accuracy * 100) / (effectiveAvgSec * 0.7 + 0.3)
+          );
+        }
+
+        // ★ 완화된 등급 기준 (요청 반영)
+        let grade = "-";
+        if (effectiveAvgSec && correctQ > 0) {
+          const minCorrectForS = 15;
+          const minCorrectForA = 10;
+          const minAccuracyForS = 0.9;
+          const minAccuracyForA = 0.8;
+
+          if (
+            effectiveAvgSec < 2.0 &&
+            correctQ >= minCorrectForS &&
+            accuracy >= minAccuracyForS
+          ) {
+            grade = "S";
+          } else if (
+            effectiveAvgSec < 3.0 &&
+            correctQ >= minCorrectForA &&
+            accuracy >= minAccuracyForA
+          ) {
+            grade = "A";
+          } else if (effectiveAvgSec < 4.0) {
+            grade = "B";
+          } else {
+            grade = "C";
           }
+        }
 
-          let grade = "-";
-          if (effectiveAvgSec && correctQ > 0) {
-            const minCorrectForS = 15;
-            const minCorrectForA = 10;
-            const minAccuracyForS = 0.9;
-            const minAccuracyForA = 0.8;
-
-            if (
-              effectiveAvgSec < 2.0 &&
-              correctQ >= minCorrectForS &&
-              accuracy >= minAccuracyForS
-            ) {
-              grade = "S";
-            } else if (
-              effectiveAvgSec < 3.0 &&
-              correctQ >= minCorrectForA &&
-              accuracy >= minAccuracyForA
-            ) {
-              grade = "A";
-            } else if (effectiveAvgSec < 4.0) {
-              grade = "B";
-            } else {
-              grade = "C";
-            }
-          }
-
-          const result = {
-            date: todayYMD(),
-            durationSec,
-            total: totalQ,
-            correct: correctQ,
-            wrong: wrongQ,
-            accuracy,
-            avgAllSec: avgAll === "-" ? null : parseFloat(avgAll),
-            avgCorrectSpeedSec:
-              avgCorrectSpeedSec === "-"
-                ? null
-                : parseFloat(avgCorrectSpeedSec),
-            grade,
-            score,
-          };
-
-          setFinishedSummary(result);
-          if (onGameFinished) onGameFinished(result);
+        const result = {
+          date: todayYMD(),
+          durationSec,
+          total: totalQ,
+          correct: correctQ,
+          wrong: wrongQ,
+          accuracy,
+          avgAllSec: avgAll === "-" ? null : parseFloat(avgAll),
+          avgCorrectSpeedSec:
+            avgCorrectSpeedSec === "-"
+              ? null
+              : parseFloat(avgCorrectSpeedSec),
+          grade,
+          score,
         };
+
+        setFinishedSummary(result);
+        if (onGameFinished) onGameFinished(result);
+      };
 
         const timeRatio = timeLeftMs / (timeLimitSec * 1000);
         const timeBarWidth = `${Math.max(0, Math.min(1, timeRatio)) * 100}%`;
@@ -1482,7 +1500,7 @@
         );
       }
 
-      // ===== 미션/기록 탭 =====
+      /* ========= 미션 탭 ========= */
       function MissionsTab({ records }) {
         const today = todayYMD();
         const todayDate = new Date();
@@ -1615,6 +1633,7 @@
         );
       }
 
+      /* ========= 기록 탭 ========= */
       function RecordsTab({ records }) {
         if (!records || records.length === 0) {
           return (
@@ -1727,7 +1746,7 @@
         );
       }
 
-      // ===== 메인 App =====
+      /* ========= 메인 App ========= */
       function App() {
         const [mode, setMode] = useState("timeAttack");
         const [profile, setProfile] = useState(() => loadProfile());
@@ -1762,8 +1781,9 @@
           saveSettings({ timeLimitSec, answerType, keyboardMode, bgmChoice });
         }, [timeLimitSec, answerType, keyboardMode, bgmChoice]);
 
+        // 설정 변경 시엔 곡만 준비하고, 재생은 타임어택에서
         useEffect(() => {
-          updateBgm(bgmChoice);
+          updateBgm(bgmChoice, false);
         }, [bgmChoice]);
 
         const handleGameFinished = (result) => {
@@ -1924,6 +1944,7 @@
                   timeLimitSec={timeLimitSec}
                   answerType={answerType}
                   keyboardMode={keyboardMode}
+                  bgmChoice={bgmChoice}
                   onGameFinished={handleGameFinished}
                 />
               )}
