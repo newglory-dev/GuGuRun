@@ -661,15 +661,13 @@
       }
 
       function playCorrectSound() {
-        // 밝은 2단계 비프
-        playBeep({ frequency: 1046, duration: 0.09, type: "sine" }); // 높은 도
+        playBeep({ frequency: 1046, duration: 0.09, type: "sine" });
         setTimeout(() => {
-          playBeep({ frequency: 1318, duration: 0.09, type: "sine" }); // 높은 미
+          playBeep({ frequency: 1318, duration: 0.09, type: "sine" });
         }, 90);
       }
 
       function playWrongSound() {
-        // 낮은 "부웅" 느낌
         const audioCtx = getAudioContext();
         if (!audioCtx) return;
 
@@ -694,6 +692,60 @@
         osc.start(now);
         osc.stop(now + 0.25);
       }
+
+      /* ========= 배경음악 (BGM) ========= */
+      const BGM_FILES = {
+        none: null,
+        BGM1: "bgm1.mp3", // [001] Second Run.mp3 를 bgm1.mp3로 저장
+        BGM2: "bgm2.mp3", // [002] Third run (original ver).mp3 → bgm2.mp3
+        BGM3: "bgm3.mp3", // [003] Essence.mp3 → bgm3.mp3
+      };
+
+      let bgmAudio = null;
+
+      function updateBgm(choice) {
+        const file = BGM_FILES[choice] || null;
+
+        if (!file) {
+          // 배경음악 없음
+          if (bgmAudio) {
+            bgmAudio.pause();
+            bgmAudio = null;
+          }
+          return;
+        }
+
+        const src = file;
+
+        if (!bgmAudio) {
+          bgmAudio = new Audio(src);
+          bgmAudio.loop = true;
+          bgmAudio.volume = 0.4;
+        } else {
+          const currentPath = bgmAudio.src || "";
+          if (!currentPath.endsWith("/" + src)) {
+            // 다른 곡으로 교체
+            bgmAudio.pause();
+            bgmAudio = new Audio(src);
+            bgmAudio.loop = true;
+            bgmAudio.volume = 0.4;
+          }
+        }
+
+        const playPromise = bgmAudio.play();
+        if (playPromise && playPromise.catch) {
+          playPromise.catch(() => {
+            // 모바일에서 사용자 제스처 없으면 막힐 수 있음
+          });
+        }
+      }
+
+      window.addEventListener("beforeunload", () => {
+        if (bgmAudio) {
+          bgmAudio.pause();
+          bgmAudio = null;
+        }
+      });
 
       const STORAGE_KEY_PROFILE = "gugurun_profile_v2";
       const STORAGE_KEY_RECORDS = "gugurun_records_v2";
@@ -1691,6 +1743,9 @@
         const [keyboardMode, setKeyboardMode] = useState(
           loadedSettings?.keyboardMode || "screen"
         );
+        const [bgmChoice, setBgmChoice] = useState(
+          loadedSettings?.bgmChoice || "BGM1"
+        );
 
         const [showSettings, setShowSettings] = useState(false);
         const [missionPopup, setMissionPopup] = useState(null);
@@ -1704,8 +1759,12 @@
         }, [records]);
 
         useEffect(() => {
-          saveSettings({ timeLimitSec, answerType, keyboardMode });
-        }, [timeLimitSec, answerType, keyboardMode]);
+          saveSettings({ timeLimitSec, answerType, keyboardMode, bgmChoice });
+        }, [timeLimitSec, answerType, keyboardMode, bgmChoice]);
+
+        useEffect(() => {
+          updateBgm(bgmChoice);
+        }, [bgmChoice]);
 
         const handleGameFinished = (result) => {
           setRecords((prev) => [...prev, result]);
@@ -1946,6 +2005,48 @@
                         </div>
                       </div>
                     )}
+
+                    <div className="settings-row">
+                      <label>배경음악</label>
+                      <div className="settings-options">
+                        <button
+                          className={
+                            "settings-chip " +
+                            (bgmChoice === "none" ? "active" : "")
+                          }
+                          onClick={() => setBgmChoice("none")}
+                        >
+                          없음
+                        </button>
+                        <button
+                          className={
+                            "settings-chip " +
+                            (bgmChoice === "BGM1" ? "active" : "")
+                          }
+                          onClick={() => setBgmChoice("BGM1")}
+                        >
+                          BGM1
+                        </button>
+                        <button
+                          className={
+                            "settings-chip " +
+                            (bgmChoice === "BGM2" ? "active" : "")
+                          }
+                          onClick={() => setBgmChoice("BGM2")}
+                        >
+                          BGM2
+                        </button>
+                        <button
+                          className={
+                            "settings-chip " +
+                            (bgmChoice === "BGM3" ? "active" : "")
+                          }
+                          onClick={() => setBgmChoice("BGM3")}
+                        >
+                          BGM3
+                        </button>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="settings-footer">
