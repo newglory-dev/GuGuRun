@@ -624,6 +624,77 @@
     <script type="text/babel">
       const { useState, useEffect, useRef } = React;
 
+      /* ========= 소리 이펙트 (Web Audio API) ========= */
+      let sharedAudioContext = null;
+      function getAudioContext() {
+        try {
+          if (!sharedAudioContext) {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            if (!AC) return null;
+            sharedAudioContext = new AC();
+          }
+          return sharedAudioContext;
+        } catch {
+          return null;
+        }
+      }
+
+      function playBeep({ frequency = 880, duration = 0.12, type = "sine" }) {
+        const audioCtx = getAudioContext();
+        if (!audioCtx) return;
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = type;
+        osc.frequency.value = frequency;
+        gain.gain.value = 0.25;
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        const now = audioCtx.currentTime;
+        osc.start(now);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        osc.stop(now + duration + 0.02);
+      }
+
+      function playCorrectSound() {
+        // 밝은 2단계 비프
+        playBeep({ frequency: 1046, duration: 0.09, type: "sine" }); // 높은 도
+        setTimeout(() => {
+          playBeep({ frequency: 1318, duration: 0.09, type: "sine" }); // 높은 미
+        }, 90);
+      }
+
+      function playWrongSound() {
+        // 낮은 "부웅" 느낌
+        const audioCtx = getAudioContext();
+        if (!audioCtx) return;
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(
+          120,
+          audioCtx.currentTime + 0.18
+        );
+
+        gain.gain.value = 0.22;
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        const now = audioCtx.currentTime;
+        gain.gain.setValueAtTime(0.22, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+
+        osc.start(now);
+        osc.stop(now + 0.25);
+      }
+
       const STORAGE_KEY_PROFILE = "gugurun_profile_v2";
       const STORAGE_KEY_RECORDS = "gugurun_records_v2";
       const STORAGE_KEY_SETTINGS = "gugurun_settings_v1";
@@ -833,6 +904,7 @@
               `정답! ${correctAnswer} ✨ (${elapsed.toFixed(2)}초)`
             );
             setEffect("correct");
+            playCorrectSound();
           } else {
             setLastCorrect(false);
             setLastMessage(
@@ -841,6 +913,7 @@
               )}초)`
             );
             setEffect("wrong");
+            playWrongSound();
           }
 
           setQuestion((prev) => getQuestionWithChoices(prev, false));
@@ -976,6 +1049,11 @@
           gameStartRef.current = now;
           lastAnswerTimeRef.current = now;
 
+          const audioCtx = getAudioContext();
+          if (audioCtx && audioCtx.state === "suspended") {
+            audioCtx.resume().catch(() => {});
+          }
+
           timerRef.current = setInterval(() => {
             setTimeLeftMs((prev) => {
               const next = prev - 100;
@@ -1022,11 +1100,13 @@
               `굿! 정답 ${correctAnswer} (${elapsed.toFixed(2)}초)`
             );
             setEffect("correct");
+            playCorrectSound();
           } else {
             setLastMessage(
               `앗! 정답은 ${correctAnswer} (${elapsed.toFixed(2)}초)`
             );
             setEffect("wrong");
+            playWrongSound();
           }
 
           lastAnswerTimeRef.current = now;
@@ -1055,11 +1135,13 @@
               `굿! 정답 ${correctAnswer} (${elapsed.toFixed(2)}초)`
             );
             setEffect("correct");
+            playCorrectSound();
           } else {
             setLastMessage(
               `앗! 정답은 ${correctAnswer} (${elapsed.toFixed(2)}초)`
             );
             setEffect("wrong");
+            playWrongSound();
           }
 
           lastAnswerTimeRef.current = now;
