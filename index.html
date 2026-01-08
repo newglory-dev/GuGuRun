@@ -359,11 +359,31 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 4px;
+        gap: 8px;
       }
 
       .section-title {
         font-weight: 700;
         font-size: 0.86rem;
+      }
+
+      .mission-actions {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+
+      .mini-button {
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid #cdefff;
+        background: #ffffff;
+        font-size: 0.78rem;
+        cursor: pointer;
+      }
+
+      .mini-button:active {
+        transform: translateY(1px);
       }
 
       .mission-list {
@@ -740,9 +760,7 @@
         if (shouldPlay) {
           const playPromise = bgmAudio.play();
           if (playPromise && playPromise.catch) {
-            playPromise.catch(() => {
-              // 모바일에서 사용자 제스처 없으면 막힐 수 있음
-            });
+            playPromise.catch(() => {});
           }
         }
       }
@@ -1141,7 +1159,6 @@
               clearInterval(timerRef.current);
               timerRef.current = null;
             }
-            // 컴포넌트 언마운트 시에도 BGM 정지
             stopBgm();
           };
         }, []);
@@ -1236,7 +1253,6 @@
         };
 
         const finalizeGame = (endTime) => {
-          // 타임어택 종료 시 BGM 정지
           stopBgm();
 
           const totalQ = totalRef.current;
@@ -1280,61 +1296,61 @@
             }
           }
 
-        const effectiveAvgSec =
-          avgCorrectSpeedSec === "-" ? null : parseFloat(avgCorrectSpeedSec);
-        let score = 0;
-        if (effectiveAvgSec && correctQ > 0) {
-          score = Math.round(
-            (correctQ * accuracy * 100) / (effectiveAvgSec * 0.7 + 0.3)
-          );
-        }
-
-        // ★ 완화된 등급 기준 (요청 반영)
-        let grade = "-";
-        if (effectiveAvgSec && correctQ > 0) {
-          const minCorrectForS = 15;
-          const minCorrectForA = 10;
-          const minAccuracyForS = 0.9;
-          const minAccuracyForA = 0.8;
-
-          if (
-            effectiveAvgSec < 2.0 &&
-            correctQ >= minCorrectForS &&
-            accuracy >= minAccuracyForS
-          ) {
-            grade = "S";
-          } else if (
-            effectiveAvgSec < 3.0 &&
-            correctQ >= minCorrectForA &&
-            accuracy >= minAccuracyForA
-          ) {
-            grade = "A";
-          } else if (effectiveAvgSec < 4.0) {
-            grade = "B";
-          } else {
-            grade = "C";
+          const effectiveAvgSec =
+            avgCorrectSpeedSec === "-" ? null : parseFloat(avgCorrectSpeedSec);
+          let score = 0;
+          if (effectiveAvgSec && correctQ > 0) {
+            score = Math.round(
+              (correctQ * accuracy * 100) / (effectiveAvgSec * 0.7 + 0.3)
+            );
           }
-        }
 
-        const result = {
-          date: todayYMD(),
-          durationSec,
-          total: totalQ,
-          correct: correctQ,
-          wrong: wrongQ,
-          accuracy,
-          avgAllSec: avgAll === "-" ? null : parseFloat(avgAll),
-          avgCorrectSpeedSec:
-            avgCorrectSpeedSec === "-"
-              ? null
-              : parseFloat(avgCorrectSpeedSec),
-          grade,
-          score,
+          // 등급 기준(완화)
+          let grade = "-";
+          if (effectiveAvgSec && correctQ > 0) {
+            const minCorrectForS = 15;
+            const minCorrectForA = 10;
+            const minAccuracyForS = 0.9;
+            const minAccuracyForA = 0.8;
+
+            if (
+              effectiveAvgSec < 2.0 &&
+              correctQ >= minCorrectForS &&
+              accuracy >= minAccuracyForS
+            ) {
+              grade = "S";
+            } else if (
+              effectiveAvgSec < 3.0 &&
+              correctQ >= minCorrectForA &&
+              accuracy >= minAccuracyForA
+            ) {
+              grade = "A";
+            } else if (effectiveAvgSec < 4.0) {
+              grade = "B";
+            } else {
+              grade = "C";
+            }
+          }
+
+          const result = {
+            date: todayYMD(),
+            durationSec,
+            total: totalQ,
+            correct: correctQ,
+            wrong: wrongQ,
+            accuracy,
+            avgAllSec: avgAll === "-" ? null : parseFloat(avgAll),
+            avgCorrectSpeedSec:
+              avgCorrectSpeedSec === "-"
+                ? null
+                : parseFloat(avgCorrectSpeedSec),
+            grade,
+            score,
+          };
+
+          setFinishedSummary(result);
+          if (onGameFinished) onGameFinished(result);
         };
-
-        setFinishedSummary(result);
-        if (onGameFinished) onGameFinished(result);
-      };
 
         const timeRatio = timeLeftMs / (timeLimitSec * 1000);
         const timeBarWidth = `${Math.max(0, Math.min(1, timeRatio)) * 100}%`;
@@ -1392,17 +1408,15 @@
               ) : (
                 <div className="subject-input-wrap">
                   {keyboardMode === "system" ? (
-                    <>
-                      <input
-                        className="subject-input"
-                        type="tel"
-                        placeholder="정답을 숫자로 입력 후 엔터"
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                        onKeyDown={handleSystemInputKeyDown}
-                        disabled={!running}
-                      />
-                    </>
+                    <input
+                      className="subject-input"
+                      type="tel"
+                      placeholder="정답을 숫자로 입력 후 엔터"
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      onKeyDown={handleSystemInputKeyDown}
+                      disabled={!running}
+                    />
                   ) : (
                     <>
                       <div className="subject-input-display">
@@ -1500,7 +1514,7 @@
         );
       }
 
-      /* ========= 미션 탭 ========= */
+      /* ========= 미션 탭 (주간 상향 + 공유 버튼 복구) ========= */
       function MissionsTab({ records }) {
         const today = todayYMD();
         const todayDate = new Date();
@@ -1533,6 +1547,7 @@
           0
         );
 
+        // === 일일 미션 ===
         const dailyMissions = [
           {
             id: "daily_60s_2times",
@@ -1557,27 +1572,82 @@
           },
         ];
 
+        // === 주간 미션 (상향 반영) ===
         const weeklyMissions = [
           {
-            id: "weekly_20_times",
-            title: "이번 주 타임어택 20회 도전",
-            done: weekCountAll >= 20,
-            progress: `${weekCountAll} / 20회`,
+            id: "weekly_30_times",
+            title: "이번 주 타임어택 30회 도전",
+            done: weekCountAll >= 30,
+            progress: `${weekCountAll} / 30회`,
           },
           {
-            id: "weekly_200_correct",
-            title: "이번 주 정답 200개 이상",
-            done: weekCorrectSum >= 200,
-            progress: `${weekCorrectSum} / 200개`,
+            id: "weekly_500_correct",
+            title: "이번 주 정답 500개 이상",
+            done: weekCorrectSum >= 500,
+            progress: `${weekCorrectSum} / 500개`,
           },
         ];
+
+        const buildMissionShareText = () => {
+          const dailyDone =
+            todayCount60 >= 2 &&
+            todayCorrectSum >= 30 &&
+            gradePriority(todayBestGrade) >= gradePriority("A");
+
+          const weekDone = weekCountAll >= 30 && weekCorrectSum >= 500;
+
+          return [
+            `[유라의 구구런 미션 현황]`,
+            ``,
+            `📅 오늘 (${today})`,
+            `- 60초 2회: ${todayCount60}/2`,
+            `- 정답 30개: ${todayCorrectSum}/30`,
+            `- 오늘 최고 등급: ${todayBestGrade}`,
+            `=> ${dailyDone ? "오늘 미션 완료! 🎉" : "오늘 미션 진행중!"}`,
+            ``,
+            `🗓 이번 주 (${weekLabel})`,
+            `- 타임어택 30회: ${weekCountAll}/30`,
+            `- 정답 500개: ${weekCorrectSum}/500`,
+            `=> ${weekDone ? "주간 미션 완료! 🎉" : "주간 미션 진행중!"}`,
+            ``,
+            `유라가 열심히 하는 중이니 용돈 부탁~ 😎`,
+          ].join("\n");
+        };
+
+        const handleMissionShareCopy = async () => {
+          const text = buildMissionShareText();
+          try {
+            await navigator.clipboard.writeText(text);
+            alert(
+              "미션 현황 문구를 클립보드에 복사했어요.\n카카오톡에 붙여넣기만 하면 됩니다!"
+            );
+          } catch {
+            // fallback
+            const ta = document.createElement("textarea");
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+              document.execCommand("copy");
+              alert(
+                "미션 현황 문구를 클립보드에 복사했어요.\n카카오톡에 붙여넣기만 하면 됩니다!"
+              );
+            } catch {
+              alert("복사에 실패했어요. 브라우저 권한을 확인해 주세요.");
+            }
+            document.body.removeChild(ta);
+          }
+        };
 
         return (
           <>
             <div className="section-card">
               <div className="section-title-row">
-                <div className="section-title">
-                  오늘의 미션 (모두 타임어택으로 달성)
+                <div className="section-title">오늘의 미션</div>
+                <div className="mission-actions">
+                  <button className="mini-button" onClick={handleMissionShareCopy}>
+                    미션 공유(복사)
+                  </button>
                 </div>
               </div>
               <div className="mission-list">
@@ -1597,13 +1667,14 @@
                   </div>
                 ))}
               </div>
+              <div className="copy-hint">
+                * “미션 공유(복사)”를 눌러 카카오톡에 바로 붙여넣기 하세요.
+              </div>
             </div>
 
             <div className="section-card">
               <div className="section-title-row">
-                <div className="section-title">
-                  주간 미션 (이번 주: {weekLabel})
-                </div>
+                <div className="section-title">주간 미션 (이번 주: {weekLabel})</div>
               </div>
               <div className="mission-list">
                 {weeklyMissions.map((m) => (
@@ -1625,9 +1696,7 @@
             </div>
 
             <div className="small-tip">
-              모든 미션은 60초 타임어택 기록을 기준으로 계산됩니다.
-              <br />
-              S/A 등급을 받으면 용돈 미션 달성으로 연결되게 설계해 두었어요.
+              모든 미션은 “타임어택 기록”으로 계산됩니다.
             </div>
           </>
         );
@@ -1708,9 +1777,7 @@
                   {top10.map((r, idx) => (
                     <tr
                       key={idx}
-                      className={
-                        r === bestRecord ? "highlight-row" : undefined
-                      }
+                      className={r === bestRecord ? "highlight-row" : undefined}
                     >
                       <td>{idx + 1}</td>
                       <td>{r.date}</td>
@@ -1738,9 +1805,6 @@
 
             <div className="small-tip">
               기록은 이 기기(브라우저)에만 저장됩니다.
-              <br />
-              유라가 “내가 전에 얼마나 잘했지?” 하고 궁금해할 때 같이 보는
-              용도예요.
             </div>
           </>
         );
@@ -1781,7 +1845,6 @@
           saveSettings({ timeLimitSec, answerType, keyboardMode, bgmChoice });
         }, [timeLimitSec, answerType, keyboardMode, bgmChoice]);
 
-        // 설정 변경 시엔 곡만 준비하고, 재생은 타임어택에서
         useEffect(() => {
           updateBgm(bgmChoice, false);
         }, [bgmChoice]);
@@ -1799,6 +1862,7 @@
           const newTotalXp = (profile.totalXp || 0) + gainedXp;
           setProfile({ ...profile, totalXp: newTotalXp });
 
+          // 기존 "오늘 미션 완료 팝업" 로직 유지 (필요 시 나중에 손볼 수 있음)
           const today = todayYMD();
           const todayRecords = [...records, result].filter(
             (r) => r.date === today
@@ -1823,26 +1887,16 @@
           if (dailyDone && result.durationSec === 60) {
             const gradeText = result.grade || "-";
             const shareText = [
-              `[유라의 구구런 오늘 미션 완료 보고서]`,
+              `[유라의 구구런 오늘 미션 완료!]`,
               ``,
-              `오늘 타임어택 결과는 ${result.durationSec}초 동안`,
-              `${result.total}문제 중 ${result.correct}개 정답!`,
-              `정답률 ${
-                result.total > 0
-                  ? Math.round((result.correct / result.total) * 100) + "%"
-                  : "-"
-              }, 정답 속도 평균 ${
-                result.avgCorrectSpeedSec != null
-                  ? result.avgCorrectSpeedSec.toFixed(2) + "초"
-                  : "-"
-              }`,
-              `등급은 ${gradeText} 등급이얌!`,
+              `오늘 결과: ${result.total}문제 중 ${result.correct}개 정답!`,
+              `등급: ${gradeText}`,
               ``,
               gradeText === "S"
-                ? "오늘은 S급이라 용돈 1,000원 줘야 하는 거 아님? 😏"
+                ? "오늘은 S급이니까 용돈 1,000원 줘~ 😏"
                 : gradeText === "A"
-                ? "오늘은 A급이니까 용돈 500원 달라고요~ 😎"
-                : "오늘은 연습 느낌이라 등급은 살짝 아쉽지만, 내일 더 잘할 거임!",
+                ? "오늘은 A급이니까 용돈 500원 줘요~ 😎"
+                : "오늘은 연습! 내일 더 잘할 거임!",
             ].join("\n");
 
             setMissionPopup({ text: shareText });
@@ -1873,9 +1927,7 @@
           <>
             <div className="app">
               <div className="title">유라의 구구런 GUGU RUN</div>
-              <div className="subtitle">
-                구구단 속도 + 정확도 둘 다 잡기
-              </div>
+              <div className="subtitle">구구단 속도 + 정확도 둘 다 잡기</div>
 
               <div className="header-row">
                 <div className="level-card">
@@ -2085,12 +2137,8 @@
             {missionPopup && (
               <div className="mission-popup-overlay">
                 <div className="mission-popup">
-                  <div className="mission-popup-title">
-                    오늘 미션 달성 완료! 🎉
-                  </div>
-                  <div className="mission-popup-body">
-                    {missionPopup.text}
-                  </div>
+                  <div className="mission-popup-title">오늘 미션 달성 완료! 🎉</div>
+                  <div className="mission-popup-body">{missionPopup.text}</div>
                   <div className="mission-popup-buttons">
                     <button
                       className="secondary-button"
